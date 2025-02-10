@@ -1,0 +1,146 @@
+p {
+  margin-top: 0;
+  margin-bottom: 5px;
+  line-height: 1.5;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+}
+
+p strong {
+  color: #1E88E5;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.top-header {
+  
+  height: 100px;               /* css for flexbox*/
+  margin-bottom: 20px;
+  padding: 10px;              
+}
+
+.top-header input {
+  display: block;
+
+  padding: 10px;
+}
+
+.car-container {
+  display: inline-block;
+  
+  width: 300px;
+  margin: 14px;
+  
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.car-image img {
+  width: 100%; 
+  border-radius: 5px;
+}
+
+.car-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+
+.car-logo img {
+  width: 40px;
+}
+
+
+.more-info {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #1E88E5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.more-info:hover {
+  background-color: #1565C0;
+}
+.cars-grid{
+  display: grid;
+  grid-template-columns: 1fr  1fr  1fr  1fr;
+  row gap :20px;
+  column-gap: 20px;
+  justify-content: center;
+}
+.header-flex{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 
+   
+
+}
+.header-div{
+  background-color:rgb(21, 116, 140);
+  height:250px;
+}
+.nav-class{
+
+  padding: 10px;
+  text-align: center;
+}
+ .nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+ }
+
+ .nav ul li {
+  display: inline;
+}
+
+.nav ul li a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  padding: 8px 12px;
+ 
+}
+
+.nav ul li a:hover {
+  background-color: #555;
+  border-radius: 5px;
+}
+.left-section {
+  display:flex;
+  flex-direction:column;
+  align-items: flex-start;
+  gap:10px;
+}
+.social-icon {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.social-icon img {
+  width: 30px;  
+  height: 30px;
+  margin-right: 8px;  /* Space between icon and text */
+  transition: transform 0.3s;
+}
+
+.social-icon img:hover {
+  transform: scale(1.2); /* Slight zoom effect */
+}

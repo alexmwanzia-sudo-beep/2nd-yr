@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewpoint"
+         content="width-device-width,
+         initial-scale=1.0">
+         <title>vehicle listing</title>
+         <style>
+          p{
+            margin-top: 0;
+
+            margin-bottom: 0;
+            line-height: 1.5;
+            text-align: left;
+            font-family: Arial;
+            font-size:12px;
+            font-weight:200;
+            color :#333;
+
+
+            
+          }
+          p strong {
+                    color: #1E88E5; 
+                    text-transform: uppercase;
+                    font-weight: bold;
+}
+
+          .top-header{
+            background-color: rgb(24, 146, 164);
+            height: 200px;
+            margin-bottom:6px;
+            margin-top: 0;
+          }
+          .more-info{
+            display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #1E88E5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+        border-radius: 5px;
+           
+            
+          }
+          .info-preview{
+            width: 300px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+
+          }
+          .car-2{
+            width: 400px;
+          }
+          .car-log{
+            display: inline-block;
+            width: 6px;
+          }
+          .top-header-input{ 
+            display: block;
+          }
+          .car-image{
+            width:100%;
+            border-radius:5px;
+          }
+          .car-logo{
+            width: 40px;
+          }
+        .more-info:hover{
+          background-color: #1565C0
+
+        }
+        .car-info{
+          display: grid;
+          grid-template-columns: 50px 1fr;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        }
+
+         </style>
+
+  </head>
+  <body>
+    <div class="top-header">
+      <input class="top-header-input" type=text placeholder="search">
+    </div>
+
+  <div class="info-preview">
+    <div>
+      <img class="car-image" src="cars2/images (12).jpeg">
+    </div>
+
+    <div  class="car-info">
+     <div class="car-logo" class="car-log">
+      <img src="cars2/images.png">
+     </div>
+     <div> 
+       <p> <strong>Make</strong>:TOYOTA</p>
+      <p><strong>model</strong>:COROLLA</p
+        >
+        <P><strong>YEAR</strong>:2004</P>
+        <P><strong>NUMBER PLATE</strong>:KDF</P>
+
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO 
+        </button>
+        </div>
+     <div>
+
+     </div>
+        </div>
+  
+>
+
+
+  </body>

@@ -2,65 +2,460 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewpoint"
-         content="width-device-width,
-         initial-scale=1.0">
-         <title>vehicle listing</title>
-         <style>
-          p{
-            margin-top: 0;
-
-            margin-bottom: 0;
-            line-height: 1.5;
-            text-align: left;
-            font-family: Arial;
-            font-size:12px;
-            font-weight:200;
-            color :#333;
-
-
-            
-          }
-          p strong {
-                    color: #1E88E5; 
-                    text-transform: uppercase;
-                    font-weight: bold;
-}
-
-          .top-header{
-            background-color: rgb(24, 146, 164);
-            height: 200px;
-            margin-bottom:6px;
-            margin-top: 0;
-          }
-          .more-info{
-            padding: 10px 10px 10px 10px;
-           
-            
-          }
-         </style>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Listing</title>
+    ,<link rel="stylesheet" href="sytles.css">
   </head>
-  <body>
-   
-   
-    <div class="top-header">
-      <input style="display: block" type=text placeholder="search">
-    </div>
-    <div>
-      <img src="TOYOTA-PREMIO-3-qziw64w0d0157zvl797kve9agrosvbrawd3d1jndew.jpg">
-      <p> <strong>Make</strong>:TOYOTA</p>
-      <p><strong>model</strong>:COROLLA</p
-        >
-        <P><strong>YEAR</strong>:2004</P>
-        <P><strong>NUMBER PLATE</strong>:KDF</P>
-        <button class="more-info" onclick="window.location.href='more-info.html'">
-        
-      </button>
-      
-      </div>
-    
-    
+  <body  style="padding-bottom: 1000px;">
+    <div class="header-div">
+      <div class="header-flex">
+        <div class="top-header">
+          <input type="text" placeholder="Search">
+        </div>
+        <div class="middle-section">
+         <nav class="nav-class">
+          <ul>
+            <li><a href="for-sale.html">Home</a></li>
+            <li><a href="for-hire.html">for-hire</a></li>
+            <li><a href="post-a-car.html">post-a-car</a></li>
+            <li><a href="contact.html">contacts</a></li>
+          </ul>
+         </nav>
 
+        </div>
+        <div class="left-section">
+          <p class="left-section para">find in our social pages</p>
+
+          <a href="https://wa.me/254700123456" target="_blank" class="social-icon">
+            <img src="cars2/whatsup.png" alt="WhatsApp">
+        </a>
+        <a href="https://instagram.com/yourpage" target="_blank" class="social-icon">
+            <img src="cars2/ig.jpeg" alt="Instagram">
+        </a>
+        <a href="https://twitter.com/yourpage" target="_blank" class="social-icon">
+            <img src="cars2/xtwe.png" alt="Twitter">
+        </a>
+        </div>
+      </div>
+    </div>
+  
+   
+    <div class="cars-grid">
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (12).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (12).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (9).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images (8).jpeg" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+  
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (7).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (6).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (4).jpg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+  
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (3).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (2).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (19).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (18).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (17).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+  
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (16).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (15).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (13).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      <div class="car-container">
+  
+        <!-- Car Image on Top -->
+        <div class="car-image">
+          <img src="cars2/images (14).jpeg" alt="Car Image">
+        </div>
+  
+        <!-- Car Logo + Details Below -->
+        <div class="car-info">
+          <!-- Car Logo -->
+          <div class="car-logo">
+            <img src="cars2/images.png" alt="Car Logo">
+          </div>
+  
+          <!-- Car Details -->
+          <div>
+            <p><strong>Make</strong>: TOYOTA</p>
+            <p><strong>Model</strong>: COROLLA</p>
+            <p><strong>Year</strong>: 2004</p>
+            <p><strong>Number Plate</strong>: KDF</p>
+          </div>
+        </div>
+  
+        <!-- More Info Button -->
+        <button class="more-info" onclick="window.location.href='more-info.html'">
+          MORE INFO
+        </button>
+      </div>
+      
+
+
+    </div>
+
+  
   </body>
 </html>
+
