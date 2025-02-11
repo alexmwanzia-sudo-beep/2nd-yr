@@ -1,123 +1,94 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewpoint"
-         content="width-device-width,
-         initial-scale=1.0">
-         <title>vehicle listing</title>
-         <style>
-          p{
-            margin-top: 0;
-
-            margin-bottom: 0;
-            line-height: 1.5;
-            text-align: left;
-            font-family: Arial;
-            font-size:12px;
-            font-weight:200;
-            color :#333;
-
-
-            
-          }
-          p strong {
-                    color: #1E88E5; 
-                    text-transform: uppercase;
-                    font-weight: bold;
-}
-
-          .top-header{
-            background-color: rgb(24, 146, 164);
-            height: 200px;
-            margin-bottom:6px;
-            margin-top: 0;
-          }
-          .more-info{
-            display: block;
-        width: 100%;
-        padding: 10px;
-        background-color: #1E88E5;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        margin-top: 10px;
-        border-radius: 5px;
-           
-            
-          }
-          .info-preview{
-            width: 300px;
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-
-          }
-          .car-2{
-            width: 400px;
-          }
-          .car-log{
-            display: inline-block;
-            width: 6px;
-          }
-          .top-header-input{ 
-            display: block;
-          }
-          .car-image{
-            width:100%;
-            border-radius:5px;
-          }
-          .car-logo{
-            width: 40px;
-          }
-        .more-info:hover{
-          background-color: #1565C0
-
+<head>
+    <title>Car Details - More Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
         }
-        .car-info{
-          display: grid;
-          grid-template-columns: 50px 1fr;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
+        .container {
+            display:block;
+            grid-template-columns: 1fr 1fr 1fr;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
         }
+        h1, h2 {
+            color: #1E88E5;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        p {
+            margin: 8px 0;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #333;
+        }
+        .contact-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .back-btn {
+            background: #1E88E5;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .back-btn:hover {
+            background: #1565C0;
+        }
+    </style>
+</head>
+<body>
 
-         </style>
+    <div class="container">
+        <h1>Car Details</h1>
 
-  </head>
-  <body>
-    <div class="top-header">
-      <input class="top-header-input" type=text placeholder="search">
+        <h2>Condition</h2>
+        <p><span class="highlight">Overall Condition:</span> Certified Pre-Owned</p>
+        <p><span class="highlight">Exterior Condition:</span> Minor scratches on the bumper</p>
+        <p><span class="highlight">Interior Condition:</span> Well-maintained, no stains on seats</p>
+        <p><span class="highlight">Service History:</span> Regular oil changes, new brakes installed last year</p>
+        <p><span class="highlight">Accident History:</span> No accidents reported</p>
+
+        <h2>Features</h2>
+        <p><span class="highlight">Safety Features:</span> Airbags, ABS, Parking Sensors</p>
+        <p><span class="highlight">Technology Features:</span> Bluetooth, GPS Navigation, Touchscreen Display</p>
+
+        <h2>Pricing and Availability</h2>
+        <p><span class="highlight">Price:</span> $5,000</p>
+        <p><span class="highlight">Negotiable:</span> Yes</p>
+        <p><span class="highlight">Availability:</span> Available for sale</p>
+
+        <h2>Contact Information</h2>
+        <div class="contact-info">
+            <p><span class="highlight">Seller Name:</span> John Doe</p>
+            <p><span class="highlight">Contact Number:</span> +254 712 345 678</p>
+            <p><span class="highlight">Email:</span> johndoe@example.com</p>
+            <p><span class="highlight">Location:</span> Nairobi, Kenya</p>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">← Go Back</button>
     </div>
 
-  <div class="info-preview">
-    <div>
-      <img class="car-image" src="cars2/images (12).jpeg">
-    </div>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 
-    <div  class="car-info">
-     <div class="car-logo" class="car-log">
-      <img src="cars2/images.png">
-     </div>
-     <div> 
-       <p> <strong>Make</strong>:TOYOTA</p>
-      <p><strong>model</strong>:COROLLA</p
-        >
-        <P><strong>YEAR</strong>:2004</P>
-        <P><strong>NUMBER PLATE</strong>:KDF</P>
-
-        <button class="more-info" onclick="window.location.href='more-info.html'">
-          MORE INFO 
-        </button>
-        </div>
-     <div>
-
-     </div>
-        </div>
-  
->
-
-
-  </body>
+</body>
+</html>

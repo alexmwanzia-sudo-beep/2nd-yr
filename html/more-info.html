@@ -10,8 +10,6 @@
             background-color: #f8f9fa;
         }
         .container {
-            display:block;
-            grid-template-columns: 1fr 1fr 1fr;
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -55,39 +53,83 @@
 <body>
 
     <div class="container">
-        <h1>Car Details</h1>
+        <h1 id="carTitle">Car Details</h1>
 
         <h2>Condition</h2>
-        <p><span class="highlight">Overall Condition:</span> Certified Pre-Owned</p>
-        <p><span class="highlight">Exterior Condition:</span> Minor scratches on the bumper</p>
-        <p><span class="highlight">Interior Condition:</span> Well-maintained, no stains on seats</p>
-        <p><span class="highlight">Service History:</span> Regular oil changes, new brakes installed last year</p>
-        <p><span class="highlight">Accident History:</span> No accidents reported</p>
-
-        <h2>Features</h2>
-        <p><span class="highlight">Safety Features:</span> Airbags, ABS, Parking Sensors</p>
-        <p><span class="highlight">Technology Features:</span> Bluetooth, GPS Navigation, Touchscreen Display</p>
+        <p><span class="highlight">Overall Condition:</span> <span id="condition"></span></p>
+        <p><span class="highlight">Mileage:</span> <span id="mileage"></span></p>
+        <p><span class="highlight">Previous Owners:</span> <span id="previousOwners"></span></p>
+        <p><span class="highlight">Description:</span> <span id="description"></span></p>
 
         <h2>Pricing and Availability</h2>
-        <p><span class="highlight">Price:</span> $5,000</p>
-        <p><span class="highlight">Negotiable:</span> Yes</p>
-        <p><span class="highlight">Availability:</span> Available for sale</p>
+        <p><span class="highlight">Price:</span> $<span id="price"></span></p>
+        <p><span class="highlight">Available for Hire:</span> <span id="availableForHire"></span></p>
 
         <h2>Contact Information</h2>
         <div class="contact-info">
-            <p><span class="highlight">Seller Name:</span> John Doe</p>
-            <p><span class="highlight">Contact Number:</span> +254 712 345 678</p>
-            <p><span class="highlight">Email:</span> johndoe@example.com</p>
-            <p><span class="highlight">Location:</span> Nairobi, Kenya</p>
+            <p><span class="highlight">Seller Name:</span> <span id="sellerName"></span></p>
+            <p><span class="highlight">Contact Number:</span> <span id="contactNumber"></span></p>
+            <p><span class="highlight">Email:</span> <span id="email"></span></p>
+            <p><span class="highlight">Location:</span> <span id="location"></span></p>
         </div>
 
         <button class="back-btn" onclick="goBack()">← Go Back</button>
     </div>
 
     <script>
+        const cars = [
+            {
+                id: "1",
+                make: "Volkswagen",
+                model: "Golf GTI",
+                year: 2011,
+                image: "cars2/images (12).jpeg",
+                moreInfo: {
+                    condition: "used",
+                    mileage: "25,000 miles",
+                    previousOwners: 1,
+                    description: "Comfortable, stylish, and family-fitting.",
+                    currentOwner: "Alex Mutua",
+                    priceUSD: 18000,
+                    seller: {
+                        name: "Alex Mwanzia",
+                        contactNumber: "0740492875",
+                        email: "blancaale@gmail.com",
+                        location: "Nairobi, Kenya"
+                    },
+                    availableForHire: true
+                }
+            }
+        ];
+
+        function getCarDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const carId = urlParams.get("id");
+            
+            const car = cars.find(c => c.id === carId);
+            if (!car) {
+                alert("Car not found!");
+                return;
+            }
+
+            document.getElementById("carTitle").innerText = `${car.make} ${car.model} (${car.year})`;
+            document.getElementById("condition").innerText = car.moreInfo.condition;
+            document.getElementById("mileage").innerText = car.moreInfo.mileage;
+            document.getElementById("previousOwners").innerText = car.moreInfo.previousOwners;
+            document.getElementById("description").innerText = car.moreInfo.description;
+            document.getElementById("price").innerText = car.moreInfo.priceUSD;
+            document.getElementById("availableForHire").innerText = car.moreInfo.availableForHire ? "Yes" : "No";
+            document.getElementById("sellerName").innerText = car.moreInfo.seller.name;
+            document.getElementById("contactNumber").innerText = car.moreInfo.seller.contactNumber;
+            document.getElementById("email").innerText = car.moreInfo.seller.email;
+            document.getElementById("location").innerText = car.moreInfo.seller.location;
+        }
+
         function goBack() {
             window.history.back();
         }
+
+        window.onload = getCarDetails;
     </script>
 
 </body>
