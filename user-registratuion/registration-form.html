@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+<meta charset="UTF-8">
+<meta name ="viewpoint" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="registration.css">
+  </head>
+  <body>
+
+    <div class="registration-container">
+      <h2>register for our services</h2>
+      <form id="registrationForm" action="/register" method="POST">
+        <label for="name">full name</label> 
+        <input type="text" id="name" name="name" placeholder=" enter full name">
+        <label for="email">email</label>
+        <input type="text" id="email" name="email" placeholder=" enter email address">
+        <label for="password">password</label>
+        <input type="text" id="password" name="password" placeholder=" enter password">
+      <label for="confirmPassword">confirm password</label>
+      <input type="text" id="confirmPassword" name="confirmPassword" placeholder>
+      <button type="submit">register</button>
+      <p>already have an account?
+        <a href="login.html"> login here</a>
+        <script src=""></script>
+      </p>
+    </div>
+<script src="registration.js"></script>
+  </body>
+</html>

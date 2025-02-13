@@ -1,94 +1,44 @@
+html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Car Details - More Info</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            display:block;
-            grid-template-columns: 1fr 1fr 1fr;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        h1, h2 {
-            color: #1E88E5;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
-        }
-        p {
-            margin: 8px 0;
-        }
-        .highlight {
-            font-weight: bold;
-            color: #333;
-        }
-        .contact-info {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .back-btn {
-            background: #1E88E5;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            display: block;
-            margin-top: 15px;
-            text-align: center;
-        }
-        .back-btn:hover {
-            background: #1565C0;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<label for="password">Password:</label>
+            <input type="password" id="password" name="password" required placeholder="Enter a secure password">
 
-    <div class="container">
-        <h1>Car Details</h1>
+            <!-- Confirm Password -->
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
 
-        <h2>Condition</h2>
-        <p><span class="highlight">Overall Condition:</span> Certified Pre-Owned</p>
-        <p><span class="highlight">Exterior Condition:</span> Minor scratches on the bumper</p>
-        <p><span class="highlight">Interior Condition:</span> Well-maintained, no stains on seats</p>
-        <p><span class="highlight">Service History:</span> Regular oil changes, new brakes installed last year</p>
-        <p><span class="highlight">Accident History:</span> No accidents reported</p>
-
-        <h2>Features</h2>
-        <p><span class="highlight">Safety Features:</span> Airbags, ABS, Parking Sensors</p>
-        <p><span class="highlight">Technology Features:</span> Bluetooth, GPS Navigation, Touchscreen Display</p>
-
-        <h2>Pricing and Availability</h2>
-        <p><span class="highlight">Price:</span> $5,000</p>
-        <p><span class="highlight">Negotiable:</span> Yes</p>
-        <p><span class="highlight">Availability:</span> Available for sale</p>
-
-        <h2>Contact Information</h2>
-        <div class="contact-info">
-            <p><span class="highlight">Seller Name:</span> John Doe</p>
-            <p><span class="highlight">Contact Number:</span> +254 712 345 678</p>
-            <p><span class="highlight">Email:</span> johndoe@example.com</p>
-            <p><span class="highlight">Location:</span> Nairobi, Kenya</p>
-        </div>
-
-        <button class="back-btn" onclick="goBack()">← Go Back</button>
+            <!-- Submit Button -->
+            <button type="submit">Register</button>
+        </form>
+        
+        <p>Already have an account? <a href="login.html">Login here</a></p>
     </div>
 
-    <script>
-        function goBack() {
-            window.history.back();
-        }
-    </script>
-
+    <script src="registration.js"></script>
 </body>
 </html>
+
+
+<body>
+
+    <div class="registration-container">
+        <h2>Register for Our Service</h2>
+        <form id="registrationForm" action="/register" method="POST">
+            <!-- Full Name -->
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+
+            <!-- Email -->
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+
+            <!-- Password --> explain wat each part does
+
+                                                                                                                                        
