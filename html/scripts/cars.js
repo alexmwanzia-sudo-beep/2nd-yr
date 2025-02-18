@@ -1,4 +1,4 @@
-const cars= [{
+const products= [{
   Id:'1',
   make:"Volkswagen",
   Model:"Golf GTI ",

@@ -1,136 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Car Details - More Info</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        h1, h2 {
-            color: #1E88E5;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
-        }
-        p {
-            margin: 8px 0;
-        }
-        .highlight {
-            font-weight: bold;
-            color: #333;
-        }
-        .contact-info {
-            background: #e3f2fd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .back-btn {
-            background: #1E88E5;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            display: block;
-            margin-top: 15px;
-            text-align: center;
-        }
-        .back-btn:hover {
-            background: #1565C0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Car Details - More Info</title>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1 id="carTitle">Car Details</h1>
+  <h1>Car Details</h1>
 
-        <h2>Condition</h2>
-        <p><span class="highlight">Overall Condition:</span> <span id="condition"></span></p>
-        <p><span class="highlight">Mileage:</span> <span id="mileage"></span></p>
-        <p><span class="highlight">Previous Owners:</span> <span id="previousOwners"></span></p>
-        <p><span class="highlight">Description:</span> <span id="description"></span></p>
+  <!-- Car Image -->
+  <img id="car-image" src="" alt="Car Image" width="500">
 
-        <h2>Pricing and Availability</h2>
-        <p><span class="highlight">Price:</span> $<span id="price"></span></p>
-        <p><span class="highlight">Available for Hire:</span> <span id="availableForHire"></span></p>
+  <!-- Car Details -->
+  <p><strong>Make:</strong> <span id="car-make"></span></p>
+  <p><strong>Model:</strong> <span id="car-model"></span></p>
+  <p><strong>Year:</strong> <span id="car-year"></span></p>
+  <p><strong>Condition:</strong> <span id="car-condition"></span></p>
+  <p><strong>Mileage:</strong> <span id="car-mileage"></span></p>
+  <p><strong>Price:</strong> <span id="car-price"></span></p>
+  <p><strong>Owner:</strong> <span id="car-owner"></span></p>
+  <p><strong>Description:</strong> <span id="car-description"></span></p>
 
-        <h2>Contact Information</h2>
-        <div class="contact-info">
-            <p><span class="highlight">Seller Name:</span> <span id="sellerName"></span></p>
-            <p><span class="highlight">Contact Number:</span> <span id="contactNumber"></span></p>
-            <p><span class="highlight">Email:</span> <span id="email"></span></p>
-            <p><span class="highlight">Location:</span> <span id="location"></span></p>
-        </div>
+  <!-- Hire Button -->
+  <button id="hire-button">Hire this Car</button>
 
-        <button class="back-btn" onclick="goBack()">← Go Back</button>
-    </div>
-
-    <script>
-        const cars = [
-            {
-                id: "1",
-                make: "Volkswagen",
-                model: "Golf GTI",
-                year: 2011,
-                image: "cars2/images (12).jpeg",
-                moreInfo: {
-                    condition: "used",
-                    mileage: "25,000 miles",
-                    previousOwners: 1,
-                    description: "Comfortable, stylish, and family-fitting.",
-                    currentOwner: "Alex Mutua",
-                    priceUSD: 18000,
-                    seller: {
-                        name: "Alex Mwanzia",
-                        contactNumber: "0740492875",
-                        email: "blancaale@gmail.com",
-                        location: "Nairobi, Kenya"
-                    },
-                    availableForHire: true
-                }
-            }
-        ];
-
-        function getCarDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const carId = urlParams.get("id");
-            
-            const car = cars.find(c => c.id === carId);
-            if (!car) {
-                alert("Car not found!");
-                return;
-            }
-
-            document.getElementById("carTitle").innerText = `${car.make} ${car.model} (${car.year})`;
-            document.getElementById("condition").innerText = car.moreInfo.condition;
-            document.getElementById("mileage").innerText = car.moreInfo.mileage;
-            document.getElementById("previousOwners").innerText = car.moreInfo.previousOwners;
-            document.getElementById("description").innerText = car.moreInfo.description;
-            document.getElementById("price").innerText = car.moreInfo.priceUSD;
-            document.getElementById("availableForHire").innerText = car.moreInfo.availableForHire ? "Yes" : "No";
-            document.getElementById("sellerName").innerText = car.moreInfo.seller.name;
-            document.getElementById("contactNumber").innerText = car.moreInfo.seller.contactNumber;
-            document.getElementById("email").innerText = car.moreInfo.seller.email;
-            document.getElementById("location").innerText = car.moreInfo.seller.location;
-        }
-
-        function goBack() {
-            window.history.back();
-        }
-
-        window.onload = getCarDetails;
-    </script>
+  <!-- Link the JS file -->
+  <script src="scripts/more-info.js"></script>
 
 </body>
+
 </html>

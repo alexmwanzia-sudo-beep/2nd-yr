@@ -1,63 +1,40 @@
-const products =[{
-  image: "cars2/images (12).jpeg",
-  carlogo: "cars2/images.png" ,
-  make:'TOYOTA',
-  model:'COROLLA',
-  year: 2004,
-  numberplate: 'KDF',
-  price:200000
-}, 
+// Loop through products and create HTML
+let carsHTML = "";
 
-{
-  image: "cars2/images (9).jpeg",
-  carlogo: "cars2/images.png" ,
-  make:'VOLKSWAGEN',
-  model:'POLO',
-  year: 2004,
-  numberplate:'KCE',
-  price:700000
-},
-{
-  image: "cars2/images (6).jpeg",
-  carlogo: "cars2/images.png" ,
-  make:'MARUTISUZUKI',
-  model:'SWIFT',
-  year: 2011,
-  numberplate:'KDH',
-  price:600000
-}]  
-let carsHTML="";
-products.forEach((item)=> {
-  carsHTML+=` <div class="car-container">
-        <!-- Car Image on Top -->
-        <div class="car-image">
-          <img src="${item.image}">
-        </div>
-  
-        <!-- Car Logo + Details Below -->
-        <div class="car-info">
-          <!-- Car Logo -->
-          <div class="car-logo">
-            <img src="${item.carlogo}">
-          </div>
-  
-          <!-- Car Details -->
-          <div>
-            <p><strong>Make</strong>: ${item.make}</p>
-            <p><strong>Model</strong>: ${item.model}</p>
-            <p><strong>Year</strong>: ${item.year}</p>
-            <p><strong>Number Plate</strong>:${item.numberplate}</p>
-            <P><strong>price</strong>:KE ${item.price} shillings</p>
-          </div>
-        </div>
-  
-        <!-- More Info Button -->
-        <button class="more-info" onclick="window.location.href='more-info.html'">
-          MORE INFO
-        </button>
-      </div>`
-     
+products.forEach((item) => {
+  // Create URL parameters for car details
+  const carParams = new URLSearchParams({
+    make: item.make,
+    model: item.Model,
+    year: item.year,
+    condition: item.moreinfo.condition,
+    mileage: item.moreinfo.mileage,
+    price: item.moreinfo.priceCents,
+    owner: item.moreinfo.currentOwner,
+    description: item.moreinfo.description,
+    image: item.image,
+  });
+
+  carsHTML += `
+    <div class="car-container">
+      <!-- Car Image -->
+      <div class="car-image">
+        <img src="${item.image}" alt="${item.make}">
+      </div>
+
+      <!-- Car Details -->
+      <div class="car-info">
+        <p><strong>Make:</strong> ${item.make}</p>
+        <p><strong>Model:</strong> ${item.Model}</p>
+        <p><strong>Year:</strong> ${item.year}</p>
+      </div>
+
+      <!-- More Info Button -->
+      <button onclick="location.href='more-info.html?${carParams}'">
+        More Info
+      </button>
+    </div>
+  `;
 });
 
-console.log(carsHTML);
-document.querySelector(".js-cars-grid").innerHTML=carsHTML
+document.querySelector(".js-cars-grid").innerHTML = carsHTML;
