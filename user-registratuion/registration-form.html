@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-<meta charset="UTF-8">
-<meta name ="viewpoint" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="registration.css">
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up & Login</title>
+  <link rel="stylesheet" href="registration.css">
+</head>
+<body>
 
-    <div class="registration-container">
-      <h2>register for our services</h2>
-      <form id="registrationForm" action="/register" method="POST">
-        <label for="name">full name</label> 
-        <input type="text" id="name" name="name" placeholder=" enter full name">
-        <label for="email">email</label>
-        <input type="text" id="email" name="email" placeholder=" enter email address">
-        <label for="password">password</label>
-        <input type="text" id="password" name="password" placeholder=" enter password">
-      <label for="confirmPassword">confirm password</label>
-      <input type="text" id="confirmPassword" name="confirmPassword" placeholder>
-      <button type="submit">register</button>
-      <p>already have an account?
-        <a href="login.html"> login here</a>
-        <script src=""></script>
-      </p>
-    </div>
-<script src="registration.js"></script>
-  </body>
+  <div class="auth-container">
+    <!-- Sign Up Form -->
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" required />
+
+      <button type="submit">Register</button>
+    </form>
+
+    <!-- Login Form -->
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" name="loginEmail" required />
+      
+      <label for="loginPassword">Password</label>
+      <input type="password" id="loginPassword" name="loginPassword" required />
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script src="registration.js"></script>
+</body>
 </html>

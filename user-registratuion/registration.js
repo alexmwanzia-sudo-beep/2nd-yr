@@ -1,53 +1,64 @@
-document.querySelector('#registrationForm').addEventListener('submit',(e)=>
+document.getElementById('signupForm').addEventListener('submit' async (e)=>
 {
   e.preventDefault();
-  const name=document.querySelector('#name').value;
-  const email=document.querySelector('#email').value;
-  const password=document.querySelector('#password').value;
-  const confirmpassword=document.querySelector('#confirmpassword').value;
+  const name =document.getElementById('name').value;
+  const email=document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+})
 
-  const passreg=/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&*!])[A-Za-z\d@#$%^&*!]{6,}$/;
-  if(!passreg.test(password))
-  {
-    alert("password must be longer than 6  it must have a special character and atleast some digits");
-  }
-  if (!name || !email || !password || !confirmpassword) {
-    alert("All fields are required!");
-    return;
-  }
-  if(password!==confirmpassword)
-  {
-    alert("password does not match");
-    return
-  }
-  if (password.length < 6) {
-    alert("Password must be at least 6 characters long!");
-    return;
-  }
-  const emailsample= /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-  if (!emailsample.test(email))
-  {
-    alert("please enter a valid email")
-    return;
-  }
-  const userdata={name:name, email:email, password:password, confirmpassword:confirmpassword};
-  fetch('/register',
-    {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'}
-      body: JSON.stringify(userdata)
-    }
-  )
+if(!password==confirmPassword){
+  alert('Please the correct password');
+  return;
 
+}
 
-  .then((response) => response.json())
-  .then((data) => {
-      data.success 
-          ? (alert('Registration successful!'), window.location.href = 'login.html') 
-          : alert('Registration failed: ' + data.message);
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-      alert('There was an error, please try again later.');
+const userData={name,email,password,confirmPassword};
+try {
+  const response=await fetch ('http://localhost:5000/register',{
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+   body: JSON.stringify(userData)
   });
+  if(response.ok){
+    alert('user registered successfully');
+  }
+
+else{
+  alert('error'+ response.statusText);
+}
+}
+ catch(error) {
+  console.error('error registering user:',error)
+  alert('something went wrong')
+
+ }
+   
+
+ document.getElementById('loginForm').addEventListener('submit',async(e)=>
+{
+  e.preventDefault();
+  const email=document.getElementById('loginEmail').value;
+  const password=document.getElementById('loginPassword').value;
+  const loginData={email,password}
+  try{
+const response= fetch('http://localhost:5000/login',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify(loginData)
 });
+if (response.ok){
+  const {token}=(await response).json();
+  localStorage.setItem('token',token);
+  alert('login successful');
+}else
+{
+  alert('invalid credentials');
+}
+  
+  }
+  catch(error){
+    console.error('error logging in:' ,error);
+    alert('something went wrong')
+  }
+})
