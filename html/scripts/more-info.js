@@ -1,5 +1,5 @@
 // Get URL parameters
-const params = new URLSearchParams(window.location.search);
+const params=new URLSearchParams(window.location.search)
 
 // Extract car details
 const make = params.get('make');
@@ -23,5 +23,6 @@ document.getElementById('car-price').textContent = price;
 document.getElementById('car-owner').textContent = owner;
 document.getElementById('car-description').textContent = description;
 
+function buyCar(carId){
 
-
+}

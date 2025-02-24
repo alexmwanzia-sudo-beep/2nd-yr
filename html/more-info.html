@@ -3,30 +3,135 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Car Details - More Info</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1200px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.5rem;
+    }
+
+    img {
+      width: 100%;
+      max-width: 900px;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      object-fit: cover;
+    }
+
+    p {
+      font-size: 20px;
+      margin: 15px 0;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+      margin: 20px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        padding: 20px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      img {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-  <h1>Car Details</h1>
+  <div class="container">
 
-  <!-- Car Image -->
-  <img id="car-image" src="" alt="Car Image" width="500">
+    <h1>Car Details</h1>
 
-  <!-- Car Details -->
-  <p><strong>Make:</strong> <span id="car-make"></span></p>
-  <p><strong>Model:</strong> <span id="car-model"></span></p>
-  <p><strong>Year:</strong> <span id="car-year"></span></p>
-  <p><strong>Condition:</strong> <span id="car-condition"></span></p>
-  <p><strong>Mileage:</strong> <span id="car-mileage"></span></p>
-  <p><strong>Price:</strong> <span id="car-price"></span></p>
-  <p><strong>Owner:</strong> <span id="car-owner"></span></p>
-  <p><strong>Description:</strong> <span id="car-description"></span></p>
+    <!-- Car Image -->
+    <img id="car-image" src="" alt="Car Image">
 
-  <!-- Hire Button -->
-  <button id="hire-button">Hire this Car</button>
+    <!-- Car Details -->
+    <p><strong>Make:</strong> <span id="car-make"></span></p>
+    <p><strong>Model:</strong> <span id="car-model"></span></p>
+    <p><strong>Year:</strong> <span id="car-year"></span></p>
+    <p><strong>Condition:</strong> <span id="car-condition"></span></p>
+    <p><strong>Mileage:</strong> <span id="car-mileage"></span></p>
+    <p><strong>Price:</strong> <span id="car-price"></span></p>
+    <p><strong>Owner:</strong> <span id="car-owner"></span></p>
+    <p><strong>Description:</strong> <span id="car-description"></span></p>
 
-  <!-- Link the JS file -->
+    <!-- Buttons -->
+    <button id="hire-button" onclick="redirectToHirePage">Hire this Car</button>
+    <button id="purchase-button" onclick="goToBuyCarPage()">Buy this car</button>
+
+  </div>
+<script>
+  function getURLParams(){
+    const urlParams=new URLSearchParams(window.location.search);
+    return {
+      image:urlParams.get("image"),
+      model:urlParams.get("model"),
+      year:urlParams.get("year"),
+      price:urlParams.get("price")
+    };
+  }
+ function goToBuyCarPage(){
+  const carDetails=getURLParams();
+  window.location.href='buy-car.html';
+  image=carDetails.image;
+  model=carDetails.model;
+  year=carDetails.year;
+  price=carDetails.price;
+
+ }
+
+</script>
+
   <script src="scripts/more-info.js"></script>
 
 </body>
