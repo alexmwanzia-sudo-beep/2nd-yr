@@ -9,7 +9,26 @@ const products= [{
     mileage: '25,000 miles',
     previousOwners:"1",
     description:"cormfotable sytliish and family fitting",
-    currentOwner:"alex mutua",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents: "18,000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -33,7 +52,26 @@ const products= [{
     mileage: "20,000 miles",
     previousOwners:"1",
     description:"the car has been sitting idle for a while. the brakes need repair and the engine has minor issues which be fixed ,upon agreement to buy",
-    currentOwner:"alex mwanzia",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents: "2000000",
     seller: {
       Name:'alex mwanzia',
@@ -56,7 +94,26 @@ const products= [{
     mileage: "12,000 miles",
     previousOwners:"2",
     description:"the motor appears as though it has never been used. the brakes and the engines are i great condtion. its an amazing piece of art",
-    currentOwner:"albert kimutai",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents: "32000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -79,7 +136,26 @@ const products= [{
     mileage: "30000 miles",
     previousOwners:"3",
     description:"the vehicle has a minor set back. the tyres need replacement and it needs a general car service. but other than that every thing else is perfect.",
-    currentOwner:"nickson ongoto",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"2000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -102,7 +178,26 @@ const products= [{
     mileage: "1500 miles",
     previousOwners:"1",
     description:"the vehicle is living its youth age it has the best of everything. the brakes  the tyres engine everything is in excellent condition anyone who gets it is sure very lucky",
-    currentOwner:"movine opembe",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"4000000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -126,7 +221,26 @@ const products= [{
     mileage: "40,000 miles",
     previousOwners:"2",
     description:"the vehicle has some minor setback. its springs need replacement and engine needs inspection. the exhauster pipelining need replacement and some mirrors including the back seats ",
-    currentOwner:"david romeo",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
 
     priceCents:"5O0 USD",
     seller: {
@@ -150,7 +264,26 @@ const products= [{
     mileage: "2000 miles",
     previousOwners:"1",
     description:" the motor is a dream come true for a middle class guy wanting to drive with a all of its system working as well as a brand new would. ",
-    currentOwner:"sheriff musau",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"5000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -173,7 +306,26 @@ const products= [{
     mileage: "1300 miles",
     previousOwners:"1",
     description:"well the machine needs no introduction. it is at the peek of its life having the best of everything clean fuel system controls everything just fits the name",
-    currentOwner:"alex mwanzia",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"40000  USD",
     seller: {
       Name:'alex mwanzia',
@@ -196,7 +348,26 @@ const products= [{
     mileage: "13000",
     previousOwners:"3",
     description:"the car has been around for a while but still looks good. it still looks like new. the client is guranteed a long service and any minor set backs are on the house",
-    currentOwner:"steven kangoi",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"700 USD",
     seller: {
       Name:'alex mwanzia',
@@ -219,7 +390,26 @@ const products= [{
     mileage: "19000 miles",
     previousOwners:"2",
     description:"the vehicle has been on the road for a while but nevertheless it is in good condition. it has been inspected by qualified mechanic and report submitted shows all of its parts are properly fixed and in best condition",
-    currentOwner:"DAVID BENECHA",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"12000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -243,7 +433,26 @@ const products= [{
     previousOwners:"1",
     description: "one of my favorites. ask me for the perfect galfriend and i will let ur eyes might perfection for the very first time its is just amazing such creatures can exist",
     
-    currentOwner:"timon green",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"12000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -265,8 +474,27 @@ const products= [{
     condition:"used",
     mileage: "7000 miles",
     previousOwners:"3",
-    description:" the car functionality is as good as of any other car. all its parts are in a good condition. it has been inspected  and it will be inspected again once a client shows interest in it",
-    currentOwner:"peter kioko",
+    description:" the car functionality is as good as of any other car. all its parts are in a good condition. it has been inspected  and it will be inspected again once a client shows interest in",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"5000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -289,7 +517,26 @@ const products= [{
     mileage:"12000 miles" ,
     previousOwners:"1",
     description:"the blue baby is as young as the nickname and only starting her life hence her functionality is top-notch anyone who gets her has to be very lucky",
-    currentOwner:"jason kimemia",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"14000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -312,7 +559,26 @@ const products= [{
     mileage: "140000 miles",
     previousOwners:"1",
     description:"the car is as manly as it looks . the engine is a strong one well serviced and no history of repair or damage",
-    currentOwner:"kithuku mwanzia",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"14000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -335,7 +601,26 @@ const products= [{
     mileage: "8000 miles",
     previousOwners:"1",
     description:"no words for it it is as amazing as the picture it hard to believe its a resell if u are not buying it i know the next person will",
-    currentOwner:"mwanzia musau",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"15000 USD",
     seller: {
       Name:'alex mwanzia',
@@ -358,7 +643,26 @@ const products= [{
     mileage:"12000 miles",
     previousOwners:"1",
     description:"the bus is a 64 seater, the seats are as good as new and the mechanical parts of the bus are all in good condition",
-    currentOwner:"coastal travellers limited",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"5000000 shillings",
     seller: {
       Name:'alex mwanzia',
@@ -381,7 +685,26 @@ const products= [{
     mileage:"1200" ,
     previousOwners:"1",
     description:"the 32 seater is well mantained public bus. all the seats are in good condition and the mechanical part. u allowed to request for review of each part if interest in it",
-    currentOwner:"francis kioko",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"9000000 shillings",
     seller: {
       Name:'alex mwanzia',
@@ -404,7 +727,26 @@ const products= [{
     mileage: "120000 miles",
     previousOwners:"1",
     description:"the bus has had a good number of trips around mombasa road but still in good condition. all the seats and seat sockets are working",
-    currentOwner:"mombasa-travellers",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"7000000 shillings",
     seller: {
       Name:'alex mwanzia',
@@ -427,7 +769,26 @@ const products= [{
     mileage:"12000 miles",
     previousOwners:"1",
     description:"it is an electronic bus . it is still very young and the power consumption is to very minimal",
-    currentOwner:"latema-travellers",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"2000000",
     seller: {
       Name:'alex mwanzia',
@@ -450,7 +811,26 @@ const products= [{
     mileage: "12000 miles",
     previousOwners:"1",
     description:"it is a  64 seater school bus . everything is in good condition and the engine and all mechanical parts are in good condition",
-    currentOwner:"moringa group of schools",
+    currentOwner: {
+      name: "Alex Mutua",
+      contactNumber: "0740492875",
+      email: "blancaale@gmail.com",
+      location: "Nairobi, Kenya",
+      ownershipDuration: "3 years",
+      reasonForSelling: "Upgrading to a newer model",
+      previousCarSales: 2,
+      serviceRecords: [
+        { date: "2024-01-15", service: "Oil change, brake check" },
+        { date: "2023-08-10", service: "Tire replacement, alignment" }
+      ],
+      accidentHistory: "No major accidents, minor scratch on rear bumper",
+      parkingType: "Garage-kept",
+      usageHistory: "Personal use only",
+      priceNegotiable: true,
+      paymentMethods: ["Cash", "Bank Transfer", "MPesa"],
+      ownershipTransferSupport: true,
+      extras: ["Spare key", "Owner's manual", "Recent servicing"]
+    },
     priceCents:"5000000",
     seller: {
       Name:'alex mwanzia',

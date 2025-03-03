@@ -114,6 +114,8 @@
     <div class="buttons">
       <button id="hire-button" onclick="redirectToHirePage()">Hire this Car</button>
       <button id="purchase-button" onclick="goToBuyCarPage()">Buy this Car</button>
+      <button id="owner-button" onclick="goToOwnerPage()">View Owner Details</button>
+      <button id="owner-button" onclick="">Video demo</button>
     </div>
 
   </div>
@@ -140,6 +142,11 @@
         const carDetails = getURLParams();
         window.location.href = `car-hire.html?image=${carDetails.image}&model=${carDetails.model}&year=${carDetails.year}&price=${carDetails.price}`;
     }
+
+    function goToOwnerPage() {
+    const carDetails = getURLParams();
+    window.location.href = `carowner.html?owner=${carDetails.owner}`
+    };
   </script>
 
   <script src="scripts/more-info.js"></script>

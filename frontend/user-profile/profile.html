@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+  <!-- Notifications Section -->
+  <div class="notifications">
+    <h2>Notifications</h2>
+    <ul id="notifications-list">
+      <li>No new notifications.</li>
+    </ul>
+  </div>
+
+  <!-- Profile Header Section -->
+  <div class="profile-header">
+    <h1>Your Profile</h1>
+  </div>
+
+  <!-- Profile Details Section -->
+  <div class="profile-details">
+    <img id="profile-image" src="default-profile.png" alt="Profile Picture" class="profile-img">
+    <div class="profile-info">
+      <p><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
+      <p><strong>Email:</strong> <span id="profile-email">johndoe@example.com</span></p>
+      <p><strong>Phone:</strong> <span id="profile-phone">+254700000000</span></p>
+    </div>
+    <input type="file" id="profile-picture-input" accept="image/*" />
+    <button id="update-profile-picture-btn">Update Profile Picture</button>
+  </div>
+
+  <!-- Profile Information Edit Section -->
+  <div class="edit-profile">
+    <h2>Edit Profile Info</h2>
+    <form id="profile-info-form">
+      <input type="text" id="edit-name" placeholder="Enter Name" required>
+      <input type="email" id="edit-email" placeholder="Enter Email" required>
+      <input type="tel" id="edit-phone" placeholder="Enter Phone Number" required>
+      <button type="submit">Update Profile</button>
+    </form>
+  </div>
+
+  <!-- Change Password Section -->
+  <div class="change-password">
+    <h2>Change Password</h2>
+    <form id="password-change-form">
+      <input type="password" id="old-password" placeholder="Enter Old Password" required>
+      <input type="password" id="new-password" placeholder="Enter New Password" required>
+      <input type="password" id="confirm-password" placeholder="Confirm New Password" required>
+      <button type="submit">Change Password</button>
+    </form>
+  </div>
+
+  <!-- Cars Posted Section -->
+  <div class="cars-posted">
+    <h2>Cars Posted</h2>
+    <ul id="cars-posted-list">
+      <li>No cars posted yet.</li>
+    </ul>
+  </div>
+
+  <!-- Cars Hired Section -->
+  <div class="cars-hired">
+    <h2>Cars Hired</h2>
+    <ul id="cars-hired-list">
+      <li>No cars hired yet.</li>
+    </ul>
+  </div>
+
+  <script src="profile.js"></script>
+</body>
+</html>
