@@ -1,4 +1,4 @@
-const { db } = require('../config/db');
+/*const { db } = require('../config/db');
 const transporter = require('../config/email');
 
 exports.hireCar = (req, res) => {
@@ -94,4 +94,57 @@ exports.buyCar = (req, res) => {
 
     return res.status(201).json({ message: `Purchase request submitted successfully.` });
   });
+};
+*/
+
+const fs = require('fs');
+const path = require('path');
+const { pool } = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
+
+exports.addCar = (req, res) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
+    try {
+        // Assign a unique car ID
+        const newCar = { ...req.body, carId: uuidv4() };
+
+        // File path to frontend cars JSON
+        const filePath = path.join(__dirname, '../../frontend/cars.json');
+
+        // Read existing car data
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                return res.status(500).json({ message: "Error reading file", error: err });
+            }
+
+            let cars = JSON.parse(data);
+            cars.push(newCar); // Add new car
+
+            // Write back to file
+            fs.writeFile(filePath, JSON.stringify(cars, null, 2), (err) => {
+                if (err) {
+                    return res.status(500).json({ message: "Error writing to file", error: err });
+                }
+
+                // Store carId and userId in MySQL
+                const sql = "INSERT INTO car_ownership (carId, userId) VALUES (?, ?)";
+                db.query(sql, [newCar.carId, userId], (dbErr, result) => {
+                    if (dbErr) {
+                        console.error(dbErr);
+                        return res.status(500).json({ message: "Database error while linking car to user" });
+                    }
+                    res.status(201).json({ message: "Car added successfully", carId: newCar.carId });
+                });
+            });
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
 };

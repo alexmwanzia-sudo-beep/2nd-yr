@@ -1,64 +1,132 @@
-document.getElementById('signupForm').addEventListener('submit'  async(e)=>
-{
-  e.preventDefault();
-  const name =document.getElementById('name').value;
-  const email=document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const confirmPassword = document.getElementById('confirmPassword').value;
-})
+// Function to toggle between signup and login forms
+function toggleForms() {
+  const signupForm = document.getElementById("signup-form");
+  const loginForm = document.getElementById("login-form");
 
-if(!password==confirmPassword){
-  alert('Please the correct password');
-  return;
-
+  if (signupForm.style.display === "none") {
+      signupForm.style.display = "block";
+      loginForm.style.display = "none";
+  } else {
+      signupForm.style.display = "none";
+      loginForm.style.display = "block";
+  }
 }
 
-const userData={name,email,password,confirmPassword};
-try {
-  const response=await fetch ('http://localhost:5000/register',{
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-   body: JSON.stringify(userData)
-  });
-  if(response.ok){
-    alert('user registered successfully');
+// Function to validate email format
+function isValidEmail(email) {
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailPattern.test(email);
+}
+
+// Function to validate signup form
+function validateSignup() {
+  const firstName = document.getElementById("signup-firstname").value.trim();
+  const lastName = document.getElementById("signup-lastname").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("signup-confirm-password").value;
+
+  if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      alert("All fields are required.");
+      return false;
   }
 
-else{
-  alert('error'+ response.statusText);
-}
-}
- catch(error) {
-  console.error('error registering user:',error)
-  alert('something went wrong')
-
- }
-   
-
- document.getElementById('loginForm').addEventListener('submit',async(e)=>
-{
-  e.preventDefault();
-  const email=document.getElementById('loginEmail').value;
-  const password=document.getElementById('loginPassword').value;
-  const loginData={email,password}
-  try{
-const response= fetch('http://localhost:5000/login',{
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify(loginData)
-});
-if (response.ok){
-  const {token}=(await response).json();
-  localStorage.setItem('token',token);
-  alert('login successful');
-}else
-{
-  alert('invalid credentials');
-}
-  
+  if (!isValidEmail(email)) {
+      alert("Invalid email format.");
+      return false;
   }
-  catch(error){
-    console.error('error logging in:' ,error);
-    alert('something went wrong')
+
+  if (password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return false;
   }
-})
+
+  if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return false;
+  }
+
+  return true;
+}
+
+// Function to validate login form
+function validateLogin() {
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+
+  if (!email || !password) {
+      alert("Email and password are required.");
+      return false;
+  }
+
+  if (!isValidEmail(email)) {
+      alert("Invalid email format.");
+      return false;
+  }
+
+  return true;
+}
+
+// Function to send signup data to backend
+async function registerUser() {
+  if (!validateSignup()) return;
+
+  const userData = {
+      firstName: document.getElementById("signup-firstname").value.trim(),
+      lastName: document.getElementById("signup-lastname").value.trim(),
+      email: document.getElementById("signup-email").value.trim(),
+      password: document.getElementById("signup-password").value
+  };
+
+  try {
+      const response = await fetch("http://localhost:5000/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+          alert("Registration successful! You can now log in.");
+          toggleForms(); // Switch to login form
+      } else {
+          alert(result.message || "Registration failed.");
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      alert("Server error. Please try again later.");
+  }
+}
+
+// Function to send login data to backend
+async function loginUser() {
+  if (!validateLogin()) return;
+
+  const loginData = {
+      email: document.getElementById("login-email").value.trim(),
+      password: document.getElementById("login-password").value
+  };
+
+  try {
+      const response = await fetch("http://localhost:5000/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+          alert("Login successful!");
+          // Redirect or store token if needed
+      } else {
+          alert(result.message || "Login failed.");
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      alert("Server error. Please try again later.");
+  }
+}
+
+// Attach event listeners
+document.getElementById("signup-btn").addEventListener("click", registerUser);
+document.getElementById("login-btn").addEventListener("click", loginUser);

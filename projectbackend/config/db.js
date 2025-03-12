@@ -1,20 +1,28 @@
-const mysql = require('mysql');
 
-const db = mysql.createConnection({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE
+require("dotenv").config();
+const mysql = require("mysql2");
+
+
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "ale@2030##",
+  database:"carsserver",
+  port:3306
+  //waitForConnections: true,
+  //connectionLimit: 10,  // Adjust as needed
+  //queueLimit: 0
 });
 
 const connectDB = () => {
-  db.connect((err) => {
+  pool.getConnection((err, connection) => {
     if (err) {
-      console.log('Error connecting to MySQL:', err);
+      console.error(" Error connecting to MySQL:", err);
       return;
     }
-    console.log('Connected to MySQL database');
+    console.log("✅ Connected to MySQL Database");
+    connection.release(); // Release the connection back to the pool
   });
 };
 
-module.exports = { db, connectDB };
+module.exports = { pool, connectDB };

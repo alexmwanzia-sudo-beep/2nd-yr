@@ -1,33 +1,13 @@
-const db=require('../config/db.js');
-const getUserByid=(userId,callback) =>{
-  const query = 'SELECT id, name, email, phone, profile_picture FROM users WHERE id = ?';
-  db.query(query, [userId], callback) 
-};
+const{pool}=require('../config/db')
+ const createUser=(firstName, lastName, email, hashedPassword, callback)=>{
+  const sql="INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)"
+  pool.query(sql,[firstName, lastName, email, hashedPassword],callback);
 
-//update user profile picture
 
-const updateUserProfile = (userId, name, email, phone, callback) => {
-  const query = 'UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?';
-  db.query(query, [name, email, phone, userId], callback);
-};
+ };
 
-//update profile picture
-const updateProfilePicture = (userId, profilePicture, callback) => {const query = 'UPDATE users SET profile_picture = ? WHERE id = ?';
-  db.query(query, [profilePicture, userId], callback);
-};
-//update password
-const updatePassword = (userId, hashedPassword, callback) => {
-  const query = 'UPDATE users SET password = ? WHERE id = ?';
-  db.query(query, [hashedPassword, userId], callback);
-};
-const updatePassword = (userId, hashedPassword, callback) => {
-  const query = 'UPDATE users SET password = ? WHERE id = ?';
-  db.query(query, [hashedPassword, userId], callback);
-};
-module.exports = {
-  getUserById,
-  updateUserProfile,
-  updateProfilePicture,
-  updatePassword
-};
-
+ const findUserByEmail=(email,callback)=>{
+  const sql='SELECT * FROM users  WHERE email=?'
+  pool.query(sql,[email], callback)
+ }
+ module.exports = { createUser, findUserByEmail };

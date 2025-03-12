@@ -4,6 +4,7 @@ const products= [{
   Model:"Golf GTI ",
   year: 2011,
   image: "cars2/images (12).jpeg",
+  numberplate:'kfc',
   moreinfo:{
     condition:"used",
     mileage: '25,000 miles',
