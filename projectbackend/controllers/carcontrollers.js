@@ -95,7 +95,7 @@ exports.buyCar = (req, res) => {
     return res.status(201).json({ message: `Purchase request submitted successfully.` });
   });
 };
-*/
+
 
 const fs = require('fs');
 const path = require('path');
@@ -148,3 +148,37 @@ exports.addCar = (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+*/
+const { addCar, addOwner, addServiceRecords } = require("../models/carModel");
+
+const addCar = async (req, res) => {
+    try {
+        const { userId, make, model, year, numberplate, moreinfo } = req.body;
+
+        if (!req.file) {
+            return res.status(400).json({ message: "Please upload an image" });
+        }
+
+        const imagePath = `/uploads/${req.file.filename}`; // Save file path
+
+        // Insert car data
+        const carId = await addCar({
+            userId, make, model, year, image: imagePath, numberplate,
+            ...moreinfo
+        });
+
+        // Insert owner data
+        await addOwner(carId, moreinfo.currentOwner);
+
+        // Insert service records
+        await addServiceRecords(carId, moreinfo.currentOwner.serviceRecords);
+
+        res.status(201).json({ message: "Car added successfully", carId });
+    } catch (error) {
+        console.error("Error adding car:", error);
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
+module.exports = { addCar };
+

@@ -4,197 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add a Car</title>
-  <style>
-    body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 20px;
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-}
-
-.form-section {
-    margin-bottom: 20px;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 6px;
-    border-left: 5px solid #007BFF;
-}
-
-h3 {
-    margin-bottom: 10px;
-    color: #007BFF;
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: #333;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-textarea {
-    resize: vertical;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    background: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    background: #0056b3;
-}
-
-input[type="checkbox"] {
-    width: auto;
-    margin-right: 5px;
-}
-
-  </style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 5px solid #007BFF;
+        }
+        h3 {
+            margin-bottom: 10px;
+            color: #007BFF;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Add a Car</h2>
-        <form id="carForm">
-            <div class="form-section">
-                <h3>Car Details</h3>
-                <label>Make: <input type="text" id="make" required></label>
-                <label>Model: <input type="text" id="model" required></label>
-                <label>Year: <input type="number" id="year" required></label>
-                <label>Image URL: <input type="text" id="image" required></label>
-                <label>Number Plate: <input type="text" id="numberplate" required></label>
-            </div>
+<div class="container">
+    <h2>Add a Car</h2>
+    <form id="carForm">
+        <div class="form-section">
+            <h3>Car Details</h3>
+            <label>Make: <input type="text" id="make" required></label>
+            <label>Model: <input type="text" id="model" required></label>
+            <label>Year: <input type="number" id="year" required></label>
+            <label>Image URL: <input type="text" id="image" required></label>
+            <label>Number Plate: <input type="text" id="numberplate" required></label>
+        </div>
 
-            <div class="form-section">
-                <h3>More Info</h3>
-                <label>Condition: <input type="text" id="condition" required></label>
-                <label>Mileage: <input type="text" id="mileage" required></label>
-                <label>Previous Owners: <input type="number" id="previousOwners" required></label>
-                <label>Description: <textarea id="description" required></textarea></label>
-            </div>
+        <div class="form-section">
+            <h3>More Info</h3>
+            <label>Condition: <input type="text" id="condition" required></label>
+            <label>Mileage: <input type="text" id="mileage" required></label>
+            <label>Previous Owners: <input type="number" id="previousOwners" required></label>
+            <label>Description: <textarea id="description" required></textarea></label>
+        </div>
 
-            <div class="form-section">
-                <h3>Current Owner Details</h3>
-                <label>Name: <input type="text" id="ownerName" required></label>
-                <label>Contact: <input type="text" id="ownerContact" required></label>
-                <label>Email: <input type="email" id="ownerEmail" required></label>
-                <label>Location: <input type="text" id="ownerLocation" required></label>
-                <label>Ownership Duration: <input type="text" id="ownershipDuration" required></label>
-                <label>Reason for Selling: <input type="text" id="reasonForSelling" required></label>
-            </div>
+        <div class="form-section">
+            <h3>Current Owner Details</h3>
+            <label>Name: <input type="text" id="ownerName" required></label>
+            <label>Contact: <input type="text" id="ownerContact" required></label>
+            <label>Email: <input type="email" id="ownerEmail" required></label>
+            <label>Location: <input type="text" id="ownerLocation" required></label>
+            <label>Ownership Duration: <input type="text" id="ownershipDuration" required></label>
+            <label>Reason for Selling: <input type="text" id="reasonForSelling" required></label>
+        </div>
 
-            <div class="form-section">
-                <h3>Service Records</h3>
+        <div class="form-section">
+            <h3>Service Records</h3>
+            <div id="serviceRecordsContainer">
                 <label>Date: <input type="date" id="serviceDate"></label>
                 <label>Service Details: <input type="text" id="serviceDetails"></label>
             </div>
+            <button type="button" id="addServiceRecord">+ Add Service Record</button>
+        </div>
 
-            <div class="form-section">
-                <h3>Additional Details</h3>
-                <label>Accident History: <input type="text" id="accidentHistory"></label>
-                <label>Parking Type: <input type="text" id="parkingType"></label>
-                <label>Usage History: <input type="text" id="usageHistory"></label>
-                <label>Price (USD): <input type="text" id="price"></label>
-                <label><input type="checkbox" id="priceNegotiable"> Price Negotiable</label>
-            </div>
+        <div class="form-section">
+            <h3>Additional Details</h3>
+            <label>Accident History: <input type="text" id="accidentHistory"></label>
+            <label>Parking Type: <input type="text" id="parkingType"></label>
+            <label>Usage History: <input type="text" id="usageHistory"></label>
+            <label>Price (USD): <input type="number" id="price" step="0.01" required></label>
+            <label><input type="checkbox" id="priceNegotiable"> Price Negotiable</label>
+        </div>
 
-            <div class="form-section">
-                <h3>Car Availability</h3>
-                <label><input type="checkbox" id="availableForHire"> Available for Hire</label>
-            </div>
+        <div class="form-section">
+            <h3>Car Availability</h3>
+            <label><input type="checkbox" id="availableForHire"> Available for Hire</label>
+        </div>
 
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
 
-    <script>
-        document.getElementById("carForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-
-            const carData = {
-                userId: "12345",
-                make: document.getElementById("make").value,
-                model: document.getElementById("model").value,
-                year: parseInt(document.getElementById("year").value),
-                image: document.getElementById("image").value,
-                numberplate: document.getElementById("numberplate").value,
-                moreinfo: {
-                    condition: document.getElementById("condition").value,
-                    mileage: document.getElementById("mileage").value,
-                    previousOwners: parseInt(document.getElementById("previousOwners").value),
-                    description: document.getElementById("description").value,
-                    currentOwner: {
-                        name: document.getElementById("ownerName").value,
-                        contactNumber: document.getElementById("ownerContact").value,
-                        email: document.getElementById("ownerEmail").value,
-                        location: document.getElementById("ownerLocation").value,
-                        ownershipDuration: document.getElementById("ownershipDuration").value,
-                        reasonForSelling: document.getElementById("reasonForSelling").value,
-                        serviceRecords: [
-                            {
-                                date: document.getElementById("serviceDate").value,
-                                service: document.getElementById("serviceDetails").value
-                            }
-                        ],
-                        accidentHistory: document.getElementById("accidentHistory").value,
-                        parkingType: document.getElementById("parkingType").value,
-                        usageHistory: document.getElementById("usageHistory").value,
-                        priceNegotiable: document.getElementById("priceNegotiable").checked
-                    },
-                    priceCents: document.getElementById("price").value + " USD",
-                    availableforhire: document.getElementById("availableForHire").checked
-                }
-            };
-
-            try {
-                const response = await fetch("http://localhost:5000/api/cars/add", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(carData)
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    alert("Car added successfully!");
-                } else {
-                    alert("Error: " + result.message);
-                }
-            } catch (error) {
-                console.error("Error submitting form:", error);
-            }
-        });
-    </script>
+<script src="addCar.js"></script>
 
 </body>
 </html>
-

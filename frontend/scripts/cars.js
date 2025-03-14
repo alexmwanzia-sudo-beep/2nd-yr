@@ -31,12 +31,7 @@ const products= [{
       extras: ["Spare key", "Owner's manual", "Recent servicing"]
     },
     priceCents: "18,000 USD",
-    seller: {
-      Name:'alex mwanzia',
-      contactnumber: "0740492875",
-      email:"blancaale@gmail.com",
-      location :"nairobi-kenya"
-    },
+ 
 
     availableforhire:true
   }

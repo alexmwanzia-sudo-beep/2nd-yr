@@ -4,7 +4,7 @@ const { connectDB } = require("./config/db");
 const authRoutes = require("./routes/authRoutes"); // ✅ Ensure this path is correct
 
 const app = express();
-
+app.use("uploads",express.static('uploads'))
 app.use(cors());
 app.use(express.json()); // ✅ Required to parse JSON body
 
