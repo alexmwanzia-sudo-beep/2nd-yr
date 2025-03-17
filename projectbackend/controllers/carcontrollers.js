@@ -1,159 +1,23 @@
-/*const { db } = require('../config/db');
-const transporter = require('../config/email');
-
-exports.hireCar = (req, res) => {
-  const { fullName, email, phone, idNumber, license, carId, startDate, endDate, duration } = req.body;
-
-  if (duration < 10) {
-    return res.status(400).json({ message: "You must hire the car for at least 10 days." });
-  }
-
-  const availabilityQuery = `
-    SELECT * FROM car_hires 
-    WHERE car_id = ? 
-    AND ((start_date <= ? AND end_date >= ?) OR (start_date >= ? AND start_date <= ?))
-  `;
-
-  db.query(availabilityQuery, [carId, endDate, startDate, startDate, endDate], (err, results) => {
-    if (err) {
-      console.error('Error checking availability:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-
-    if (results.length > 0) {
-      return res.status(400).json({ message: "Car is already taken. Try another one." });
-    }
-
-    const insertQuery = `
-      INSERT INTO car_hires (full_name, email, phone, id_number, license, car_id, start_date, end_date, duration, status) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
-    `;
-
-    db.query(insertQuery, [fullName, email, phone, idNumber, license, carId, startDate, endDate, duration], (err, result) => {
-      if (err) {
-        console.error('Error inserting hire request:', err);
-        return res.status(500).send('Internal Server Error');
-      }
-
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Car Hire Confirmation',
-        text: `Dear ${fullName},\n\nYour car hire request for car ID ${carId} from ${startDate} to ${endDate} has been received.\n\nThank you for choosing our service!`
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) console.error('Error sending email:', error);
-      });
-
-      return res.status(201).send('Car hire request submitted successfully.');
-    });
-  });
-};
-
-exports.checkHireStatus = (req, res) => {
-  const { car_id } = req.query;
-
-  const query = "SELECT end_date FROM car_hires WHERE car_id = ? AND duration >= 10 ORDER BY end_date DESC LIMIT 1";
-  
-  db.query(query, [car_id], (err, result) => {
-    if (err) return res.status(500).json({ message: "Error checking hire history" });
-
-    if (result.length === 0) {
-      return res.json({ eligible: false });
-    }
-
-    const hireEnd = new Date(result[0].end_date);
-    const today = new Date();
-
-    res.json({ eligible: today >= hireEnd });
-  });
-};
-
-exports.buyCar = (req, res) => {
-  const { fullName, phone, address, kraPin, carId, price } = req.body;
-
-  const query = `INSERT INTO car_purchases (full_name, phone, address, kra_pin, car_id, price, status, purchase_date) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())`;
-
-  db.query(query, [fullName, phone, address, kraPin, carId, price], (err, result) => {
-    if (err) {
-      console.error('Error inserting purchase:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL,
-      subject: 'New Car Purchase Request',
-      text: `New purchase request: ${fullName} wants to buy car ID ${carId} for ${price}.`
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) console.error('Error sending email:', error);
-    });
-
-    return res.status(201).json({ message: `Purchase request submitted successfully.` });
-  });
-};
-
-
+const { addCar, checkUserExists } = require("../models/carmodels"); // Import both addCar and checkUserExists
 const fs = require('fs');
 const path = require('path');
-const { pool } = require('../config/db');
-const { v4: uuidv4 } = require('uuid');
 
-exports.addCar = (req, res) => {
-    const { userId } = req.body;
-
-    if (!userId) {
-        return res.status(400).json({ message: "User ID is required" });
-    }
-
+const createCar = async (req, res) => {
     try {
-        // Assign a unique car ID
-        const newCar = { ...req.body, carId: uuidv4() };
+        const {
+            userId, make, model, year, numberplate, car_condition, mileage,
+            previous_owners, description, accident_history, parking_type, usage_history,
+            price, price_negotiable, available_for_hire, owner_name, owner_contact, 
+            owner_email, owner_location, ownership_duration, reason_for_selling, 
+            service_date, service_details
+        } = req.body;
 
-        // File path to frontend cars JSON
-        const filePath = path.join(__dirname, '../../frontend/cars.json');
+        // Check if the user exists
+        const userExists = await checkUserExists(userId);
 
-        // Read existing car data
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                return res.status(500).json({ message: "Error reading file", error: err });
-            }
-
-            let cars = JSON.parse(data);
-            cars.push(newCar); // Add new car
-
-            // Write back to file
-            fs.writeFile(filePath, JSON.stringify(cars, null, 2), (err) => {
-                if (err) {
-                    return res.status(500).json({ message: "Error writing to file", error: err });
-                }
-
-                // Store carId and userId in MySQL
-                const sql = "INSERT INTO car_ownership (carId, userId) VALUES (?, ?)";
-                db.query(sql, [newCar.carId, userId], (dbErr, result) => {
-                    if (dbErr) {
-                        console.error(dbErr);
-                        return res.status(500).json({ message: "Database error while linking car to user" });
-                    }
-                    res.status(201).json({ message: "Car added successfully", carId: newCar.carId });
-                });
-            });
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-};
-*/
-const { addCar, addOwner, addServiceRecords } = require("../models/carModel");
-
-const addCar = async (req, res) => {
-    try {
-        const { userId, make, model, year, numberplate, moreinfo } = req.body;
+        if (!userExists) {
+            return res.status(400).json({ message: "User does not exist" });
+        }
 
         if (!req.file) {
             return res.status(400).json({ message: "Please upload an image" });
@@ -161,17 +25,36 @@ const addCar = async (req, res) => {
 
         const imagePath = `/uploads/${req.file.filename}`; // Save file path
 
-        // Insert car data
-        const carId = await addCar({
-            userId, make, model, year, image: imagePath, numberplate,
-            ...moreinfo
-        });
+        // Prepare car data to insert into the database
+        const carData = {
+            userId,
+            make,
+            model,
+            year,
+            image_url: imagePath, // Image path
+            number_plate: numberplate,
+            car_condition, // Using car_condition from req.body
+            mileage, // Using mileage from req.body
+            previous_owners, // Using previous_owners from req.body
+            description, // Using description from req.body
+            accident_history, // Using accident_history from req.body
+            parking_type, // Using parking_type from req.body
+            usage_history, // Using usage_history from req.body
+            price, // Using price from req.body
+            price_negotiable, // Using price_negotiable from req.body
+            available_for_hire, // Using available_for_hire from req.body
+            owner_name, // Using owner_name from req.body
+            owner_contact, // Using owner_contact from req.body
+            owner_email, // Using owner_email from req.body
+            owner_location, // Using owner_location from req.body
+            ownership_duration, // Using ownership_duration from req.body
+            reason_for_selling, // Using reason_for_selling from req.body
+            service_date, // Using service_date from req.body
+            service_details, // Using service_details from req.body
+        };
 
-        // Insert owner data
-        await addOwner(carId, moreinfo.currentOwner);
-
-        // Insert service records
-        await addServiceRecords(carId, moreinfo.currentOwner.serviceRecords);
+        // Insert car data into the database
+        const carId = await addCar(carData);
 
         res.status(201).json({ message: "Car added successfully", carId });
     } catch (error) {
@@ -180,5 +63,4 @@ const addCar = async (req, res) => {
     }
 };
 
-module.exports = { addCar };
-
+module.exports = { createCar };
