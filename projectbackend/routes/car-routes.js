@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const upload = require("../middleware/uploads");
-const carController = require("../controllers/carcontrollers");
+const {createCar} = require("../controllers/carcontrollers");
 
 // Route for adding a car
-router.post("/add", upload.single("image"), carController.createCar);
+router.post("/add", upload.single("image"),createCar);
 
 module.exports = router;
 

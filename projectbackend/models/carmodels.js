@@ -22,46 +22,44 @@ const addCar = async (carData) => {
         if (!userExists) {
             throw new Error("User ID does not exist");
         }
-        const query = `
-        INSERT INTO cars (
-            user_id, make, model, year, image_url, number_plate, car_condition, mileage, 
-            previous_owners, description, accident_history, parking_type, usage_history, 
-            price, price_negotiable, available_for_hire, owner_name, owner_contact, 
-            owner_email, owner_location, ownership_duration, reason_for_selling, service_date, 
-            service_details
-        ) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)
-    `;
-    
-    const values = [
-        carData.userId ?? null, 
-        carData.make ?? null, 
-        carData.model ?? null, 
-        carData.year ?? null, 
-        carData.image ?? null,  // image_url
-        carData.numberplate ?? null, 
-        carData.condition ?? null,  // car_condition
-        carData.mileage ?? null, 
-        carData.previousOwners ?? null, 
-        carData.description ?? null, 
-        carData.accidentHistory ?? null, 
-        carData.parkingType ?? null, 
-        carData.usageHistory ?? null, 
-        carData.price ?? null, 
-        carData.priceNegotiable ?? null, 
-        carData.availableForHire ?? null, 
-        carData.currentOwner?.name ?? null,  // owner_name
-        carData.currentOwner?.contact ?? null,  // owner_contact
-        carData.currentOwner?.email ?? null,  // owner_email
-        carData.currentOwner?.location ?? null,  // owner_location
-        carData.currentOwner?.ownershipDuration ?? null,  // ownership_duration
-        carData.currentOwner?.reasonForSelling ?? null,  // reason_for_selling
-        carData.serviceDate ?? null, 
-        carData.serviceDetails ?? null
-    ];
 
-        
-        
+        const query = `
+            INSERT INTO cars (
+                user_id, make, model, year, image_url, number_plate, car_condition, mileage, 
+                previous_owners, description, accident_history, parking_type, usage_history, 
+                price, price_negotiable, available_for_hire, owner_name, owner_contact, 
+                owner_email, owner_location, ownership_duration, reason_for_selling, service_date, 
+                service_details
+            ) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const values = [
+            carData.userId ?? null, 
+            carData.make ?? null, 
+            carData.model ?? null, 
+            carData.year ?? null, 
+            carData.image_url ?? null,  // image_url
+            carData.number_plate ?? null, 
+            carData.car_condition ?? null,  // car_condition
+            carData.mileage ?? null, 
+            carData.previous_owners ?? null, 
+            carData.description ?? null, 
+            carData.accident_history ?? null, 
+            carData.parking_type ?? null, 
+            carData.usage_history ?? null, 
+            carData.price ?? null, 
+            carData.price_negotiable ?? null, 
+            carData.available_for_hire ?? null, 
+            carData.owner_name ?? null,  // owner_name
+            carData.owner_contact ?? null,  // owner_contact
+            carData.owner_email ?? null,  // owner_email
+            carData.owner_location ?? null,  // owner_location
+            carData.ownership_duration ?? null,  // ownership_duration
+            carData.reason_for_selling ?? null,  // reason_for_selling
+            carData.service_date ?? null, 
+            carData.service_details ?? null
+        ];
 
         const [result] = await db.pool.execute(query, values);
         return result.insertId;

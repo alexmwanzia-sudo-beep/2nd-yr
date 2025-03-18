@@ -5,12 +5,14 @@ const path = require('path');
 const createCar = async (req, res) => {
     try {
         const {
-            userId, make, model, year, numberplate, car_condition, mileage,
+            userId, make, model, year, number_plate, car_condition, mileage,
             previous_owners, description, accident_history, parking_type, usage_history,
             price, price_negotiable, available_for_hire, owner_name, owner_contact, 
             owner_email, owner_location, ownership_duration, reason_for_selling, 
             service_date, service_details
         } = req.body;
+        console.log(req.body); 
+        console.log(req.file);
 
         // Check if the user exists
         const userExists = await checkUserExists(userId);
@@ -32,7 +34,7 @@ const createCar = async (req, res) => {
             model,
             year,
             image_url: imagePath, // Image path
-            number_plate: numberplate,
+            number_plate: number_plate,
             car_condition, // Using car_condition from req.body
             mileage, // Using mileage from req.body
             previous_owners, // Using previous_owners from req.body
@@ -50,7 +52,7 @@ const createCar = async (req, res) => {
             ownership_duration, // Using ownership_duration from req.body
             reason_for_selling, // Using reason_for_selling from req.body
             service_date, // Using service_date from req.body
-            service_details, // Using service_details from req.body
+            service_details,// Using service_details from req.body
         };
 
         // Insert car data into the database

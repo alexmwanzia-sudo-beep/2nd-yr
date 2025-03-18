@@ -81,33 +81,33 @@
             <label>Model: <input type="text" id="model" required></label>
             <label>Year: <input type="number" id="year" required></label>
             <label>Image Upload: <input type="file" id="image" accept="image/*" required></label>
-            <label>Number Plate: <input type="text" id="numberplate" required></label>
+            <label>Number Plate: <input type="text" id="number_plate" required></label>
         </div>
 
         <div class="form-section">
             <h3>More Info</h3>
-            <label>Condition: <input type="text" id="condition" required></label>
+            <label>Condition: <input type="text" id="car_condition" required></label>
             <label>Mileage: <input type="text" id="mileage" required></label>
-            <label>Previous Owners: <input type="number" id="previousOwners" required></label>
+            <label>Previous Owners: <input type="number" id="previous_owners" required></label>
             <label>Description: <textarea id="description" required></textarea></label>
         </div>
 
         <div class="form-section">
             <h3>Current Owner Details</h3>
             <label>User ID: <input type="text" id="userId" required></label>
-            <label>Name: <input type="text" id="ownerName" required></label>
-            <label>Contact: <input type="text" id="ownerContact" required></label>
-            <label>Email: <input type="email" id="ownerEmail" required></label>
-            <label>Location: <input type="text" id="ownerLocation" required></label>
-            <label>Ownership Duration: <input type="text" id="ownershipDuration" required></label>
-            <label>Reason for Selling: <input type="text" id="reasonForSelling" required></label>
+            <label>Name: <input type="text" id="owner_name" required></label>
+            <label>Contact: <input type="text" id="owner_contact" required></label>
+            <label>Email: <input type="email" id="owner_email" required></label>
+            <label>Location: <input type="text" id="owner_location" required></label>
+            <label>Ownership Duration: <input type="text" id="ownership_duration" required></label>
+            <label>Reason for Selling: <input type="text" id="reason_for_selling" required></label>
         </div>
 
         <div class="form-section">
             <h3>Service Records</h3>
             <div id="serviceRecordsContainer">
-                <label>Date: <input type="date" id="serviceDate"></label>
-                <label>Service Details: <input type="text" id="serviceDetails"></label>
+                <label>Date: <input type="date" id="service_date"></label>
+                <label>Service Details: <input type="text" id="service_details"></label>
             </div>
 
             <button type="button" id="addServiceRecord">+ Add Service Record</button>
@@ -115,16 +115,16 @@
 
         <div class="form-section">
             <h3>Additional Details</h3>
-            <label>Accident History: <input type="text" id="accidentHistory"></label>
-            <label>Parking Type: <input type="text" id="parkingType"></label>
-            <label>Usage History: <input type="text" id="usageHistory"></label>
+            <label>Accident History: <input type="text" id="accident_history"></label>
+            <label>Parking Type: <input type="text" id="parking_type"></label>
+            <label>Usage History: <input type="text" id="usage_history"></label>
             <label>Price (USD): <input type="number" id="price" step="0.01" required></label>
-            <label><input type="checkbox" id="priceNegotiable"> Price Negotiable</label>
+            <label><input type="checkbox" id="price_negotiable"> Price Negotiable</label>
         </div>
 
         <div class="form-section">
             <h3>Car Availability</h3>
-            <label><input type="checkbox" id="availableForHire"> Available for Hire</label>
+            <label><input type="checkbox" id="available_for_hire"> Available for Hire</label>
         </div>
 
         <button type="submit">Submit</button>
