@@ -117,7 +117,7 @@ async function loginUser() {
       const result = await response.json();
       if (response.ok) {
           alert("Login successful!");
-          // Redirect or store token if needed
+          window.location.href=''
       } else {
           alert(result.message || "Login failed.");
       }
