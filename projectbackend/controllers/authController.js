@@ -4,63 +4,83 @@ const { createUser, findUserByEmail } = require("../models/usermodels");
 require("dotenv").config();
 
 const signup = async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  console.log("Received signup request");
 
-  if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
+  const { firstname, lastname, email, password } = req.body;
+
+  // Input validation
+  if (!firstname || !lastname || !email || !password) {
+      console.log("Validation failed: Missing required fields");
+      return res.status(400).json({ message: "All fields are required" });
   }
 
-  findUserByEmail(email, async (err, results) => {
-    if (err) {
-      console.error("Database Error (findUserByEmail):", err);
-      return res.status(500).json({ message: "Database error" });
-    }
-
-    if (results.length > 0) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    try {
+  try {
+      // Hash the password
+      console.log("Hashing password...");
       const hashedPassword = await bcrypt.hash(password, 10);
-      createUser(firstName, lastName, email, hashedPassword, (err, result) => {
-        if (err) {
-          console.error("Database Error (createUser):", err);
-          return res.status(500).json({ message: "Database error" });
-        }
-        res.status(201).json({ message: "User registered successfully" });
+      console.log("Password hashed successfully:", hashedPassword);
+
+      // Call createUser to add the user to the database
+      createUser(firstname, lastname, email, hashedPassword, (err, result) => {
+          if (err) {
+              console.error("Error creating user:", err);
+
+              if (err.code === "ER_DUP_ENTRY") {
+                  return res.status(400).json({ message: "Email already exists" });
+              }
+
+              return res.status(500).json({ message: "Database error" });
+          }
+
+          console.log("User created successfully:", result);
+          return res.status(201).json({ message: "User registered successfully" });
       });
-    } catch (error) {
-      console.error("Hashing Error:", error);
+  } catch (error) {
+      console.error("Unexpected error:", error);
       return res.status(500).json({ message: "Server error" });
-    }
-  });
+  }
 };
 
 
-const login = (req, res) => {
-  const { email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
+// Login Controller
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    console.log("Login request body:", req.body);
 
-  findUserByEmail(email, async (err, results) => {
-    if (results.length === 0) {
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!email || !password) {
+        return res.status(400).json({ message: "All fields are required" });
     }
 
-    const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+    findUserByEmail(email, async (err, results) => {
+        if (err) {
+            console.error("Error finding user:", err);
+            return res.status(500).json({ message: "Database error" });
+        }
 
-    const token = jwt.sign({ userId: user.id, email: user.email },"mySuperSecretKey123!", {
-      expiresIn: "1h",
+        if (results.length === 0) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const user = results[0];
+        try {
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(401).json({ message: "Invalid credentials" });
+            }
+
+            const token = jwt.sign(
+                { userId: user.id, email: user.email },
+                process.env.JWT_SECRET || "defaultSecret",
+                { expiresIn: "1h" }
+            );
+            console.log("JWT generated successfully");
+            res.json({ message: "Login successful", token });
+        } catch (error) {
+            console.error("Authentication error:", error);
+            res.status(500).json({ message: "Server error" });
+        }
     });
-
-    res.json({ message: "Login successful", token });
-  });
 };
 
 module.exports = { signup, login };

@@ -20,13 +20,13 @@ function isValidEmail(email) {
 
 // Function to validate signup form
 function validateSignup() {
-  const firstName = document.getElementById("signup-firstname").value.trim();
-  const lastName = document.getElementById("signup-lastname").value.trim();
+  const firstname = document.getElementById("signup-firstname").value.trim();
+  const lastname = document.getElementById("signup-lastname").value.trim();
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
   const confirmPassword = document.getElementById("signup-confirm-password").value;
 
-  if (!firstName || !lastName || !email || !password || !confirmPassword) {
+  if (!firstname || !lastname || !email || !password || !confirmPassword) {
       alert("All fields are required.");
       return false;
   }
@@ -72,8 +72,8 @@ async function registerUser() {
   if (!validateSignup()) return;
 
   const userData = {
-      firstName: document.getElementById("signup-firstname").value.trim(),
-      lastName: document.getElementById("signup-lastname").value.trim(),
+      firstname: document.getElementById("signup-firstname").value.trim(),
+      lastname: document.getElementById("signup-lastname").value.trim(),
       email: document.getElementById("signup-email").value.trim(),
       password: document.getElementById("signup-password").value
   };
@@ -94,7 +94,7 @@ async function registerUser() {
       }
   } catch (error) {
       console.error("Error:", error);
-      alert("Server error. Please try again later.");
+      alert("Server error. Please try again later.", error);
   }
 }
 

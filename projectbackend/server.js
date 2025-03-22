@@ -22,7 +22,7 @@ app.use('/uploads', express.static('uploads'));
 connectDB();
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api/cars', carRoutes);
 
 // Global error handler
