@@ -18,6 +18,7 @@ app.use(morgan('dev')); // Log HTTP requests
 
 // Serve static files from the correct 'frontend' folder
 app.use(express.static(path.join(__dirname, '../frontend'))); // Updated to point outside 'projectbackend'
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Database connection
 connectDB();

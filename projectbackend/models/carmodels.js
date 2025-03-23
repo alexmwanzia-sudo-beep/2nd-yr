@@ -1,9 +1,9 @@
-const db = require("../config/db");
+const db = require("../config/db"); // Database connection
 
 // ✅ Check if a user exists by userId
 const checkUserExists = async (userId) => {
     try {
-        const query = `SELECT COUNT(*) AS userCount FROM users WHERE id = ?`; 
+        const query = `SELECT COUNT(*) AS userCount FROM users WHERE id = ?`;
         const [result] = await db.pool.execute(query, [userId]);
 
         // If the user count is greater than 0, then the user exists
@@ -14,7 +14,26 @@ const checkUserExists = async (userId) => {
     }
 };
 
-// ✅ Add a new car (including owner, service records, without extras)
+// ✅ Fetch all cars from the database
+const getAllCars = async () => {
+    try {
+        const query = `SELECT * FROM cars`;
+        const [cars] = await db.pool.execute(query);
+
+        // Map through cars and adjust the image_url if necessary
+        const formattedCars = cars.map(car => ({
+            ...car,
+            image_url: car.image_url?.replace(/^\/?uploads\//, '') || null, // Strip "/uploads/" and handle null values
+        }));
+
+        return formattedCars;
+    } catch (error) {
+        console.error("❌ Error fetching cars:", error);
+        throw error;
+    }
+};
+
+// ✅ Add a new car to the database
 const addCar = async (carData) => {
     try {
         // First, check if the user exists before adding the car
@@ -39,9 +58,9 @@ const addCar = async (carData) => {
             carData.make ?? null, 
             carData.model ?? null, 
             carData.year ?? null, 
-            carData.image_url ?? null,  // image_url
+            carData.image_url ? carData.image_url.replace(/^\/?uploads\//, '') : null, // Fix image_url here as well
             carData.number_plate ?? null, 
-            carData.car_condition ?? null,  // car_condition
+            carData.car_condition ?? null, 
             carData.mileage ?? null, 
             carData.previous_owners ?? null, 
             carData.description ?? null, 
@@ -51,12 +70,12 @@ const addCar = async (carData) => {
             carData.price ?? null, 
             carData.price_negotiable ?? null, 
             carData.available_for_hire ?? null, 
-            carData.owner_name ?? null,  // owner_name
-            carData.owner_contact ?? null,  // owner_contact
-            carData.owner_email ?? null,  // owner_email
-            carData.owner_location ?? null,  // owner_location
-            carData.ownership_duration ?? null,  // ownership_duration
-            carData.reason_for_selling ?? null,  // reason_for_selling
+            carData.owner_name ?? null, 
+            carData.owner_contact ?? null, 
+            carData.owner_email ?? null, 
+            carData.owner_location ?? null, 
+            carData.ownership_duration ?? null, 
+            carData.reason_for_selling ?? null, 
             carData.service_date ?? null, 
             carData.service_details ?? null
         ];
@@ -69,5 +88,4 @@ const addCar = async (carData) => {
     }
 };
 
-module.exports = { checkUserExists, addCar };
-
+module.exports = { checkUserExists, getAllCars, addCar };
