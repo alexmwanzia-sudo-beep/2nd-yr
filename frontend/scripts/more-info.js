@@ -1,28 +1,35 @@
-// Get URL parameters
-const params=new URLSearchParams(window.location.search)
-
-// Extract car details
-const make = params.get('make');
-const model = params.get('model');
-const year = params.get('year');
-const condition = params.get('condition');
-const mileage = params.get('mileage');
-const price = params.get('price');
-const owner = params.get('owner');
-const description = params.get('description');
-const image = params.get('image');
-
-// Display the car details in the HTML
-document.getElementById('car-image').src = image;
-document.getElementById('car-make').textContent = make;
-document.getElementById('car-model').textContent = model;
-document.getElementById('car-year').textContent = year;
-document.getElementById('car-condition').textContent = condition;
-document.getElementById('car-mileage').textContent = mileage;
-document.getElementById('car-price').textContent = price;
-document.getElementById('car-owner').textContent = owner;
-document.getElementById('car-description').textContent = description;
-
-function buyCar(carId){
-
+// Function to extract query parameters from URL
+function getQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  return Object.fromEntries(params.entries());
 }
+
+// Function to display car details
+function displayCarDetails() {
+  const carDetails = getQueryParams();
+
+  // Debugging: Log received data
+  console.log("Car Details Received:", carDetails);
+
+  // Set the image
+  document.getElementById("car-image").src = carDetails.image || "default-image.jpg";
+
+  // Set text details
+  document.getElementById("car-make").textContent = carDetails.make || "N/A";
+  document.getElementById("car-model").textContent = carDetails.model || "N/A";
+  document.getElementById("car-year").textContent = carDetails.year || "N/A";
+  document.getElementById("car-condition").textContent = carDetails.condition || "N/A";
+  document.getElementById("car-mileage").textContent = carDetails.mileage || "N/A";
+  document.getElementById("car-price").textContent = carDetails.price || "N/A";
+  document.getElementById("car-owner").textContent = carDetails.owner || "N/A";
+  document.getElementById("car-description").textContent = carDetails.description || "No description available.";
+}
+
+// Function to handle buying a car (to be implemented)
+function buyCar(carId) {
+  console.log("Buying car with ID:", carId);
+  // Add logic to process the car purchase
+}
+
+// Run function when the page loads
+window.onload = displayCarDetails;
