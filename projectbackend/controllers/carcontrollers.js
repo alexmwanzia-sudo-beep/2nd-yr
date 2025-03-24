@@ -1,11 +1,28 @@
-const { addCar, checkUserExists, getAllCars } = require("../models/carmodels"); // Import model functions
+// Import necessary functions
+const { addCar, checkUserExists, getAllCars } = require("../models/carmodels"); 
+const path = require("path");
+
+// ✅ Function to format image paths
+const formatImagePath = (filePath) => {
+    if (!filePath) return "/uploads/default-image.jpg"; // Fallback if no image
+
+    // Normalize file path: Replace backslashes with forward slashes for consistency
+    return filePath.replace(/\\/g, "/").replace(/^.*[\\\/]uploads[\\\/]/, "/uploads/");
+};
 
 // ✅ Controller function to fetch all cars
 const getCars = async (req, res) => {
     try {
         // Fetch all cars from the model
         const cars = await getAllCars();
-        res.status(200).json(cars); // Send car data as JSON response
+
+        // Format image paths for consistency
+        const formattedCars = cars.map(car => ({
+            ...car,
+            image_url: formatImagePath(car.image_url)
+        }));
+
+        res.status(200).json(formattedCars); // Send formatted car data
     } catch (error) {
         console.error("❌ Error in getCars controller:", error);
         res.status(500).json({ message: "Failed to fetch car data." });
@@ -39,8 +56,8 @@ const createCar = async (req, res) => {
             return res.status(400).json({ message: "Please upload an image." });
         }
 
-        // Construct the image file path
-        const imagePath = req.file.path.replace(/^\/?uploads\//, ''); // Ensure clean path
+        // ✅ Fix: Normalize file path correctly
+        const imagePath = formatImagePath(path.relative(__dirname, req.file.path));
 
         // Prepare car data for the database
         const carData = {
@@ -48,7 +65,7 @@ const createCar = async (req, res) => {
             make,
             model,
             year,
-            image_url: imagePath, // Assign the cleaned-up image path
+            image_url: imagePath, // Assign formatted image path
             number_plate,
             car_condition,
             mileage,
