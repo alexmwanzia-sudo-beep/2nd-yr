@@ -5,6 +5,7 @@ const path = require('path');
 const { connectDB } = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const carRoutes = require('./routes/car-routes');
+const profileRoutes = require('./routes/profileroutes'); // Import profileRoutes
 
 // Load environment variables
 require('dotenv').config();
@@ -17,19 +18,20 @@ app.use(express.json());
 app.use(morgan('dev')); // Log HTTP requests
 
 // Serve static files from the correct 'frontend' folder
-app.use(express.static(path.join(__dirname, '../frontend'))); // Updated to point outside 'projectbackend'
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use(express.static(path.join(__dirname, '../frontend'))); // Serve static files from frontend
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // Serve uploaded files
 
 // Database connection
 connectDB();
 
 // Routes
-app.use('/api', authRoutes);
-app.use('/api/cars', carRoutes);
+app.use('/api', authRoutes); // Authentication routes
+app.use('/api/cars', carRoutes); // Car-related routes
+app.use('/api/profile', profileRoutes); // User profile routes
 
 // Route for home page
 app.get('/home', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'home.html')); // Corrected path to home.html
+    res.sendFile(path.join(__dirname, '../frontend', 'home.html')); // Serve the home page
 });
 
 // Global error handler

@@ -56,4 +56,22 @@ const findUserByEmail = async (email) => {
     }
 };
 
-module.exports = { checkEmailExists, createUser, findUserByEmail };
+// ✅ New Functions: Get User by ID and Get User Cars
+const db = require("../config/db");
+
+const getUserById = (userId) => {
+    return db.query("SELECT * FROM users WHERE id = ?", [userId]);
+};
+
+const getUserCars = (userId) => {
+    return db.query("SELECT * FROM cars WHERE owner_id = ?", [userId]);
+};
+
+// ✅ Export all functions
+module.exports = {
+    checkEmailExists,
+    createUser,
+    findUserByEmail,
+    getUserById,
+    getUserCars,
+};
