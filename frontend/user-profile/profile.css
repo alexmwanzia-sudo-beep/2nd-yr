@@ -1,138 +1,212 @@
 /* General Styles */
-body {
-  font-family: Arial, sans-serif;
+* {
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header Section */
 .profile-header {
-  background-color: #007bff;
-  color: white;
-  text-align: center;
+  background-color: #007bff; /* Primary blue color */
+  color: #fff;
   padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.profile-header h1 {
-  margin: 0;
+.profile-header a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s;
 }
 
-/* Profile Details Section */
-.profile-details {
-  background-color: white;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.profile-header a:hover {
+  color: #ffdd57; /* Light yellow for hover effect */
 }
 
-.profile-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
+.notification-dropdown {
+  position: relative;
 }
 
-.profile-info p {
-  font-size: 16px;
-}
-
-#profile-picture-input {
-  margin-top: 10px;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
+#notification-btn {
+  background-color: #fff;
+  color: #007bff;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
   transition: background 0.3s;
 }
 
-button:hover {
-  background-color: #0056b3;
+#notification-btn:hover {
+  background-color: #e9ecef;
 }
 
-/* Edit Profile & Change Password */
-.edit-profile,
-.change-password {
-  background-color: white;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.edit-profile input,
-.change-password input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+#notifications-list {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  padding: 10px;
+  width: 300px;
+  z-index: 1000;
 }
 
-.edit-profile button,
-.change-password button {
-  width: 100%;
-  padding: 12px;
+.notification-dropdown:hover #notifications-list {
+  display: block;
 }
 
-/* User Cars Section */
-.user-cars {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 20px;
+#notifications-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 }
 
-/* Individual Car Sections */
-.cars-listed,
-.cars-purchased,
-.cars-hired {
-  background-color: white;
+#notifications-list li:last-child {
+  border-bottom: none;
+}
+
+#notifications-list li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Main Profile Section */
+.profile-main {
+  max-width: 1200px;
+  margin: 20px auto;
   padding: 20px;
-  margin: 10px;
+  background: #fff;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  min-width: 280px;
-  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.cars-listed h2,
-.cars-purchased h2,
-.cars-hired h2 {
+/* Profile Details */
+.profile-details {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.profile-details img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+  border: 4px solid #007bff;
+}
+
+.profile-details h2 {
+  font-size: 24px;
   color: #333;
+  margin-bottom: 10px;
+}
+
+.profile-details p {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+/* Car Activities Section */
+.car-activities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.car-category {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.car-category:hover {
+  transform: translateY(-5px);
+}
+
+.car-category h3 {
   font-size: 20px;
   margin-bottom: 15px;
+  color: #007bff;
 }
 
-/* Car List Styles */
-ul {
-  list-style-type: none;
-  padding: 0;
+.car-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
 }
 
-ul li {
-  background: #f9f9f9;
-  padding: 10px;
-  margin: 5px 0;
+.car-item {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s;
+  max-width: 250px;
+}
+
+.car-item:hover {
+  transform: translateY(-5px);
+}
+
+.car-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.car-item p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.car-item button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
   border-radius: 5px;
-  border-left: 5px solid #007bff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
 }
 
-ul li:hover {
-  background: #e9ecef;
+.car-item button:hover {
+  background-color: #0056b3;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .user-cars {
+  .profile-header {
     flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .car-activities {
+    grid-template-columns: 1fr;
   }
 }

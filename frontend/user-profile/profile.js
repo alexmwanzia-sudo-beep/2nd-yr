@@ -1,125 +1,89 @@
-// Function to display user profile details
-task function displayUserProfile(userData) {
-  document.getElementById('profile-name').textContent = userData.name;
-  document.getElementById('profile-email').textContent = userData.email;
-  document.getElementById('profile-phone').textContent = userData.phone;
-  document.getElementById('profile-image').src = userData.profileImage || 'default-profile.png';
-}
-
-// Function to fetch user profile data from the server
-function getUserProfile() {
-  fetch('/api/users/profile')
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        displayUserProfile(data.user);
-      } else {
-        console.error("Error fetching user profile:", data.message);
-      }
-    })
-    .catch(error => console.error("Error fetching user profile:", error));
-}
-
-// Function to handle profile picture update
-function updateProfilePicture(event) {
-  const formData = new FormData();
-  const file = event.target.files[0];
-  formData.append('profilePic', file);
-
-  fetch('/api/users/update-profile-picture', {
-    method: 'POST',
-    body: formData
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        document.getElementById('profile-image').src = data.newImageUrl;
-        alert('Profile picture updated successfully!');
-      } else {
-        alert('Error updating profile picture!');
-      }
-    })
-    .catch(error => {
-      console.error('Error updating profile picture:', error);
-      alert('Error updating profile picture!');
-    });
-}
-
-// Function to handle profile information update
-function updateProfileInfo(event) {
-  event.preventDefault();
-  const name = document.getElementById('edit-name').value;
-  const email = document.getElementById('edit-email').value;
-  const phone = document.getElementById('edit-phone').value;
-
-  const updatedData = { name, email, phone };
-
-  fetch('/api/users/update-profile', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(updatedData)
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('Profile updated successfully');
-        document.getElementById('profile-name').textContent = name;
-        document.getElementById('profile-email').textContent = email;
-        document.getElementById('profile-phone').textContent = phone;
-      } else {
-        alert('Error updating profile information');
-      }
-    })
-    .catch(error => {
-      console.error('Error updating profile:', error);
-      alert('Error updating profile!');
-    });
-}
-
-// Function to handle password change
-function changePassword(event) {
-  event.preventDefault();
-
-  const oldPassword = document.getElementById('old-password').value;
-  const newPassword = document.getElementById('new-password').value;
-  const confirmPassword = document.getElementById('confirm-password').value;
-
-  if (newPassword !== confirmPassword) {
-    alert("Passwords don't match!");
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    alert("You are not logged in. Redirecting to login...");
+    window.location.href = "/user-registration/registration-form.html";
     return;
   }
 
-  const passwordData = { oldPassword, newPassword };
-
-  fetch('/api/users/change-password', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(passwordData)
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('Password changed successfully!');
-      } else {
-        alert('Error changing password!');
-      }
-    })
-    .catch(error => {
-      console.error('Error changing password:', error);
-      alert('Error changing password!');
+  try {
+    const response = await fetch("/api/profile/profile", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
     });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      // Populate user details
+      document.getElementById("profile-name").textContent = `${data.user.firstname} ${data.user.lastname}`;
+      document.getElementById("profile-email").textContent = data.user.email;
+     /* if (data.user.profileImage) {
+        document.getElementById("profile-img").src = `/uploads/${data.user.profileImage}`;
+      }*/
+
+      // Populate Cars Listed
+      const carsListedContainer = document.getElementById("cars-listed-container");
+      carsListedContainer.innerHTML = ""; // Clear placeholder
+      data.cars.listed.forEach((car) => {
+        const carItem = document.createElement("div");
+        carItem.className = "car-item";
+        carItem.innerHTML = `
+          <img src="/uploads/${car.image}" alt="${car.make} ${car.model}" />
+          <p><strong>${car.make} ${car.model}</strong> (${car.year})</p>
+          <button onclick="showMoreInfo('${car.id}')">More Info</button>
+        `;
+        carsListedContainer.appendChild(carItem);
+      });
+
+      // Populate Cars Hired
+      const carsHiredContainer = document.getElementById("cars-hired-container");
+      carsHiredContainer.innerHTML = ""; // Clear placeholder
+      data.cars.hired.forEach((car) => {
+        const carItem = document.createElement("div");
+        carItem.className = "car-item";
+        carItem.innerHTML = `
+          <img src="/uploads/${car.image}" alt="${car.make} ${car.model}" />
+          <p><strong>${car.make} ${car.model}</strong> (${car.year})</p>
+          <button onclick="showMoreInfo('${car.id}')">More Info</button>
+        `;
+        carsHiredContainer.appendChild(carItem);
+      });
+
+      // Populate Cars Purchased
+      const carsPurchasedContainer = document.getElementById("cars-purchased-container");
+      carsPurchasedContainer.innerHTML = ""; // Clear placeholder
+      data.cars.purchased.forEach((car) => {
+        const carItem = document.createElement("div");
+        carItem.className = "car-item";
+        carItem.innerHTML = `
+          <img src="/uploads/${car.image}" alt="${car.make} ${car.model}" />
+          <p><strong>${car.make} ${car.model}</strong> (${car.year})</p>
+          <button onclick="showMoreInfo('${car.id}')">More Info</button>
+        `;
+        carsPurchasedContainer.appendChild(carItem);
+      });
+
+      // Populate Notifications
+      const notificationsList = document.getElementById("notifications-list");
+      notificationsList.innerHTML = "";
+      data.notifications.forEach((notification) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = notification.message;
+        notificationsList.appendChild(listItem);
+      });
+    } else {
+      alert("Failed to fetch profile data. Please log in again.");
+      localStorage.removeItem("authToken");
+      window.location.href = "/user-registration/registration-form.html";
+    }
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    alert("Something went wrong. Please try again later.");
+  }
+});
+
+// Show More Info Function
+function showMoreInfo(carId) {
+  alert(`Show more info for car with ID: ${carId}`); // Placeholder for real functionality
 }
-
-// Event listeners
-document.getElementById('profile-picture-input').addEventListener('change', updateProfilePicture);
-document.getElementById('profile-info-form').addEventListener('submit', updateProfileInfo);
-document.getElementById('password-change-form').addEventListener('submit', changePassword);
-
-// Fetch user profile on page load
-window.onload = function () {
-  getUserProfile();
-};

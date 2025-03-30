@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Reservation</title>
+  <style>
+    /* General Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header Section */
+    .header {
+      background-color: #007bff; /* Primary Blue Color */
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header .navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover {
+      color: #ffdd57; /* Light Yellow Hover */
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Reservation Details Section */
+    .reservation-details h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+
+    .reservation-details p {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    .reservation-info {
+      font-style: italic;
+      color: #666;
+      margin-top: 10px;
+    }
+
+    /* Payment Instructions */
+    .payment-instructions h2 {
+      font-size: 22px;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+
+    .payment-instructions ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+
+    .payment-instructions ul li {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .payment-instructions p {
+      margin-top: 10px;
+      color: #666;
+    }
+
+    /* User Actions Section */
+    .user-actions {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .user-actions button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin: 10px;
+    }
+
+    .user-actions button:hover {
+      background-color: #0056b3; /* Darker Blue Hover */
+    }
+
+    /* Confirmation Section */
+    .confirmation h2 {
+      font-size: 22px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      color: #007bff;
+    }
+
+    .confirmation p {
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header class="header">
+    <div class="navigation">
+      <a href="/home" class="nav-link">Home</a> <!-- Navigation Link -->
+      <h1>Car Reservation</h1> <!-- Page Title -->
+    </div>
+  </header>
+
+  <!-- Main Content Section -->
+  <main class="main-content">
+    <!-- Reservation Details -->
+    <section class="reservation-details">
+      <h2>Reserve Your Car</h2>
+      <p><strong>Car Name:</strong> Toyota Corolla 2019</p>
+      <p><strong>Price:</strong> KES 1,500,000</p>
+      <p class="reservation-info">
+        Reserve this car either with or without a payment. Choosing to reserve with payment ensures the car is permanently held for you, while reserving without payment means the reservation expires after 24 hours, and other interested buyers can reserve it.
+      </p>
+    </section>
+
+    <!-- Payment Instructions -->
+    <section class="payment-instructions">
+      <h2>Why Reserve with Payment?</h2>
+      <p>
+        Reserving with payment guarantees that the car is held exclusively for you until the physical meeting takes place. The reservation fee is securely held by our system—not the car owner—ensuring a safe and transparent process. If the car is unavailable, your reservation fee will be refunded.
+      </p>
+    </section>
+
+    <!-- User Actions -->
+    <section class="user-actions">
+      <button class="reserve-with-fee-btn">Reserve with Fee</button> <!-- For payment-based reservations -->
+      <button class="reserve-without-fee-btn">Reserve Without Payment</button> <!-- For interest-based reservations -->
+    </section>
+
+    <!-- Confirmation Section -->
+    <section class="confirmation">
+      <h2>Next Steps</h2>
+      <p>
+        If reserving with a fee, complete the payment, and our team will contact you to arrange a physical meeting. If reserving without payment, your reservation will expire in 24 hours unless you complete the payment.
+      </p>
+    </section>
+  </main>
+</body>
+</html>

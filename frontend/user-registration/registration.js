@@ -116,7 +116,9 @@ async function loginUser() {
 
         const result = await response.json();
         if (response.ok) {
+            const token = result.token; // Correctly extract the token from the response
             alert("Login successful!");
+            localStorage.setItem("authToken", token); // Store token in localStorage
             window.location.href = "/home"; // Redirect to the home page
         } else {
             alert(result.message || "Login failed.");
