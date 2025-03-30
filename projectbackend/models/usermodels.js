@@ -59,14 +59,38 @@ const findUserByEmail = async (email) => {
 // ✅ New Functions: Get User by ID and Get User Cars
 const db = require("../config/db");
 
-const getUserById = (userId) => {
-    return db.query("SELECT * FROM users WHERE id = ?", [userId]);
-};
+const getUserById = async (userId) => {
+    try {
+      const sql = "SELECT * FROM users WHERE id = ?";
+      console.log("Executing query to get user by ID:", sql, "with userId:", userId);
+  
+      // Use pool.execute to query the database
+      const [results] = await pool.execute(sql, [userId]);
+  
+      console.log("Query results for getUserById:", results);
+      return results[0]; // Return the first user object (assuming userId is unique)
+    } catch (error) {
+      console.error("❌ Error fetching user by ID:", error);
+      throw error;
+    }
+  };
 
-const getUserCars = (userId) => {
-    return db.query("SELECT * FROM cars WHERE owner_id = ?", [userId]);
-};
+  const getUserCars = async (userId) => {
+    try {
+      const sql = "SELECT * FROM cars WHERE user_id = ?";
+      console.log("Executing query to get user cars:", sql, "with userId:", userId);
+  
+      // Use pool.execute to query the database
+      const [results] = await pool.execute(sql, [userId]);
+  
+      console.log("Query results for getUserCars:", results);
+      return results; // Return the array of cars (empty if none found)
+    } catch (error) {
+      console.error("❌ Error fetching cars by user ID:", error);
+      throw error;
+    }
 
+  }
 // ✅ Export all functions
 module.exports = {
     checkEmailExists,

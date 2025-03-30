@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -92,9 +91,7 @@
 </head>
 
 <body>
-
   <div class="container">
-
     <h1>Car Details</h1>
 
     <!-- Car Image -->
@@ -112,45 +109,15 @@
 
     <!-- Buttons -->
     <div class="buttons">
-      <button id="hire-button" onclick="redirectToHirePage()">Hire this Car</button>
-      <button id="purchase-button" onclick="goToBuyCarPage()">Buy this Car</button>
-      <button id="owner-button" onclick="goToOwnerPage()">View Owner Details</button>
-      <button id="owner-button" onclick="">Video demo</button>
+      <button id="hire-button">Hire this Car</button>
+      <button id="purchase-button">Buy this Car</button>
+      <button id="owner-button">View Owner Details</button>
+      <button id="video-demo-button">Video demo</button>
     </div>
-
   </div>
 
-  <script>
-    function getURLParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return {
-        image: urlParams.get("image"),
-        model: urlParams.get("model"),
-        year: urlParams.get("year"),
-        price: urlParams.get("price")
-      };
-    }
-
-    function goToBuyCarPage() {
-      const carDetails = getURLParams();
-      window.location.href = `buy-car.html?image=${carDetails.image}&model=${carDetails.model}&year=${carDetails.year}&price=${carDetails.price}`;
-    }
-
-
-
-    function redirectToHirePage() {
-        const carDetails = getURLParams();
-        window.location.href = `car-hire.html?image=${carDetails.image}&model=${carDetails.model}&year=${carDetails.year}&price=${carDetails.price}`;
-    }
-
-    function goToOwnerPage() {
-    const carDetails = getURLParams();
-    window.location.href = `carowner.html?owner=${carDetails.owner}`
-    };
-  </script>
-
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="scripts/more-info.js"></script>
-
 </body>
-
 </html>

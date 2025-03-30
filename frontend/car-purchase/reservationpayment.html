@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reserve Your Car</title>
+  <title>Reserve with Fee</title>
   <style>
     /* General Styles */
     * {
@@ -116,25 +116,12 @@
   <header class="header">
     <div class="navigation">
       <a href="/home" class="nav-link">Home</a>
-      <h1>Reserve Your Car</h1>
+      <h1>Reserve with Fee</h1>
     </div>
   </header>
 
   <!-- Main Content -->
   <div class="container">
-    <!-- Reservation Details -->
-    <section class="reservation-details">
-      <h2>Reservation Information</h2>
-      <p><strong>Car Name:</strong> Toyota Corolla 2019</p>
-      <p><strong>Price:</strong> KES 1,500,000</p>
-      <p>
-        You can choose to reserve this car with or without payment. Reserving with payment guarantees the car is permanently held for you, while reserving without payment allows the reservation to expire after 24 hours, making it available for other interested buyers.
-      </p>
-      <p class="important-note">
-        <strong>Note:</strong> The reservation fee is securely held by our system, not the car owner, ensuring trust and transparency.
-      </p>
-    </section>
-
     <!-- Payment Instructions -->
     <section class="payment-instructions">
       <h2>Pay with MPesa</h2>
@@ -148,13 +135,10 @@
       </p>
     </section>
 
-    <!-- Buttons for Actions -->
+    <!-- Button for Action -->
     <div class="button-container">
       <button class="button" onclick="alert('Follow the MPesa instructions to reserve this car permanently.')">
-        Reserve with Fee
-      </button>
-      <button class="button" onclick="alert('Your reservation will expire after 24 hours unless payment is completed.')">
-        Reserve Without Payment
+        Reserve Now
       </button>
     </div>
 
@@ -162,9 +146,10 @@
     <section class="next-steps">
       <h2>Next Steps</h2>
       <p>
-        Once your payment is completed, our team will contact you to organize a physical meeting where you can inspect and test the car. If you reserved without payment, make sure to finalize the payment within 24 hours to secure the car.
+        Once your payment is completed, our team will contact you to organize a physical meeting where you can inspect and test the car.
       </p>
     </section>
   </div>
+  <script src="buy-car.js"></script>
 </body>
 </html>

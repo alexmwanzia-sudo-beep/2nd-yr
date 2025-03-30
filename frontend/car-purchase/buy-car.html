@@ -144,7 +144,7 @@
   <!-- Header Section -->
   <header class="header">
     <div class="navigation">
-      <a href="/home" class="nav-link">Home</a> <!-- Navigation Link -->
+      <a href="/home" class="nav-link" aria-label="Go to Home">Home</a> <!-- Navigation Link -->
       <h1>Car Reservation</h1> <!-- Page Title -->
     </div>
   </header>
@@ -154,8 +154,8 @@
     <!-- Reservation Details -->
     <section class="reservation-details">
       <h2>Reserve Your Car</h2>
-      <p><strong>Car Name:</strong> Toyota Corolla 2019</p>
-      <p><strong>Price:</strong> KES 1,500,000</p>
+      <p><strong>Car Name:</strong> <span id="car-name"></span></p>
+      <p><strong>Price:</strong> <span id="car-price"></span></p>
       <p class="reservation-info">
         Reserve this car either with or without a payment. Choosing to reserve with payment ensures the car is permanently held for you, while reserving without payment means the reservation expires after 24 hours, and other interested buyers can reserve it.
       </p>
@@ -171,8 +171,8 @@
 
     <!-- User Actions -->
     <section class="user-actions">
-      <button class="reserve-with-fee-btn">Reserve with Fee</button> <!-- For payment-based reservations -->
-      <button class="reserve-without-fee-btn">Reserve Without Payment</button> <!-- For interest-based reservations -->
+      <button class="reserve-with-fee-btn" onclick="reserveWithFee()" aria-label="Reserve with payment">Reserve with Fee</button>
+      <button class="reserve-without-fee-btn" onclick="reserveWithoutPayment()" aria-label="Reserve without payment">Reserve Without Payment</button>
     </section>
 
     <!-- Confirmation Section -->
@@ -183,5 +183,10 @@
       </p>
     </section>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
+
+  <script src="buy-car.js"></script>
 </body>
 </html>

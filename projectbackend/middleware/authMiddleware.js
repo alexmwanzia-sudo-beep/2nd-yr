@@ -10,7 +10,7 @@ const authenticateAndProtect = (req, res, next) => {
 
   try {
     const token = authHeader.replace("Bearer ", ""); // Remove "Bearer " prefix
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET||"defaultSecret"); // Verify the token
     req.user = decoded; // Attach user info to request object
     next(); // Proceed to the next middleware/handler
   } catch (error) {
