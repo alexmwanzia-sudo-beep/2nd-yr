@@ -104,6 +104,30 @@ const createNotification = async (user_id, message) => {
   }
 };
 
+const db = require("../config/db"); // Ensure your DB connection is imported
+
+// Function to get user email by user_id
+const getUserEmailById = async (user_id) => {
+  try {
+    const sql = "SELECT email FROM users WHERE id = ?";
+    const [result] = await pool.execute(sql, [user_id]);
+
+    if (result.length > 0) {
+      return result[0].email; // Return the email
+    }
+    return null; // Return null if user is not found
+  } catch (error) {
+    console.error("❌ Error fetching user email:", error);
+    throw error;
+  }
+};
+
+module.exports = { getUserEmailById };
+
+
+module.exports = { getUserEmailById };
+
+
 // ✅ Export all models for use in controllers
 module.exports = {
   checkCarAvailability,
@@ -114,4 +138,5 @@ module.exports = {
   updateReservationStatus,
   getUserNotifications,
   createNotification,
+  getUserEmailById 
 };
