@@ -27,26 +27,21 @@ function displayCarDetails() {
 function goToBuyCarPage() {
   const carDetails = getURLParams();
 
-  // You would dynamically replace these values with actual ones from your backend or session
-  const carid = "12345"; // Example placeholder for car ID
-  const userid = "67890"; // Example placeholder for user ID
-
   // Log for debugging
   console.log("Redirecting to Buy Page with details:", {
-    carid,
-    userid,
+    carid: carDetails.car_id,
     price: carDetails.price,
     model: carDetails.model,
   });
 
   // Redirect to the Buy page with required parameters
-  window.location.href = `car-purchase/buy-car.html?carid=${carid}&userid=${userid}&price=${carDetails.price}&model=${encodeURIComponent(carDetails.model)}`;
+  window.location.href = `car-purchase/buy-car.html?carid=${encodeURIComponent(carDetails.car_id)}&price=${encodeURIComponent(carDetails.price)}&model=${encodeURIComponent(carDetails.model)}`;
 }
 
 // Function to redirect to the Hire page
 function redirectToHirePage() {
   const carDetails = getURLParams();
-  window.location.href = `car-hire.html?image=${carDetails.image}&model=${carDetails.model}&year=${carDetails.year}&price=${carDetails.price}`;
+  window.location.href = `car-hire.html?image=${carDetails.image}&model=${carDetails.model}&carid=${carDetails.car_id}&year=${carDetails.year}&price=${carDetails.price}`;
 }
 
 // Function to redirect to Owner details page

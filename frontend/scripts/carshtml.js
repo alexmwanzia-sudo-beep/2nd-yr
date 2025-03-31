@@ -31,6 +31,8 @@ const renderCars = () => {
             condition: item.car_condition, // Ensure the correct property name from your API
             owner: item.owner_name, // Make sure this matches your backend response
             description: item.description || "No description available",
+            car_id:item.car_id,
+            user_id:item.user_id
         }).toString();
 
         // Generate car listing HTML
