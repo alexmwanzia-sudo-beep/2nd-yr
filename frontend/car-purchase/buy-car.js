@@ -33,8 +33,8 @@ function validateSession() {
     }
 
     try {
-        const decodedToken = parseJwt(token); // Decode JWT
-        const userId = decodedToken.userId; // Extract userId
+        const decodedToken = parseJwt(token);
+        const userId = decodedToken.userId;
 
         if (!userId) {
             throw new Error("Invalid token: Missing userId");
@@ -54,7 +54,7 @@ function displayReservationDetails() {
     const params = new URLSearchParams(window.location.search);
     const carName = params.get("model") || "Unknown Car";
     const price = params.get("price");
-    const car_id = params.get("carid"); // Ensure consistency in key usage
+    const car_id = params.get("carid");
     document.getElementById("car-name").textContent = carName;
     document.getElementById("car-price").textContent = price;
     document.getElementById("car_id").textContent = car_id;
@@ -75,7 +75,7 @@ function attachReservationListeners() {
 
 function reserveWithFee() {
     const params = new URLSearchParams(window.location.search);
-    const car_id = params.get("carid"); // Ensure consistency in key usage
+    const car_id = params.get("carid");
     const user_id = sessionStorage.getItem("user_id");
 
     if (!car_id || !user_id) {
@@ -92,17 +92,25 @@ function reserveWithFee() {
 
     console.log("Sending reservation with fee request:", requestData);
 
-    axios.post("/api/purchase/reserve", requestData, {
-        headers: { Authorization: `Bearer ${token}` },
-    }).then(response => {
-        console.log("Response received:", response.data);
-        if (response.data.success) {
+    fetch("/api/purchase/reserve", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response received:", data);
+        if (data.success) {
             alert("Redirecting to the payment page.");
             window.location.href = `reservationpayment.html?carid=${car_id}`;
         } else {
             alert("Failed to process your reservation. Please try again.");
         }
-    }).catch(error => {
+    })
+    .catch(error => {
         console.error("Error processing reservation with payment:", error);
         alert("An error occurred. Please try again.");
     });
@@ -110,7 +118,7 @@ function reserveWithFee() {
 
 function reserveWithoutPayment() {
     const params = new URLSearchParams(window.location.search);
-    const car_id = params.get("carid"); // Ensure consistency in key usage
+    const car_id = params.get("carid");
     const user_id = sessionStorage.getItem("user_id");
 
     if (!car_id || !user_id) {
@@ -122,21 +130,29 @@ function reserveWithoutPayment() {
     const requestData = {
         car_id: car_id,
         user_id: user_id,
-        type: "temporary",
+        reservationType: "temporary",
     };
 
     console.log("Sending reservation without payment request:", requestData);
 
-    axios.post("/api/purchase/reserve", requestData, {
-        headers: { Authorization: `Bearer ${token}` },
-    }).then(response => {
-        console.log("Response received:", response.data);
-        if (response.data.success) {
+    fetch("/api/purchase/reserve", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Response received:", data);
+        if (data.success) {
             alert("Your reservation has been made. A confirmation email will be sent shortly.");
         } else {
             alert("Failed to process your reservation. Please try again.");
         }
-    }).catch(error => {
+    })
+    .catch(error => {
         console.error("Error processing reservation without payment:", error);
         alert("An error occurred. Please try again.");
     });

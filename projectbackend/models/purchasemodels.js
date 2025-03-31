@@ -13,13 +13,13 @@ const checkCarAvailability = async (carId) => {
 };
 
 // ✅ Create a new reservation
-const createReservation = async (userId, carId, status, expiresAt, reservationFee = null) => {
+const createReservation = async (user_id, car_id, status, expiresAt, reservationFee = null) => {
   try {
     const sql = `
       INSERT INTO reservations (user_id, car_id, status, reserved_at, expires_at, reservation_fee)
       VALUES (?, ?, ?, NOW(), ?, ?)
     `;
-    const values = [userId, carId, status, expiresAt, reservationFee];
+    const values = [user_id, car_id, status, expiresAt, reservationFee];
     const [result] = await pool.execute(sql, values);
     return result.insertId; // Returns the reservation ID
   } catch (error) {
@@ -81,10 +81,10 @@ const updateReservationStatus = async (reservationId, status) => {
 };
 
 // ✅ Fetch user notifications
-const getUserNotifications = async (userId) => {
+const getUserNotifications = async (user_id) => {
   try {
     const sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
-    const [results] = await pool.execute(sql, [userId]);
+    const [results] = await pool.execute(sql, [user_id]);
     return results; // Returns an array of notifications
   } catch (error) {
     console.error("❌ Error fetching notifications:", error);
@@ -93,10 +93,10 @@ const getUserNotifications = async (userId) => {
 };
 
 // ✅ Create a notification for the user
-const createNotification = async (userId, message) => {
+const createNotification = async (user_id, message) => {
   try {
     const sql = "INSERT INTO notifications (user_id, message, created_at) VALUES (?, ?, NOW())";
-    const [result] = await pool.execute(sql, [userId, message]);
+    const [result] = await pool.execute(sql, [user_id, message]);
     return result.insertId; // Returns the notification ID
   } catch (error) {
     console.error("❌ Error creating notification:", error);

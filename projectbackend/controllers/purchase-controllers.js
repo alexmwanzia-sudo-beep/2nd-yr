@@ -12,55 +12,44 @@ const { sendMail } = require("../config/email"); // Email notification integrati
 
 // ✅ Reserve Car Controller (Handles both "temporary" and "paid" reservations)
 const reserveCar = async (req, res) => {
-  const { carId, reservationType } = req.body;
-
-  if (!carId || !reservationType) {
-    return res.status(400).json({ message: "Car ID and reservation type are required" });
+  console.log("🔍 Received Request Body:", req.body);
+  
+  const { car_id, reservationType, user_id } = req.body; // Extract from body
+  if (!car_id || !reservationType || !user_id) {
+    return res.status(400).json({ message: "Car ID, reservation type, and user ID are required" });
   }
 
   try {
-    // Check car availability
-    const car = await checkCarAvailability(carId);
+    const car = await checkCarAvailability(car_id);
     if (!car) {
       return res.status(400).json({ message: "Car is not available for reservation" });
     }
 
-    // Determine reservation status and expiration
     const reservationStatus = reservationType === "temporary" ? "interested" : "reserved";
     const expiresAt = reservationType === "temporary" ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
 
+    console.log("🛠 Reservation Data:", {
+      user_id,
+      car_id,
+      reservationStatus,
+      expiresAt,
+      reservationFee: null
+    });
+
     // Create reservation in the database
-    const reservationId = await createReservation(req.user.userId, carId, reservationStatus, expiresAt);
+    const reservationId = await createReservation(user_id, car_id, reservationStatus, expiresAt);
 
-    // Update car availability for permanent reservation
     if (reservationType === "paid") {
-      await updateCarAvailability(carId, 0); // Mark car as unavailable
-    }g
-
-    // Send email notification
-    const emailSubject =
-      reservationType === "temporary"
-        ? "Car Reservation Confirmation - Temporary"
-        : "Car Reservation Confirmation - Paid";
-    const emailBody =
-      reservationType === "temporary"
-        ? `You have successfully reserved the car: ${car.make} ${car.model}. This reservation will expire in 24 hours unless payment is completed.`
-        : `You have successfully reserved the car: ${car.make} ${car.model}. Thank you for your payment!`;
-    await sendMail(req.user.email, emailSubject, emailBody);
-
-    // Create system notification
-    const notificationMessage =
-      reservationType === "temporary"
-        ? `Temporary reservation created for car: ${car.make} ${car.model}.`
-        : `Paid reservation confirmed for car: ${car.make} ${car.model}.`;
-    await createNotification(req.user.userId, notificationMessage);
+      await updateCarAvailability(car_id, 0);
+    }
 
     res.status(201).json({ message: "Car reserved successfully", reservationId });
   } catch (error) {
-    console.error("Error in reserveCar controller:", error);
+    console.error("❌ Error in reserveCar controller:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 // ✅ Pay for Reservation Controller
 const payForReservation = async (req, res) => {
@@ -98,7 +87,7 @@ const payForReservation = async (req, res) => {
     );
 
     // Create system notification
-    await createNotification(req.user.userId, `Payment successful for reservation ID ${reservationId}.`);
+    await createNotification(req.user_id, `Payment successful for reservation ID ${reservationId}.`);
 
     res.status(201).json({ message: "Payment processed successfully", paymentId });
   } catch (error) {
@@ -109,9 +98,9 @@ const payForReservation = async (req, res) => {
 
 // ✅ Validate Payment Controller
 const validateReservationPayment = async (req, res) => {
-  const { transactionId, carId, userId } = req.body;
+  const { transactionId, car_id, user_id } = req.body;
 
-  if (!transactionId || !carId || !userId) {
+  if (!transactionId || !car_id || !user_id) {
     return res.status(400).json({ message: "Transaction ID, Car ID, and User ID are required." });
   }
 
@@ -123,13 +112,13 @@ const validateReservationPayment = async (req, res) => {
     }
 
     // Update reservation status to "confirmed"
-    const reservationId = await updateReservationStatus(userId, carId, "reserved");
+    const reservationId = await updateReservationStatus(user_id, car_id, "reserved");
 
     // Send email notification for successful validation
     await sendMail(
       req.user.email,
       "Payment Validation Confirmation",
-      `Your payment has been successfully validated, and your reservation for car ID ${carId} is confirmed.`
+      `Your payment has been successfully validated, and your reservation for car ID ${car_id} is confirmed.`
     );
 
     res.status(200).json({
