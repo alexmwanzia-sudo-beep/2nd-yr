@@ -6,16 +6,17 @@ const {
   savePaymentDetails,
   updateReservationStatus,
   createNotification,
-  getUserEmailById 
-} = require("../models/purchasemodels"); // Models for database operations
-const { processPayment } = require("../config/mpesa"); // MPesa payment integration
-const { sendMail } = require("../config/email"); // Email notification integration
+  getUserEmailById,
+  getPaymentDetailsByTransactionId,
+  getReservationByUserAndCar
+} = require("../models/purchasemodels");
+const { processPayment } = require("../config/mpesa");
+const { sendMail } = require("../config/email");
 
-// ✅ Reserve Car Controller (Handles both "temporary" and "paid" reservations)
+// ✅ Reserve Car Controller
 const reserveCar = async (req, res) => {
   console.log("🔍 Received Request Body:", req.body);
-  
-  const { car_id, reservationType, user_id } = req.body; // Extract from body
+  const { car_id, reservationType, user_id } = req.body;
   if (!car_id || !reservationType || !user_id) {
     return res.status(400).json({ message: "Car ID, reservation type, and user ID are required" });
   }
@@ -33,14 +34,12 @@ const reserveCar = async (req, res) => {
 
     const reservationStatus = reservationType === "temporary" ? "interested" : "reserved";
     const expiresAt = reservationType === "temporary" ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
-
     const reservationId = await createReservation(user_id, car_id, reservationStatus, expiresAt);
 
     if (reservationType === "paid") {
       await updateCarAvailability(car_id, 0);
     }
 
-    // Send email notification
     await sendMail(userEmail, "Car Reservation", `Your reservation for car ID ${car_id} is confirmed.`);
     await createNotification(user_id, `Car reservation confirmed for car ID ${car_id}.`);
 
@@ -54,7 +53,6 @@ const reserveCar = async (req, res) => {
 // ✅ Pay for Reservation Controller
 const payForReservation = async (req, res) => {
   const { reservationId, amount, transactionId, phoneNumber, user_id } = req.body;
-
   if (!reservationId || !amount || !transactionId || !phoneNumber || !user_id) {
     return res.status(400).json({ message: "All fields are required." });
   }
@@ -71,16 +69,18 @@ const payForReservation = async (req, res) => {
     }
 
     const paymentResponse = await processPayment(amount, transactionId, phoneNumber);
-    console.log("MPesa Payment Response:", paymentResponse);
+    if (!paymentResponse || paymentResponse.ResponseCode !== "0") {
+      return res.status(400).json({ message: "MPesa payment failed, please try again." });
+    }
 
-    const paymentId = await savePaymentDetails(reservationId, amount, transactionId, "completed");
+    await savePaymentDetails(reservationId, amount, transactionId, "completed");
     await updateReservationStatus(reservationId, "reserved");
     await updateCarAvailability(reservation.car_id, 0);
 
     await sendMail(userEmail, "Payment Confirmation", `Your payment of KES ${amount} for reservation ID ${reservationId} was successful.`);
     await createNotification(user_id, `Payment successful for reservation ID ${reservationId}.`);
 
-    res.status(201).json({ message: "Payment processed successfully", paymentId });
+    res.status(201).json({ message: "Payment processed successfully" });
   } catch (error) {
     console.error("Error in payForReservation controller:", error);
     res.status(500).json({ message: "Server error" });
@@ -90,7 +90,6 @@ const payForReservation = async (req, res) => {
 // ✅ Validate Payment Controller
 const validateReservationPayment = async (req, res) => {
   const { transactionId, car_id, user_id } = req.body;
-
   if (!transactionId || !car_id || !user_id) {
     return res.status(400).json({ message: "Transaction ID, Car ID, and User ID are required." });
   }
@@ -101,17 +100,23 @@ const validateReservationPayment = async (req, res) => {
       return res.status(400).json({ message: "User email not found." });
     }
 
-    const isValidTransaction = transactionId === "valid-transaction-id";
-    if (!isValidTransaction) {
+    const payment = await getPaymentDetailsByTransactionId(transactionId);
+    if (!payment) {
       return res.status(400).json({ message: "Invalid transaction ID." });
     }
 
-    const reservationId = await updateReservationStatus(user_id, car_id, "reserved");
+    const reservation = await getReservationByUserAndCar(user_id, car_id);
+    if (!reservation) {
+      return res.status(400).json({ message: "No matching reservation found." });
+    }
+
+    await updateReservationStatus(reservation.id, "reserved");
+    await updateCarAvailability(car_id, 0);
 
     await sendMail(userEmail, "Payment Validation Confirmation", `Your payment has been successfully validated, and your reservation for car ID ${car_id} is confirmed.`);
     await createNotification(user_id, `Payment validation successful for car ID ${car_id}.`);
 
-    res.status(200).json({ message: "Payment validated successfully.", reservationId });
+    res.status(200).json({ message: "Payment validated successfully." });
   } catch (error) {
     console.error("Error in validateReservationPayment controller:", error);
     res.status(500).json({ message: "Server error" });

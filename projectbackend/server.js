@@ -10,6 +10,7 @@ const carRoutes = require('./routes/car-routes');
 const profileRoutes = require('./routes/profileroutes'); // User profile routes
 const purchaseRoutes = require('./routes/purchaseroutes'); // Purchase-related routes
 //const reservationRoutes = require('./routes/reservationRoutes'); // New reservation routes
+const hireRoutes = require('./routes/hireroutes'); // Hire-related routes
 
 // Load environment variables
 require('dotenv').config();
@@ -33,6 +34,8 @@ app.use('/api', authRoutes); // Authentication routes
 app.use('/api/cars', carRoutes); // Car-related routes
 app.use('/api/profile', profileRoutes); // User profile routes
 app.use('/api/purchase', purchaseRoutes); // Purchase-related routes
+app.use('/api/hire',hireRoutes); // Hire-related routes
+
 //app.use('/api/reservation', reservationRoutes); // New reservation routes
 
 // Route for home page
