@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reserve with Fee</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete Payment</title>
   <style>
-    /* General Styles */
+    /* Reset and Base Styles */
     * {
       margin: 0;
       padding: 0;
@@ -13,143 +13,129 @@
     }
 
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
       color: #333;
-      line-height: 1.6;
     }
 
-    /* Header Section */
-    .header {
-      background-color: #007bff; /* Primary Blue */
-      color: #fff;
+    header {
+      background-color: #007bff;
+      color: white;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .header .navigation {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nav-link {
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: bold;
-      color: #fff;
-      transition: color 0.3s;
-    }
-
-    .nav-link:hover {
-      color: #ffdd57; /* Light Yellow Hover */
-    }
-
-    .header h1 {
-      font-size: 24px;
-    }
-
-    /* Content Container */
-    .container {
-      max-width: 700px;
+    main {
+      max-width: 600px;
       margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
+      margin-bottom: 20px;
       color: #007bff;
-      margin-bottom: 15px;
     }
 
-    p {
-      font-size: 16px;
-      color: #555;
-      margin-bottom: 10px;
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 5px;
     }
 
-    ul {
-      list-style-type: disc;
-      padding-left: 20px;
-    }
-
-    ul li {
-      margin-bottom: 8px;
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       font-size: 16px;
     }
 
-    .important-note {
-      font-style: italic;
-      color: #666;
-      margin-top: 10px;
-    }
-
-    /* Buttons */
-    .button-container {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .button {
+    button {
+      margin-top: 25px;
+      width: 100%;
       background-color: #007bff;
-      color: #fff;
-      padding: 10px 20px;
+      color: white;
+      padding: 12px;
       font-size: 16px;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
-      margin: 10px;
       transition: background-color 0.3s;
     }
 
-    .button:hover {
-      background-color: #0056b3; /* Darker Blue Hover */
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .instructions {
+      background-color: #e8f1ff;
+      padding: 15px;
+      border-left: 4px solid #007bff;
+      margin-bottom: 25px;
+      border-radius: 6px;
+    }
+
+    .instructions ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    .business-number {
+      background-color: #fff8e1;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 4px solid #ffbf00;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <!-- Header Section -->
-  <header class="header">
-    <div class="navigation">
-      <a href="/home" class="nav-link">Home</a>
-      <h1>Reserve with Fee</h1>
-    </div>
+  <header>
+    <h1>Confirm Your Payment</h1>
   </header>
 
-  <!-- Main Content -->
-  <div class="container">
-    <!-- Payment Instructions -->
+  <main>
     <section class="payment-instructions">
-      <h2>Pay with MPesa</h2>
-      <p>To reserve this car using MPesa's Buy Goods and Services option, follow these steps:</p>
-      <ul>
-        <li><strong>Business Number:</strong> 123456</li>
-        <li><strong>Amount:</strong> KES 10,000</li>
-      </ul>
-      <p>
-        Complete your payment, and the car will be marked as permanently reserved for you. A confirmation email will be sent to you immediately after the payment is verified.
-      </p>
+      <h2>Payment Instructions</h2>
+      <div class="instructions">
+        <p>To complete your reservation, please follow these steps using MPesa:</p>
+        <ul>
+          <li>Go to your MPesa menu on your phone</li>
+          <li>Select <strong>Lipa na MPesa</strong></li>
+          <li>Choose <strong>Paybill</strong></li>
+          <li>Enter the Business Number provided below</li>
+          <li>Use your <strong>phone number</strong> as the Account Number</li>
+          <li>Enter the reservation amount</li>
+          <li>Complete the payment</li>
+        </ul>
+        <div class="business-number">
+          MPesa Paybill Business Number: <span>123456</span>
+        </div>
+      </div>
     </section>
 
-    <!-- Button for Action -->
-    <div class="button-container">
-      <button class="button" onclick="alert('Follow the MPesa instructions to reserve this car permanently.')">
-        Reserve Now
-      </button>
-    </div>
+    <section class="payment-form">
+      <h2>Enter Your Details</h2>
+      <form id="payment-form">
+        <label for="phone-number">Phone Number:</label>
+        <input type="tel" id="phone-number" name="phone-number" placeholder="e.g. 254712345678" required />
+        
 
-    <!-- Next Steps -->
-    <section class="next-steps">
-      <h2>Next Steps</h2>
-      <p>
-        Once your payment is completed, our team will contact you to organize a physical meeting where you can inspect and test the car.
-      </p>
+        <label for="amount">Amount (KES):</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter reservation amount" required />
+
+        <button type="submit">Submit Payment Details</button>
+      </form>
     </section>
-  </div>
-  <script src="buy-car.js"></script>
+  </main>
+
+  <script src="reservationpayment.js"></script>
 </body>
 </html>

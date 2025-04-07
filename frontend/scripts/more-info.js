@@ -29,7 +29,7 @@ function goToBuyCarPage() {
 
   // Log for debugging
   console.log("Redirecting to Buy Page with details:", {
-    carid: carDetails.car_id,
+    car_id: carDetails.car_id,
     price: carDetails.price,
     model: carDetails.model,
   });
@@ -41,8 +41,13 @@ function goToBuyCarPage() {
 // Function to redirect to the Hire page
 function redirectToHirePage() {
   const carDetails = getURLParams();
-  window.location.href = `car-hire.html?image=${carDetails.image}&model=${carDetails.model}&carid=${carDetails.car_id}&year=${carDetails.year}&price=${carDetails.price}`;
+  console.log("Redirecting to Hire Page with details:", carDetails);
+
+  window.location.href = `car-hire/car-hire.html?&carid=${encodeURIComponent(carDetails.car_id)}&model=${encodeURIComponent(carDetails.model)}&year=${encodeURIComponent(carDetails.year)}&price=${encodeURIComponent(carDetails.price)}&image=${encodeURIComponent(carDetails.image)}&owner=${encodeURIComponent(carDetails.owner)}`;
 }
+
+document.getElementById("hire-button").addEventListener("click", redirectToHirePage);
+
 
 // Function to redirect to Owner details page
 function goToOwnerPage() {

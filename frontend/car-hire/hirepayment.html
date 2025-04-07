@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Hire Payment</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f8f8;
+      color: #333;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+      width: 100%;
+      padding: 40px 30px;
+      text-align: left;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .alert {
+      background-color: #f9c74f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      color: #333;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert ul {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .alert li {
+      margin-bottom: 10px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      background-color: #003d7a;
+      transform: translateY(1px);
+    }
+
+    .terms {
+      margin-top: 40px;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .terms a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .terms a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Car Hire Payment</h1>
+    
+    <div class="alert">
+      <h3>Follow these steps to complete your payment via M-Pesa:</h3>
+      <ul>
+        <li>Go to your M-Pesa menu</li>
+        <li>Select "Lipa na M-Pesa"</li>
+        <li>Choose "PayBill" and enter Business Number: <strong>123456</strong></li>
+        <li>Enter Account Number: <strong>Your Hire ID</strong></li>
+        <li>Enter Amount: <strong>KES <span id="amount">0.00</span></strong></li>
+        <li>Enter your PIN and confirm</li>
+      </ul>
+    </div>
+
+    <p><strong>Important:</strong> If you extend your rental period or cause any damages, additional charges may apply.</p>
+
+    <p>Thank you for choosing our car hire service! You will receive an email and SMS confirmation with pickup details after payment.</p>
+
+    <button class="button" id="pay-button">I Have Paid</button>
+
+
+    <div class="terms">
+      <p>By proceeding with the payment, you agree to our <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </div>
+
+  <script src="payment.js">
+
+  </script>
+</body>
+</html>
+    

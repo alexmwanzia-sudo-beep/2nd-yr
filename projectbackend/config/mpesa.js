@@ -75,19 +75,15 @@ const processPayment = async (amount, phoneNumber) => {
 
     console.log("✅ MPesa Payment Response:", JSON.stringify(response.data, null, 2));
 
-    // ✅ Ensure MPesa's actual Transaction ID is retrieved
-    const mpesaTransactionId = response.data.TransactionID || response.data.OriginatorConversationID;
-    
-    if (!mpesaTransactionId || mpesaTransactionId.length < 10) {
-      console.warn("⚠ MPesa did not return a Transaction ID, using Conversation ID instead:", response.data);
-    }
+    // ✅ Get the OriginatorCoversationID (exact field name from MPesa response)
+    const mpesaTransactionId = response.data.OriginatorCoversationID;
+
+    console.log(`✅ Using OriginatorCoversationID as Transaction ID: ${mpesaTransactionId}`);
 
     if (response.data.ResponseCode && response.data.ResponseCode !== "0") {
       console.error("❌ MPesa API Error:", response.data);
       throw new Error(`MPesa Error: ${response.data.ResponseDescription}`);
     }
-
-    console.log(`✅ Confirmed Transaction ID: ${mpesaTransactionId}`);
 
     return { 
       success: true, 

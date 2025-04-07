@@ -1,27 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const currentPage = getPageContext();
-
-    if (currentPage === "buy-car") {
-        validateSession(); // Validate user session securely
-        displayReservationDetails(); // Update car details dynamically
-        attachReservationListeners(); // Attach event listeners
-    }
-
-    if (currentPage === "reservationpayment") {
-        validateSession(); // Validate user session for payment page
-        guidePayment(); // Provide MPesa payment instructions
-        attachPaymentValidationListener(); // Validate payment on button click
-    }
+    validateSession(); // Ensure user is authenticated
+    displayReservationDetails(); // Populate car details
+    attachReservationListeners(); // Attach button listeners
 });
-
-function getPageContext() {
-    if (window.location.href.includes("reservationpayment.html")) {
-        return "reservationpayment";
-    } else if (window.location.href.includes("buy-car.html")) {
-        return "buy-car";
-    }
-    return null;
-}
 
 function validateSession() {
     const token = localStorage.getItem("authToken");
@@ -41,9 +22,9 @@ function validateSession() {
         }
 
         sessionStorage.setItem("user_id", userId);
-        console.log("User authenticated. user_id:", userId);
+        console.log("✅ User authenticated. user_id:", userId);
     } catch (error) {
-        console.error("Error decoding token:", error.message);
+        console.error("❌ Error decoding token:", error.message);
         alert("Session expired. Please log in again.");
         localStorage.removeItem("authToken");
         window.location.href = "/login.html";
@@ -55,85 +36,51 @@ function displayReservationDetails() {
     const carName = params.get("model") || "Unknown Car";
     const price = params.get("price");
     const car_id = params.get("carid");
+
+    // Store reservation details for forwarding
+    sessionStorage.setItem("car_id", car_id);
+    sessionStorage.setItem("price", price);
+
     document.getElementById("car-name").textContent = carName;
     document.getElementById("car-price").textContent = price;
     document.getElementById("car_id").textContent = car_id;
 }
 
 function attachReservationListeners() {
-    const reserveWithFeeButton = document.querySelector(".reserve-with-fee-btn");
-    const reserveWithoutFeeButton = document.querySelector(".reserve-without-fee-btn");
-
-    if (reserveWithFeeButton) {
-        reserveWithFeeButton.addEventListener("click", reserveWithFee);
-    }
-
-    if (reserveWithoutFeeButton) {
-        reserveWithoutFeeButton.addEventListener("click", reserveWithoutPayment);
-    }
+    document.querySelector(".reserve-with-fee-btn")?.addEventListener("click", reserveWithFee);
+    document.querySelector(".reserve-without-fee-btn")?.addEventListener("click", reserveWithoutPayment);
 }
 
 function reserveWithFee() {
-    const params = new URLSearchParams(window.location.search);
-    const car_id = params.get("carid");
+    const car_id = sessionStorage.getItem("car_id");
     const user_id = sessionStorage.getItem("user_id");
 
     if (!car_id || !user_id) {
-        alert("Missing essential reservation details.");
+        alert("❌ Missing essential reservation details.");
         return;
     }
 
-    const token = localStorage.getItem("authToken");
-    const requestData = {
-        car_id: car_id,
-        user_id: user_id,
-        type: "paid",
-    };
-
-    console.log("Sending reservation with fee request:", requestData);
-
-    fetch("/api/purchase/reserve", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(requestData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Response received:", data);
-        if (data.success) {
-            alert("Redirecting to the payment page.");
-            window.location.href = `reservationpayment.html?carid=${car_id}`;
-        } else {
-            alert("Failed to process your reservation. Please try again.");
-        }
-    })
-    .catch(error => {
-        console.error("Error processing reservation with payment:", error);
-        alert("An error occurred. Please try again.");
-    });
+    console.log("🚀 Redirecting to payment page...");
+    window.location.href = `reservationpayment.html?carid=${car_id}&user_id=${user_id}`;
 }
 
 function reserveWithoutPayment() {
-    const params = new URLSearchParams(window.location.search);
-    const car_id = params.get("carid");
+    const car_id = sessionStorage.getItem("car_id");
     const user_id = sessionStorage.getItem("user_id");
 
     if (!car_id || !user_id) {
-        alert("Missing reservation details. Please try again.");
+        alert("❌ Missing reservation details.");
         return;
     }
 
     const token = localStorage.getItem("authToken");
     const requestData = {
-        car_id: car_id,
-        user_id: user_id,
+        car_id,
+        user_id,
         reservationType: "temporary",
     };
 
-    console.log("Sending reservation without payment request:", requestData);
+    console.log("🚀 Sending reservation without payment request:", requestData);
 
     fetch("/api/purchase/reserve", {
         method: "POST",
@@ -145,24 +92,22 @@ function reserveWithoutPayment() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Response received:", data);
+        console.log("✅ Response received:", data);
         if (data.success) {
-            alert("Your reservation has been made. A confirmation email will be sent shortly.");
+            alert("✅ Reservation successful! A confirmation email will be sent.");
         } else {
-            alert("Failed to process your reservation. Please try again.");
+            alert("❌ Failed to process reservation.");
         }
     })
     .catch(error => {
-        console.error("Error processing reservation without payment:", error);
-        alert("An error occurred. Please try again.");
+        console.error("❌ Error in reservation process:", error);
+        alert("❌ An error occurred. Please try again.");
     });
 }
 
 function parseJwt(token) {
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(atob(base64).split("").map(c => {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(""));
+    const jsonPayload = decodeURIComponent(atob(base64).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join(""));
     return JSON.parse(jsonPayload);
 }

@@ -19,6 +19,7 @@ const renderCars = () => {
 
         // Debugging
         console.log("Final Image Path:", imagePath);
+        console.log("Car ID from item object:", item.id);
 
         // Convert car object into a query string (encoding values)
         const queryString = new URLSearchParams({

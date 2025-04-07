@@ -13,14 +13,15 @@ const checkCarAvailability = async (carId) => {
 };
 
 // ✅ Create a new reservation
-const createReservation = async (user_id, car_id, status, expiresAt, reservationFee = null) => {
+const createReservation = async (user_id, car_id, status, expiresAt, amount = null) => {
   try {
-    const sql = `
-      INSERT INTO reservations (user_id, car_id, status, reserved_at, expires_at, reservation_fee)
-      VALUES (?, ?, ?, NOW(), ?, ?)
-    `;
-    const values = [user_id, car_id, status, expiresAt, reservationFee];
+    const sql = ` INSERT INTO reservations (user_id, car_id, status, reserved_at, expires_at, amount)
+        VALUES (?, ?, ?, NOW(), ?, ?)`
+   
+   const values = [user_id, car_id, status, expiresAt, amount];
+   //const values = expiresAt ? [userIdInt, carIdInt, status, expiresAt, amount] : [userIdInt, carIdInt, status, null, amount];
     const [result] = await pool.execute(sql, values);
+    
     return result.insertId; // Returns the reservation ID
   } catch (error) {
     console.error("❌ Error creating reservation:", error);
@@ -55,11 +56,19 @@ const getReservationById = async (reservationId) => {
 // ✅ Save payment details
 const savePaymentDetails = async (reservationId, amount, transactionId, status) => {
   try {
+
     const sql = `
       INSERT INTO payments (reservation_id, amount, transaction_id, status, created_at)
       VALUES (?, ?, ?, ?, NOW())
     `;
     const values = [reservationId, amount, transactionId, status];
+    if (!transactionId) {
+      console.warn("⚠ Warning: Using fallback transaction ID.");
+      transactionId = "FALLBACK_TX_ID"
+    }
+    console.log("🔍 Executing SQL:", sql);
+console.log("🔍 Payment Values:", values);
+
     const [result] = await pool.execute(sql, values);
     return result.insertId; // Returns the payment ID
   } catch (error) {
@@ -122,10 +131,10 @@ const getUserEmailById = async (user_id) => {
   }
 };
 
-module.exports = { getUserEmailById };
 
 
-module.exports = { getUserEmailById };
+
+
 
 
 // ✅ Export all models for use in controllers

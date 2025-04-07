@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hire a Car</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #9a4747;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 90%;
+      margin-top: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+    }
+    p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .terms-section {
+      margin-bottom: 20px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .terms-header {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .terms-list {
+      padding-left: 20px;
+      list-style-type: disc;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- The form method is optional as our JS intercepts the submission, but setting method="post" is a good fallback. -->
+    <form id="hire-form" method="post">
+      <h2>Hire a Car</h2>
+
+      <!-- Terms and Conditions Section -->
+      <div class="terms-section">
+        <div class="terms-header">Terms & Conditions</div>
+        <p>Please read the following terms and conditions before proceeding with your car hire:</p>
+        <ul class="terms-list">
+          <li><strong>Eligibility:</strong> You must be at least 18 years old and possess a valid driver's license to hire a car.</li>
+          <li><strong>Rental Period:</strong> The car hire duration is specified in days. Should you wish to extend the rental, please inform us in advance. Extension fees apply based on the additional days.</li>
+          <li><strong>Car Condition:</strong> You are responsible for the car's condition during the hire period. Any damage to the vehicle may result in additional charges for repairs.</li>
+          <li><strong>Fuel Policy:</strong> Cars are provided with a full tank of fuel. Please return the car with a full tank, or you will incur an additional fuel fee.</li>
+          <li><strong>Insurance:</strong> The rental includes basic insurance. However, you will be held liable for any damage or theft unless otherwise covered by an additional insurance policy.</li>
+          <li><strong>Late Return:</strong> A late return fee will be charged based on the delay period. Please ensure to return the car on time to avoid extra charges.</li>
+          <li><strong>Pickup & Drop-off:</strong> You are required to return the vehicle to the designated drop-off location. A fee will be charged for any unapproved changes to the drop-off location.</li>
+          <li><strong>Law and Legal Compliance:</strong> By proceeding, you agree to comply with all applicable traffic laws and regulations.</li>
+          <li><strong>Payment & Charges:</strong> Payment is processed via the Lipa na MPesa system. Ensure your payment is successful before confirming your reservation.</li>
+          <li><strong>Cancellation Policy:</strong> Cancellations up to 24 hours before the hire period begin for a full refund. Late cancellations incur a fee.</li>
+          <li><strong>System Integrity:</strong> We act as an intermediary; we ensure car condition but are not liable for disputes between renter and owner.</li>
+          <li><strong>Changes to Terms:</strong> It is your responsibility to review these terms periodically. Continued use implies acceptance.</li>
+        </ul>
+      </div>
+
+      <!-- User Inputs -->
+      <label for="phone">Phone Number</label>
+      <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required>
+      
+      <label for="start-date">Hire Start Date</label>
+      <input type="date" id="start-date" name="start-date" required>
+      
+      <label for="duration">Hire Duration (Days)</label>
+      <input type="number" id="duration" name="duration" required min="1">
+      
+      <label for="pickup">Pickup Location</label>
+      <input type="text" id="pickup" name="pickup" placeholder="Enter pickup location" required>
+      
+      <label for="dropoff">Drop-off Location</label>
+      <input type="text" id="dropoff" name="dropoff" placeholder="Enter drop-off location" required>
+      
+      <!-- Single Submit Button -->
+      <button type="submit" id="proceed-button">Proceed to Payment</button>
+    </form>
+  </div>
+
+  <!-- Link to the external JavaScript file for the booking page -->
+  <script src="carhire.js"></script>
+</body>
+</html>

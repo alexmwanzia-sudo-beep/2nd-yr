@@ -1,4 +1,4 @@
-const {
+const { 
   checkCarAvailability,
   getUserEmailById,
   createNotification,
@@ -8,8 +8,8 @@ const {
   createHire,
   updateHireStatus,
   saveHirePaymentDetails,
-  getHireByUserAndCar,            // <-- Added missing import
-  getPaymentDetailsByTransactionId // <-- Added missing import
+  getHireByUserAndCar,
+  getPaymentDetailsByTransactionId
 } = require("../models/hiremodels");
 
 const { processPayment } = require("../config/mpesa");
@@ -18,9 +18,12 @@ const { sendMail } = require("../config/email");
 // ✅ Hire Car Controller
 const hireCar = async (req, res) => {
   console.log("🔍 Received Request Body:", req.body);
-  const { user_id, car_id, phone, start_date, duration, pickup, dropoff, amount } = req.body;
+  const { user_id, car_id, phone, start_date, duration, pickup, dropoff, amount, reservation_type } = req.body;
   
-  if (!user_id || !car_id || !phone || !start_date || !duration || !pickup || !dropoff || !amount) {
+  // Set amount to null if reservation_type is "temporary"
+  const finalAmount = reservation_type === "temporary" ? null : amount;
+
+  if (!user_id || !car_id || !phone || !start_date || !duration || !pickup || !dropoff || (reservation_type !== "temporary" && !amount)) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -37,13 +40,13 @@ const hireCar = async (req, res) => {
 
     // Change status from "booked" to "pending" (assuming the allowed status is "pending")
     const status = "pending";
-    const hireId = await createHire(user_id, car_id, phone, start_date, duration, pickup, dropoff, amount, status);
+    const hireId = await createHire(user_id, car_id, phone, start_date, duration, pickup, dropoff, finalAmount, status);
     if (!hireId) {
       throw new Error("Failed to create hire record.");
     }
 
     // Send confirmation email and notification
-    await sendMail(userEmail, "Car Hire Confirmation", `Your hire request for car ID ${car_id} is confirmed.i love uuuuuu`);
+    await sendMail(userEmail, "Car Hire Confirmation", `Your hire request for car ID ${car_id} is confirmed. Thank you for your reservation.`);
     await createNotification(user_id, `Car hire confirmed for car ID ${car_id}.`);
 
     res.status(201).json({ message: "Car hired successfully", hireId });
