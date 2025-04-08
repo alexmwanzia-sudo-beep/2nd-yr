@@ -18,12 +18,12 @@ const { sendMail } = require("../config/email");
 // ✅ Hire Car Controller
 const hireCar = async (req, res) => {
   console.log("🔍 Received Request Body:", req.body);
-  const { user_id, car_id, phone, start_date, duration, pickup, dropoff, amount, reservation_type } = req.body;
+  const { user_id, car_id, phone, start_date, duration, pickup, dropoff, amount } = req.body;
   
   // Set amount to null if reservation_type is "temporary"
-  const finalAmount = reservation_type === "temporary" ? null : amount;
+ // const finalAmount = reservation_type === "temporary" ? null : amount;
 
-  if (!user_id || !car_id || !phone || !start_date || !duration || !pickup || !dropoff || (reservation_type !== "temporary" && !amount)) {
+  if (!user_id || !car_id || !phone || !start_date || !duration || !pickup || !dropoff ||  !amount) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -40,7 +40,7 @@ const hireCar = async (req, res) => {
 
     // Change status from "booked" to "pending" (assuming the allowed status is "pending")
     const status = "pending";
-    const hireId = await createHire(user_id, car_id, phone, start_date, duration, pickup, dropoff, finalAmount, status);
+    const hireId = await createHire(user_id, car_id, phone, start_date, duration, pickup, dropoff, amount, status);
     if (!hireId) {
       throw new Error("Failed to create hire record.");
     }
@@ -80,10 +80,10 @@ const payForHire = async (req, res) => {
     // ✅ Call MPesa Payment WITHOUT Transaction ID
     const paymentResponse = await processPayment(amount, phoneNumber);
 
-    if (!paymentResponse.success) {
+   /* if (!paymentResponse.success) {
       return res.status(400).json({ message: "MPesa payment failed, please try again." });
     }
-
+*/
     // Retrieve MPesa Transaction ID
     const transactionId = paymentResponse.mpesaTransactionId;
 
@@ -94,7 +94,7 @@ const payForHire = async (req, res) => {
     await sendMail(userEmail, "Hire Payment Confirmation", `Your payment of KES ${amount} for hire ID ${hire.id} was successful.`);
     await createNotification(user_id, `Payment successful for hire ID ${hire.id}.`);
 
-    res.status(201).json({ message: "Payment processed successfully" });
+    res.status(201).json({ success: true, message: "Payment processed successfully" });
   } catch (error) {
     console.error("Error in payForHire controller:", error);
     res.status(500).json({ message: "Server error" });

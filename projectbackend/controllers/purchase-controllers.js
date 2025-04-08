@@ -89,7 +89,7 @@ const reserveCar = async (req, res) => {
     await createNotification(user_id, `Car reservation confirmed for car ID ${car_id}.`);
     console.log("📩 Email & Notification sent.");
 
-    res.status(201).json({ message: "Car reserved successfully", reservationId });
+    res.status(201).json({  success:true , message: "Car reserved successfully", reservationId });
   } catch (error) {
     console.error("❌ Error in reserveCar controller:", error.sqlMessage || error.message);
     res.status(500).json({ message: "Server error" });
