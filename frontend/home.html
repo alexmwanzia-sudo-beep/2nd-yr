@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vehicle Listing</title>
-    ,<link rel="stylesheet" href="sytles.css">
+    <link rel="stylesheet" href="sytles.css">
   </head> 
   <body>
     <div class="header-div">
       <div class="header-flex">
         <div class="top-header">
-          <input type="text" placeholder="Search">
+          <form id="searchForm" class="search-form">
+            <input type="text" id="searchInput" placeholder="Search by make, model, or year...">
+            <button type="submit" class="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </form>
         </div>
         <div class="middle-section">
          <nav class="nav-class">
@@ -48,5 +56,6 @@
     </div>
    <script src="scripts/cars.js"></script>
   <script src="scripts/carshtml.js"></script>
-  </body>
+  <script src="scripts/search.js"></script>
+  </body>
 </html>
