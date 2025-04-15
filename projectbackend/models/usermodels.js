@@ -91,6 +91,68 @@ const getUserById = async (userId) => {
     }
 
   }
+
+// Get cars that user can review (hired or reserved)
+const getReviewableCars = async (userId) => {
+    try {
+        // First, get all hired and reserved cars in a single query
+        const query = `
+            SELECT DISTINCT 
+                c.*,
+                CASE 
+                    WHEN h.id IS NOT NULL THEN 'Hired'
+                    WHEN r.id IS NOT NULL THEN 'Reserved'
+                END as status
+            FROM cars c
+            LEFT JOIN (
+                SELECT DISTINCT car_id, id 
+                FROM hires 
+                WHERE user_id = ?
+            ) h ON c.car_id = h.car_id
+            LEFT JOIN (
+                SELECT DISTINCT car_id, id 
+                FROM reservations 
+                WHERE user_id = ?
+            ) r ON c.car_id = r.car_id
+            WHERE h.id IS NOT NULL OR r.id IS NOT NULL
+            ORDER BY c.make, c.model;
+        `;
+        
+        const [cars] = await pool.execute(query, [userId, userId]);
+        
+        // Log the results for debugging
+        console.log(`Found ${cars.length} reviewable cars for user ${userId}`);
+        console.log('Cars:', JSON.stringify(cars, null, 2));
+        
+        return cars;
+    } catch (error) {
+        console.error('Error getting reviewable cars:', error);
+        throw error;
+    }
+};
+
+// Get user's reviews
+const getUserReviews = async (userId) => {
+    try {
+        const query = `
+            SELECT 
+                r.*,
+                c.make,
+                c.model,
+                c.year
+            FROM reviews r
+            LEFT JOIN cars c ON r.car_id = c.car_id
+            WHERE r.user_id = ?
+            ORDER BY r.created_at DESC
+        `;
+        const [reviews] = await pool.execute(query, [userId]);
+        return reviews;
+    } catch (error) {
+        console.error('Error getting user reviews:', error);
+        throw error;
+    }
+};
+
 // ✅ Export all functions
 module.exports = {
     checkEmailExists,
@@ -98,4 +160,6 @@ module.exports = {
     findUserByEmail,
     getUserById,
     getUserCars,
+    getReviewableCars,
+    getUserReviews
 };

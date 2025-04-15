@@ -3,7 +3,8 @@ require("dotenv").config();
 
 // Unified Middleware for Token Authentication and Route Protection
 const authenticateAndProtect = (req, res, next) => {
-  console.log("Auth middleware: Checking authorization header");
+  console.log("Auth middleware: Starting authentication check");
+  console.log("Auth middleware: Request headers:", req.headers);
   
   const authHeader = req.header("Authorization"); // Extract 'Authorization' header
   if (!authHeader) {
