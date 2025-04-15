@@ -60,6 +60,50 @@ function viewVideoDemo() {
   alert("Video demo functionality coming soon!");
 }
 
+// Function to load car reviews
+async function loadCarReviews(carId) {
+    try {
+        console.log('Loading reviews for car:', carId);
+        const response = await fetch(`/api/reviews/car/${carId}`);
+        
+        if (!response.ok) {
+            throw new Error('Failed to load reviews');
+        }
+
+        const data = await response.json();
+        console.log('Reviews data:', data);
+
+        // Update average rating display
+        const averageRating = data.data.averageRating || 0;
+        const totalReviews = data.data.totalReviews || 0;
+        
+        document.getElementById('average-rating-stars').innerHTML = '★'.repeat(Math.round(averageRating)) + '☆'.repeat(5 - Math.round(averageRating));
+        document.getElementById('average-rating-text').textContent = `${averageRating.toFixed(1)} out of 5`;
+        document.getElementById('total-reviews').textContent = `(${totalReviews} ${totalReviews === 1 ? 'review' : 'reviews'})`;
+
+        const reviewsContainer = document.getElementById('reviews-container');
+
+        if (data.data.reviews && data.data.reviews.length > 0) {
+            reviewsContainer.innerHTML = data.data.reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="reviewer-name">${review.firstname} ${review.lastname}</span>
+                        <span class="review-rating">${'★'.repeat(review.car_rating)}${'☆'.repeat(5 - review.car_rating)}</span>
+                    </div>
+                    <p class="review-content">${review.car_review}</p>
+                    <span class="review-date">${new Date(review.created_at).toLocaleDateString()}</span>
+                </div>
+            `).join('');
+        } else {
+            reviewsContainer.innerHTML = '<p class="no-reviews">No reviews yet</p>';
+        }
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        document.getElementById('reviews-container').innerHTML = 
+            '<p class="no-reviews">Failed to load reviews. Please try again.</p>';
+    }
+}
+
 // Attach event listeners to buttons when the page loads
 function initializeEventListeners() {
   document.getElementById("purchase-button").addEventListener("click", goToBuyCarPage);
@@ -72,4 +116,13 @@ function initializeEventListeners() {
 window.onload = function () {
   displayCarDetails();
   initializeEventListeners();
+
+  // Get car details from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // Load car reviews
+  const carId = urlParams.get('car_id');
+  if (carId) {
+    loadCarReviews(carId);
+  }
 };

@@ -100,6 +100,98 @@
           <p>No cars reserved yet.</p>
         </div>
       </div>
+
+      <!-- Reviews Section -->
+      <section class="profile-section reviews-section">
+        <h2><i class="fas fa-star"></i> Reviews</h2>
+        
+        <div class="review-forms-container">
+          <!-- Car Review Form -->
+          <div class="review-form" id="carReviewContainer">
+            <div class="form-header">
+              <h3>Write a Car Review</h3>
+              <p class="form-description">Share your experience with a car you've hired or reserved</p>
+            </div>
+            <form method="POST" id="carReviewForm">
+              <div class="form-group">
+                <label for="carSelect">Select Car</label>
+                <select id="carSelect" name="carId" required>
+                  <option value="">Select a car to review</option>
+                </select>
+                <small>Note: You can only review cars you have hired or reserved</small>
+                <span id="carSelectError" class="error-message" aria-live="polite"></span>
+              </div>
+              
+              <div class="form-group">
+                <label>Rating (required)</label>
+                <div class="rating-input" role="group" aria-label="Rating">
+                  <div class="star-input">
+                    <input type="radio" id="star5" name="rating" value="5" required>
+                    <label for="star5" tabindex="0" title="5 stars">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" required>
+                    <label for="star4" tabindex="0" title="4 stars">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" required>
+                    <label for="star3" tabindex="0" title="3 stars">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" required>
+                    <label for="star2" tabindex="0" title="2 stars">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" required>
+                    <label for="star1" tabindex="0" title="1 star">★</label>
+                  </div>
+                  <span id="ratingError" class="error-message" aria-live="polite"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reviewContent">Your Review</label>
+                <textarea id="reviewContent" name="content" required 
+                  placeholder="What did you think about this car? How was your experience?"></textarea>
+                <div class="word-count">0/500 characters</div>
+                <span id="contentError" class="error-message" aria-live="polite"></span>
+              </div>
+
+              <div id="formError" class="error-message form-level-error" aria-live="polite"></div>
+
+              <button type="submit" class="btn submit-btn">
+                <i class="fas fa-paper-plane"></i> Submit Car Review
+              </button>
+            </form>
+          </div>
+
+          <!-- System Review Form -->
+          <div class="review-form" id="systemReviewContainer">
+            <div class="form-header">
+              <h3>Write a System Review</h3>
+              <p class="form-description">Help us improve by sharing your experience with our car rental system</p>
+            </div>
+            <form method="POST" id="systemReviewForm">
+              <div class="form-group">
+                <label for="systemReviewText">Your Feedback</label>
+                <textarea id="systemReviewText" name="systemReview" required 
+                  placeholder="How was your experience using our platform? What can we improve?"></textarea>
+                <div class="word-count">0/500 characters</div>
+              </div>
+              <button type="submit" class="btn submit-btn">
+                <i class="fas fa-paper-plane"></i> Submit System Review
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- User's Reviews -->
+        <div class="reviews-container">
+          <div class="reviews-header">
+            <h3><i class="fas fa-history"></i> My Reviews</h3>
+            <div class="reviews-filter">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="car">Car Reviews</button>
+              <button class="filter-btn" data-filter="system">System Reviews</button>
+            </div>
+          </div>
+          <div id="userReviews" class="reviews-grid">
+            <div class="loading">Loading reviews...</div>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 

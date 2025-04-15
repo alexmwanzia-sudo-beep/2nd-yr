@@ -87,6 +87,78 @@
         width: 100%;
       }
     }
+
+    /* Reviews Section Styles */
+    .reviews-section {
+      margin-top: 40px;
+      text-align: left;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .reviews-header h2 {
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    .average-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stars {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+
+    .review-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .reviewer-name {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .review-rating {
+      color: #ffd700;
+    }
+
+    .review-content {
+      color: #555;
+      margin: 10px 0;
+    }
+
+    .review-date {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .no-reviews {
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
   </style>
 </head>
 
@@ -106,6 +178,22 @@
     <p><strong>Price:</strong> <span id="car-price"></span></p>
     <p><strong>Owner:</strong> <span id="car-owner"></span></p>
     <p><strong>Description:</strong> <span id="car-description"></span></p>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+      <div class="reviews-header">
+        <h2>Reviews</h2>
+        <div class="average-rating">
+          <span class="stars" id="average-rating-stars"></span>
+          <span id="average-rating-text"></span>
+          <span id="total-reviews"></span>
+        </div>
+      </div>
+      <div id="reviews-container">
+        <!-- Reviews will be loaded here -->
+        <p class="no-reviews">Loading reviews...</p>
+      </div>
+    </div>
 
     <!-- Buttons -->
     <div class="buttons">

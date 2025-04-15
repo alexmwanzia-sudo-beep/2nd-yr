@@ -235,3 +235,416 @@ clearNotificationsBtn.addEventListener('click', () => {
     notificationsContainer.innerHTML = '';
     document.querySelector('.notification-count').style.display = 'none';
 });
+
+// Load reviewable cars
+async function loadReviewableCars() {
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in to view reviewable cars');
+        }
+
+        console.log('Fetching reviewable cars...');
+        const response = await fetch('/api/user/reviewable-cars', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load reviewable cars');
+        }
+
+        const data = await response.json();
+        console.log('Reviewable cars data:', data);
+
+        const carSelect = document.getElementById('carSelect');
+        carSelect.innerHTML = '<option value="">Select a car to review</option>';
+
+        if (data.data && data.data.cars && data.data.cars.length > 0) {
+            data.data.cars.forEach(car => {
+                const option = document.createElement('option');
+                option.value = car.car_id;
+                option.textContent = `${car.year} ${car.make} ${car.model} (${car.status})`;
+                carSelect.appendChild(option);
+            });
+        } else {
+            const option = document.createElement('option');
+            option.disabled = true;
+            option.textContent = 'No cars available for review';
+            carSelect.appendChild(option);
+        }
+    } catch (error) {
+        console.error('Error loading reviewable cars:', error);
+        const carSelect = document.getElementById('carSelect');
+        carSelect.innerHTML = '<option value="">Error loading cars</option>';
+    }
+}
+
+// Load user's reviews
+async function loadUserReviews() {
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in to view reviews');
+        }
+
+        console.log('Fetching user reviews...');
+        const response = await fetch('/api/reviews/user', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load reviews');
+        }
+
+        const data = await response.json();
+        console.log('User reviews data:', data);
+
+        const reviewsContainer = document.getElementById('userReviews');
+        
+        if (data.data && data.data.reviews && data.data.reviews.length > 0) {
+            reviewsContainer.innerHTML = data.data.reviews.map(review => {
+                if (review.car_review) {
+                    // Car review
+                    return `
+                        <div class="review-card car-review">
+                            <div class="review-header">
+                                <h4>${review.make} ${review.model} (${review.year})</h4>
+                                <div class="rating">
+                                    ${'★'.repeat(review.car_rating)}${'☆'.repeat(5 - review.car_rating)}
+                                </div>
+                            </div>
+                            <p class="review-content">${review.car_review}</p>
+                            <div class="review-footer">
+                                <span class="review-date">${new Date(review.created_at).toLocaleDateString()}</span>
+                                <button onclick="deleteReview(${review.id})" class="delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else if (review.system_review) {
+                    // System review
+                    return `
+                        <div class="review-card system-review">
+                            <div class="review-header">
+                                <h4>System Review</h4>
+                            </div>
+                            <p class="review-content">${review.system_review}</p>
+                            <div class="review-footer">
+                                <span class="review-date">${new Date(review.created_at).toLocaleDateString()}</span>
+                                <button onclick="deleteReview(${review.id})" class="delete-btn">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        } else {
+            reviewsContainer.innerHTML = '<p class="no-reviews">No reviews yet</p>';
+        }
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        document.getElementById('userReviews').innerHTML = 
+            '<p class="error">Failed to load reviews. Please try again.</p>';
+    }
+}
+
+// Handle car review submission
+async function handleCarReviewSubmit(event) {
+    event.preventDefault();
+    console.log('Car review form submission started');
+    
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+        // Validate form
+        const carId = formData.get('carId');
+        const rating = formData.get('rating');
+        const content = formData.get('content');
+
+        console.log('Form data:', {
+            carId,
+            rating,
+            content
+        });
+
+        if (!carId) {
+            throw new Error('Please select a car to review');
+        }
+        if (!rating) {
+            throw new Error('Please provide a rating');
+        }
+        if (!content.trim()) {
+            throw new Error('Please write a review');
+        }
+
+        // Submit review
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in to submit a review');
+        }
+
+        console.log('Submitting review to server...');
+        const response = await fetch('/api/reviews/car', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                carId: parseInt(carId),
+                carRating: parseInt(rating),
+                carReview: content.trim()
+            })
+        });
+
+        console.log('Server response status:', response.status);
+        const responseData = await response.json();
+        console.log('Server response:', responseData);
+
+        if (!response.ok) {
+            throw new Error(responseData.message || 'Failed to submit car review');
+        }
+
+        // Success handling
+        alert('Car review submitted successfully!');
+        form.reset();
+        await loadUserReviews();
+
+    } catch (error) {
+        console.error('Car review submission error:', error);
+        alert(error.message);
+    }
+}
+
+// Handle system review submission
+async function handleSystemReviewSubmit(event) {
+    event.preventDefault();
+    const form = document.getElementById('systemReviewForm');
+    const formData = new FormData(form);
+
+    try {
+        // Validate form
+        const systemReview = formData.get('systemReview');
+
+        if (!systemReview.trim()) {
+            throw new Error('Please write a review');
+        }
+
+        // Submit review
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in to submit a review');
+        }
+
+        const response = await fetch('/api/reviews/system', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                systemReview: systemReview.trim()
+            })
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Failed to submit system review');
+        }
+
+        // Success handling
+        alert('System review submitted successfully!');
+        form.reset();
+        await loadUserReviews();
+
+    } catch (error) {
+        alert(error.message);
+        console.error('System review submission error:', error);
+    }
+}
+
+// Delete a review
+async function deleteReview(reviewId) {
+    if (!confirm('Are you sure you want to delete this review?')) {
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in to delete a review');
+        }
+
+        const response = await fetch(`/api/reviews/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete review');
+        }
+
+        await loadUserReviews();
+        alert('Review deleted successfully');
+
+    } catch (error) {
+        alert(error.message);
+        console.error('Error deleting review:', error);
+    }
+}
+
+// Handle review filtering
+function initializeReviewFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const reviewCards = document.querySelectorAll('.review-card');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Filter reviews
+            const filter = button.dataset.filter;
+            reviewCards.forEach(card => {
+                if (filter === 'all' || card.classList.contains(`${filter}-review`)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// Handle character count
+function initializeCharacterCount() {
+    const textareas = document.querySelectorAll('textarea');
+    const maxLength = 500;
+
+    textareas.forEach(textarea => {
+        const wordCount = textarea.nextElementSibling;
+        
+        textarea.addEventListener('input', () => {
+            const remaining = maxLength - textarea.value.length;
+            wordCount.textContent = `${textarea.value.length}/${maxLength} characters`;
+            
+            if (remaining < 0) {
+                wordCount.style.color = '#dc3545';
+                textarea.value = textarea.value.substring(0, maxLength);
+            } else {
+                wordCount.style.color = '#6c757d';
+            }
+        });
+    });
+}
+
+// Initialize star rating functionality
+function initializeStarRating() {
+    const starContainer = document.querySelector('.star-input');
+    const starLabels = document.querySelectorAll('.star-input label');
+    const starInputs = document.querySelectorAll('.star-input input[type="radio"]');
+    
+    // Handle keyboard navigation
+    starLabels.forEach((label) => {
+        label.addEventListener('keydown', (e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                const input = document.getElementById(label.getAttribute('for'));
+                input.checked = true;
+                updateStarDisplay(input.value);
+            }
+        });
+
+        // Handle mouse hover
+        label.addEventListener('mouseenter', () => {
+            const rating = label.getAttribute('for').replace('star', '');
+            updateStarDisplay(rating, true); // true for hover state
+        });
+    });
+
+    // Handle mouse leave from container
+    starContainer.addEventListener('mouseleave', () => {
+        const checkedStar = document.querySelector('.star-input input[type="radio"]:checked');
+        if (checkedStar) {
+            updateStarDisplay(checkedStar.value);
+        } else {
+            updateStarDisplay(0);
+        }
+    });
+
+    // Handle click events
+    starInputs.forEach((input) => {
+        input.addEventListener('change', (e) => {
+            updateStarDisplay(e.target.value);
+        });
+    });
+}
+
+// Update star display
+function updateStarDisplay(rating, isHover = false) {
+    const stars = document.querySelectorAll('.star-input label');
+    stars.forEach((star, index) => {
+        const starValue = 5 - index; // Reverse index since stars are in reverse order
+        if (isHover) {
+            star.style.color = starValue <= rating ? '#ffd700' : '#ddd';
+        } else {
+            star.style.color = starValue <= rating ? '#ffd700' : '#ddd';
+        }
+    });
+}
+
+// Initialize review forms
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing review forms');
+    
+    // Initialize form elements
+    const carReviewForm = document.getElementById('carReviewForm');
+    const systemReviewForm = document.getElementById('systemReviewForm');
+
+    // Initialize star rating
+    initializeStarRating();
+
+    // Car review form submission
+    if (carReviewForm) {
+        console.log('Car review form found:', carReviewForm);
+        carReviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('Car review form submitted');
+            await handleCarReviewSubmit(e);
+        });
+    } else {
+        console.error('Car review form not found');
+    }
+
+    // System review form submission
+    if (systemReviewForm) {
+        console.log('System review form found:', systemReviewForm);
+        systemReviewForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log('System review form submitted');
+            await handleSystemReviewSubmit(e);
+        });
+    } else {
+        console.error('System review form not found');
+    }
+
+    // Initialize character count
+    initializeCharacterCount();
+
+    // Load initial data
+    loadReviewableCars();
+    loadUserReviews().then(() => {
+        // Initialize filters after reviews are loaded
+        initializeReviewFilters();
+    });
+});
