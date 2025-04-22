@@ -7,7 +7,9 @@ const {
   getUserEmailById,
   getPaymentDetailsByTransactionId,
   getReservationByUserAndCar,
-  updateReservationStatus
+  updateReservationStatus,
+  getReservationById,
+  updateReservationPaymentStatus
 } = require("../models/purchasemodels");
 const { processPayment } = require("../config/mpesa");
 const { sendMail } = require("../config/email");
@@ -142,4 +144,45 @@ const validateReservationPayment = async (req, res) => {
   }
 };
 
-module.exports = { reserveCar, payForReservation, validateReservationPayment };
+// Cancel a reservation
+const cancelReservation = async (req, res) => {
+    try {
+        const reservationId = req.params.reservationId;
+        const userId = req.user.userId;
+
+        console.log(`Attempting to cancel reservation ${reservationId} for user ${userId}`);
+
+        // Get reservation details
+        const reservation = await getReservationById(reservationId);
+        if (!reservation) {
+            return res.status(404).json({ success: false, message: 'Reservation not found' });
+        }
+
+        // Check if the reservation belongs to the user
+        if (reservation.user_id !== userId) {
+            return res.status(403).json({ success: false, message: 'Not authorized to cancel this reservation' });
+        }
+
+        // Only allow cancellation of active reservations
+        const currentStatus = reservation.status?.toLowerCase();
+        if (!['reserved', 'interested'].includes(currentStatus)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: `Cannot cancel reservation in current status: ${currentStatus}` 
+            });
+        }
+
+        // Mark the reservation as expired (this is our cancellation status)
+        await updateReservationStatus(reservationId, 'expired');
+        
+        // Update car availability back to true (available)
+        await updateCarAvailability(reservation.car_id, true);
+
+        res.json({ success: true, message: 'Reservation cancelled successfully' });
+    } catch (error) {
+        console.error('❌ Error in cancelReservation controller:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+module.exports = { reserveCar, payForReservation, validateReservationPayment, cancelReservation };

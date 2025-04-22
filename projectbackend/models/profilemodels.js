@@ -9,7 +9,7 @@ const getUserProfile = async (userId) => {
   try {
     // Get user data from users table
     const [userRows] = await pool.execute(
-      'SELECT id, firstname, lastname, email, created_at FROM users WHERE id = ?',
+      'SELECT id, firstname, lastname, email  FROM users WHERE id = ?',
       [userId]
     );
     

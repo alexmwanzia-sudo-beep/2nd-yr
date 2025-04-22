@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { hireCar, payForHire, validateHirePayment } = require("../controllers/hirecontrollers");
+const { cancelHire } = require("../controllers/hirecontrollers");
 
 const { authenticateAndProtect } = require("../middleware/authMiddleware");
 
@@ -16,5 +17,8 @@ router.post("/pay", authenticateAndProtect, payForHire);
 
 // ✅ Route to validate a hire payment (e.g., MPesa validation)
 router.post("/validate-payment", authenticateAndProtect, validateHirePayment);
+
+// ✅ Route to cancel a hire
+router.post('/cancel/:hireId', authenticateAndProtect, cancelHire);
 
 module.exports = router;

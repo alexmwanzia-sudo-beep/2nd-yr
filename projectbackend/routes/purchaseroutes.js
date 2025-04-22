@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { reserveCar, payForReservation, validateReservationPayment } = require("../controllers/purchase-controllers");
+const { cancelReservation } = require("../controllers/purchase-controllers");
 
 const { authenticateAndProtect } = require("../middleware/authMiddleware");
 
@@ -16,5 +17,8 @@ router.post("/pay", authenticateAndProtect, payForReservation);
 
 // ✅ Route to validate a payment (e.g., MPesa validation)
 router.post("/validate-payment", authenticateAndProtect, validateReservationPayment);
+
+// ✅ Route to cancel a reservation
+router.post('/cancel/:reservationId', authenticateAndProtect, cancelReservation);
 
 module.exports = router;

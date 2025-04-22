@@ -9,7 +9,10 @@ const {
   updateHireStatus,
   saveHirePaymentDetails,
   getHireByUserAndCar,
-  getPaymentDetailsByTransactionId
+  getHireById,
+  getHirePayment,
+  updatePaymentStatus,
+  updateCarAvailability
 } = require("../models/hiremodels");
 
 const { processPayment } = require("../config/mpesa");
@@ -119,7 +122,7 @@ const validateHirePayment = async (req, res) => {
       return res.status(400).json({ message: "No matching hire record found." });
     }
 
-    const payment = await getPaymentDetailsByTransactionId(transactionId);
+    const payment = await getHirePayment(transactionId);
     if (!payment || payment.hire_id !== hire.id) {
       return res.status(400).json({ message: "Invalid transaction ID or payment mismatch." });
     }
@@ -139,4 +142,47 @@ const validateHirePayment = async (req, res) => {
   }
 };
 
-module.exports = { hireCar, payForHire, validateHirePayment };
+// Cancel a hire
+const cancelHire = async (req, res) => {
+    try {
+        const hireId = req.params.hireId;
+        const userId = req.user.userId;
+
+        console.log(`Attempting to cancel hire ${hireId} for user ${userId}`);
+
+        // Get hire details
+        const hire = await getHireById(hireId);
+        if (!hire) {
+            return res.status(404).json({ success: false, message: 'Hire not found' });
+        }
+
+        // Check if the hire belongs to the user
+        if (hire.user_id !== userId) {
+            return res.status(403).json({ success: false, message: 'Not authorized to cancel this hire' });
+        }
+
+        // Only allow cancellation of pending or confirmed hires
+        if (!['pending', 'confirmed'].includes(hire.status?.toLowerCase())) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Cannot cancel hire in current status' 
+            });
+        }
+
+        console.log(`Updating hire ${hireId} status to cancelled`);
+        // Update hire status to cancelled
+        await updateHireStatus(hireId, 'cancelled');
+        
+        console.log(`Updating car ${hire.car_id} availability to true`);
+        // Update car availability
+        await updateCarAvailability(hire.car_id, true);
+
+        console.log(`Successfully cancelled hire ${hireId}`);
+        res.json({ success: true, message: 'Hire cancelled successfully' });
+    } catch (error) {
+        console.error('❌ Error in cancelHire controller:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+module.exports = { hireCar, payForHire, validateHirePayment, cancelHire };

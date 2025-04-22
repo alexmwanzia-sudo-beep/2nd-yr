@@ -103,10 +103,56 @@ const getHireByUserAndCar = async (userId, carId) => {
   }
 };
 
+const getHireById = async (hireId) => {
+    try {
+        const [hire] = await pool.execute(
+            'SELECT * FROM hires WHERE id = ?',
+            [hireId]
+        );
+        
+        if (!hire[0]) {
+            console.log(`❌ No hire found with ID: ${hireId}`);
+            return null;
+        }
+        
+        console.log(`✅ Successfully retrieved hire with ID: ${hireId}`);
+        return hire[0];
+    } catch (error) {
+        console.error(`❌ Error in getHireById: ${error.message}`);
+        throw error;
+    }
+};
+
+const getHirePayment = async (hireId) => {
+    const [payment] = await pool.execute(
+        'SELECT * FROM hire_payments WHERE hire_id = ?',
+        [hireId]
+    );
+    return payment[0];
+};
+
+const updatePaymentStatus = async (paymentId, status) => {
+    await pool.execute(
+        'UPDATE hire_payments SET status = ? WHERE id = ?',
+        [status, paymentId]
+    );
+};
+
+const updateCarAvailability = async (carId, available) => {
+    await pool.execute(
+        'UPDATE cars SET available_for_hire = ? WHERE car_id = ?',
+        [available ? 1 : 0, carId]
+    );
+};
+
 // ✅ Export functions for controllers
 module.exports = {
   createHire,
   updateHireStatus,
   saveHirePaymentDetails,
-  getHireByUserAndCar
+  getHireByUserAndCar,
+  getHireById,
+  getHirePayment,
+  updatePaymentStatus,
+  updateCarAvailability
 };

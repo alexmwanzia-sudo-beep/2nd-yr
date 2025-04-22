@@ -607,3 +607,132 @@ body {
 .filter-btn.active:hover {
     background: #43a047;
 }
+
+.cars-section {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for reserved and hired cars */
+#reserved-cars-container,
+#hired-cars-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Car card styling */
+.car-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.car-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Car image styling */
+.car-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Car details container */
+.car-details {
+    padding: 15px;
+}
+
+.car-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.car-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.status-reserved {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-hired {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-expired {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+/* Dates and other info */
+.hire-dates,
+.reservation-dates {
+    font-size: 0.9em;
+    color: #666;
+    margin: 5px 0;
+}
+
+/* Action buttons */
+.cancel-hire-btn,
+.cancel-reservation-btn {
+    background-color: #ff5252;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.cancel-hire-btn:hover,
+.cancel-reservation-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Empty state message */
+.no-cars-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #reserved-cars-container,
+    #hired-cars-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    #reserved-cars-container,
+    #hired-cars-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .car-image {
+        height: 180px;
+    }
+}

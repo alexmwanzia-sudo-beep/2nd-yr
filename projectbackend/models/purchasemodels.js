@@ -45,8 +45,8 @@ const updateCarAvailability = async (carId, availableForHire) => {
 const getReservationById = async (reservationId) => {
   try {
     const sql = "SELECT * FROM reservations WHERE id = ?";
-    const [results] = await pool.execute(sql, [reservationId]);
-    return results[0]; // Returns the reservation object or undefined if not found
+    const [reservation] = await pool.execute(sql, [reservationId]);
+    return reservation[0]; // Returns the reservation object or undefined if not found
   } catch (error) {
     console.error("❌ Error fetching reservation by ID:", error);
     throw error;
@@ -80,11 +80,27 @@ console.log("🔍 Payment Values:", values);
 // ✅ Update reservation status
 const updateReservationStatus = async (reservationId, status) => {
   try {
+    // Define allowed status values - exactly matching database enum
+    const allowedStatuses = ['reserved', 'interested', 'expired'];
+    const statusToSet = status.toLowerCase();
+    
+    if (!allowedStatuses.includes(statusToSet)) {
+      throw new Error(`Invalid status value. Must be one of: ${allowedStatuses.join(', ')}`);
+    }
+
+    console.log(`Attempting to update reservation ${reservationId} to status: ${statusToSet}`);
+
     const sql = "UPDATE reservations SET status = ? WHERE id = ?";
-    const [result] = await pool.execute(sql, [status, reservationId]);
-    return result.affectedRows; // Returns the number of rows affected
+    const [result] = await pool.execute(sql, [statusToSet, reservationId]);
+    
+    if (result.affectedRows === 0) {
+      throw new Error(`Reservation with ID ${reservationId} not found`);
+    }
+    
+    console.log(`✅ Successfully updated reservation ${reservationId} status to: ${statusToSet}`);
+    return result.affectedRows;
   } catch (error) {
-    console.error("❌ Error updating reservation status:", error);
+    console.error(`❌ Error updating reservation status: ${error.message}`);
     throw error;
   }
 };
@@ -131,11 +147,16 @@ const getUserEmailById = async (user_id) => {
   }
 };
 
-
-
-
-
-
+const updateReservationPaymentStatus = async (reservationId, status) => {
+  try {
+    const sql = "UPDATE reservations SET payment_status = ? WHERE id = ?";
+    const [result] = await pool.execute(sql, [status, reservationId]);
+    return result.affectedRows; // Returns the number of rows affected
+  } catch (error) {
+    console.error("❌ Error updating reservation payment status:", error);
+    throw error;
+  }
+};
 
 // ✅ Export all models for use in controllers
 module.exports = {
@@ -147,5 +168,6 @@ module.exports = {
   updateReservationStatus,
   getUserNotifications,
   createNotification,
-  getUserEmailById 
+  getUserEmailById,
+  updateReservationPaymentStatus
 };

@@ -89,15 +89,47 @@
 
       <div class="car-section">
         <h2><i class="fas fa-key"></i> Cars Currently Hired</h2>
-        <div id="cars-hired-container" class="cars-grid">
-          <p>No cars hired yet.</p>
+        <div class="hired-cars-section">
+            <h3>Hired Cars</h3>
+            <div id="hired-cars-container">
+                <!-- Template for hired cars -->
+                <template id="hired-car-template">
+                    <div class="car-card">
+                        <img src="" alt="Car Image" class="car-image">
+                        <div class="car-details">
+                            <h4 class="car-title"></h4>
+                            <p class="hire-dates"></p>
+                            <p class="hire-status"></p>
+                            <button class="cancel-hire-btn" style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; display: none;">
+                                Cancel Hire
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
       </div>
 
       <div class="car-section">
         <h2><i class="fas fa-clock"></i> Cars Reserved</h2>
-        <div id="cars-purchased-container" class="cars-grid">
-          <p>No cars reserved yet.</p>
+        <div class="reserved-cars-section">
+            <h3>Reserved Cars</h3>
+            <div id="reserved-cars-container">
+                <!-- Template for reserved cars -->
+                <template id="reserved-car-template">
+                    <div class="car-card">
+                        <img src="" alt="Car Image" class="car-image">
+                        <div class="car-details">
+                            <h4 class="car-title"></h4>
+                            <p class="reservation-dates"></p>
+                            <p class="reservation-status"></p>
+                            <button class="cancel-reservation-btn" style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; display: none;">
+                                Cancel Reservation
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
       </div>
 
