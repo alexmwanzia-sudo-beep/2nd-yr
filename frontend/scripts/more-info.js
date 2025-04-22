@@ -18,7 +18,7 @@ function displayCarDetails() {
   document.getElementById("car-year").textContent = carDetails.year || "N/A";
   document.getElementById("car-condition").textContent = carDetails.condition || "N/A";
   document.getElementById("car-mileage").textContent = carDetails.mileage || "N/A";
-  document.getElementById("car-price").textContent = carDetails.price || "N/A";
+  document.getElementById("car-price").textConte_nt = carDetails.price || "N/A";
   document.getElementById("car-owner").textContent = carDetails.owner || "N/A";
   document.getElementById("car-description").textContent = carDetails.description || "No description available.";
 }
