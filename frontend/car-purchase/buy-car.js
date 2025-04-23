@@ -47,8 +47,19 @@ function displayReservationDetails() {
 }
 
 function attachReservationListeners() {
-    document.querySelector(".reserve-with-fee-btn")?.addEventListener("click", reserveWithFee);
-    document.querySelector(".reserve-without-fee-btn")?.addEventListener("click", reserveWithoutPayment);
+    // Remove any existing listeners first
+    const withFeeBtn = document.querySelector(".reserve-with-fee-btn");
+    const withoutFeeBtn = document.querySelector(".reserve-without-fee-btn");
+    
+    if (withFeeBtn) {
+        withFeeBtn.replaceWith(withFeeBtn.cloneNode(true));
+        document.querySelector(".reserve-with-fee-btn").addEventListener("click", reserveWithFee);
+    }
+    
+    if (withoutFeeBtn) {
+        withoutFeeBtn.replaceWith(withoutFeeBtn.cloneNode(true));
+        document.querySelector(".reserve-without-fee-btn").addEventListener("click", reserveWithoutPayment);
+    }
 }
 
 function reserveWithFee() {
@@ -64,7 +75,15 @@ function reserveWithFee() {
     window.location.href = `reservationpayment.html?carid=${car_id}&user_id=${user_id}`;
 }
 
+// Flag to prevent duplicate submissions
+let isSubmitting = false;
+
 function reserveWithoutPayment() {
+    if (isSubmitting) {
+        console.log("⚠️ Submission already in progress");
+        return;
+    }
+
     const car_id = sessionStorage.getItem("car_id");
     const user_id = sessionStorage.getItem("user_id");
 
@@ -73,6 +92,7 @@ function reserveWithoutPayment() {
         return;
     }
 
+    isSubmitting = true; // Set flag to prevent duplicate submissions
     const token = localStorage.getItem("authToken");
     const requestData = {
         car_id,
@@ -95,6 +115,7 @@ function reserveWithoutPayment() {
         console.log("✅ Response received:", data);
         if (data.success) {
             alert("✅ Reservation successful! A confirmation email will be sent.");
+            window.location.href = '../home.html';
         } else {
             alert("❌ Failed to process reservation.");
         }
@@ -102,6 +123,9 @@ function reserveWithoutPayment() {
     .catch(error => {
         console.error("❌ Error in reservation process:", error);
         alert("❌ An error occurred. Please try again.");
+    })
+    .finally(() => {
+        isSubmitting = false; // Reset flag regardless of success/failure
     });
 }
 

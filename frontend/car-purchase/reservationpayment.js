@@ -79,6 +79,7 @@ function submitPayment() {
       console.log("✅ Response received:", data);
       if (data.message === "Car reserved successfully") {
           alert("✅ Payment successful! Your reservation is confirmed.");
+          window.location.href = '../home.html';
       } else {
           alert("❌ Reservation failed. Please try again.");
       }
