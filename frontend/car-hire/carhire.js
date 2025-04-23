@@ -45,6 +45,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (carIdEl) carIdEl.textContent = carId;
   }
   
+  // Function to show loading overlay
+  function showLoading(message = "Processing your request...") {
+    const overlay = document.getElementById("loadingOverlay");
+    const loadingText = overlay.querySelector(".loading-text");
+    loadingText.textContent = message;
+    overlay.classList.add("active");
+  }
+  
+  // Function to hide loading overlay
+  function hideLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    overlay.classList.remove("active");
+  }
+  
   function attachHireFormListener() {
     const hireForm = document.getElementById("hire-form");
     const proceedButton = document.getElementById("proceed-button");
@@ -55,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     // Attach a submit event listener to the form.
-    hireForm.addEventListener("submit", function(event) {
+    hireForm.addEventListener("submit", async function(event) {
       event.preventDefault(); // Prevent default form submission.
       console.log("🚀 Proceed button clicked!");
   
@@ -95,9 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const hireAmount = calculateAmount(duration);
       localStorage.setItem("hireAmount", hireAmount);
       
-      // Optionally store additional details.
       // Store the phone number for later use.
-localStorage.setItem("phone", phone);
+      localStorage.setItem("phone", phone);
 
       const hireData = { phone, startDate, duration, pickup, dropoff };
       localStorage.setItem("hireDetails", JSON.stringify(hireData));
@@ -115,17 +128,33 @@ localStorage.setItem("phone", phone);
         status: "booked"
       };
       
-      // Send the booking details to the backend.
-      sendHireDetailsToBackend(hireDetailsForBackend, function(success, hireId) {
+      showLoading("Processing your hire request..."); // Show loading overlay
+
+      try {
+        // Send the booking details to the backend.
+        const success = await new Promise((resolve) => {
+          sendHireDetailsToBackend(hireDetailsForBackend, function(success, hireId) {
+            if (success) {
+              localStorage.setItem("hireId", hireId);
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          });
+        });
+
         if (success) {
           alert("✅ Car hire booked successfully.");
-          localStorage.setItem("hireId", hireId);
-          // Navigate to the payment page.
           window.location.href = "hirepayment.html";
         } else {
           alert("❌ Failed to book car for hire.");
         }
-      });
+      } catch (error) {
+        console.error("Error during hire process:", error);
+        alert("❌ An error occurred during the hire process.");
+      } finally {
+        hideLoading(); // Hide loading overlay
+      }
     });
   }
   

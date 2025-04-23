@@ -42,50 +42,67 @@ function attachPaymentListener() {
   payButton.addEventListener("click", processHirePayment);
 }
 
+// Function to show loading overlay
+function showLoading(message = "Processing your request...") {
+    const overlay = document.getElementById("loadingOverlay");
+    const loadingText = overlay.querySelector(".loading-text");
+    loadingText.textContent = message;
+    overlay.classList.add("active");
+}
+
+// Function to hide loading overlay
+function hideLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    overlay.classList.remove("active");
+}
+
 function processHirePayment() {
-  const carId = localStorage.getItem("car_id");
-  const userId = localStorage.getItem("user_id");
-  const token = localStorage.getItem("authToken");
-  const hireAmount = localStorage.getItem("hireAmount");
-  const phoneNumber= localStorage.getItem("phone");
+    const carId = localStorage.getItem("car_id");
+    const userId = localStorage.getItem("user_id");
+    const token = localStorage.getItem("authToken");
+    const hireAmount = localStorage.getItem("hireAmount");
+    const phoneNumber = localStorage.getItem("phone");
 
-
-  if (!carId || !userId || !hireAmount) {
-    alert("❌ Missing payment details.");
-    return;
-  }
-
-  const paymentData = {
-    car_id: carId,
-    user_id: userId,
-    amount: hireAmount,
-    phoneNumber: phoneNumber,
-    token: token,
-  };
-  console.log("🚀 Sending payment request to backend...");
-
-
-  fetch("/api/hire/pay", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(paymentData)
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      alert("✅ Payment processed successfully.");
-      window.location.href = '../home.html';
-    } else {
-      alert(`❌ Payment failed: ${data.error || "Please try again."}`);
+    if (!carId || !userId || !hireAmount) {
+        alert("❌ Missing payment details.");
+        return;
     }
-  })
-  .catch(error => {
-    console.error("❌ Error processing payment:", error);
-    alert("❌ An error occurred. Please try again.");
-  });
+
+    const paymentData = {
+        car_id: carId,
+        user_id: userId,
+        amount: hireAmount,
+        phoneNumber: phoneNumber,
+        token: token,
+    };
+
+    showLoading("Processing your payment..."); // Show loading overlay
+    console.log("🚀 Sending payment request to backend...");
+
+    fetch("/api/hire/pay", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(paymentData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("✅ Payment processed successfully.");
+            window.location.href = '../home.html';
+        } else {
+            alert(`❌ Payment failed: ${data.error || "Please try again."}`);
+        }
+    })
+    .catch(error => {
+        console.error("❌ Error processing payment:", error);
+        alert("❌ An error occurred. Please try again.");
+    })
+    .finally(() => {
+        hideLoading(); // Hide loading overlay
+    });
 }
 
 function parseJwt(token) {

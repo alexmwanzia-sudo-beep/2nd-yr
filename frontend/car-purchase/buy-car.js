@@ -78,6 +78,20 @@ function reserveWithFee() {
 // Flag to prevent duplicate submissions
 let isSubmitting = false;
 
+// Function to show loading overlay
+function showLoading(message = "Processing your request...") {
+    const overlay = document.getElementById("loadingOverlay");
+    const loadingText = overlay.querySelector(".loading-text");
+    loadingText.textContent = message;
+    overlay.classList.add("active");
+}
+
+// Function to hide loading overlay
+function hideLoading() {
+    const overlay = document.getElementById("loadingOverlay");
+    overlay.classList.remove("active");
+}
+
 function reserveWithoutPayment() {
     if (isSubmitting) {
         console.log("⚠️ Submission already in progress");
@@ -93,6 +107,8 @@ function reserveWithoutPayment() {
     }
 
     isSubmitting = true; // Set flag to prevent duplicate submissions
+    showLoading("Processing your reservation..."); // Show loading overlay
+
     const token = localStorage.getItem("authToken");
     const requestData = {
         car_id,
@@ -126,6 +142,7 @@ function reserveWithoutPayment() {
     })
     .finally(() => {
         isSubmitting = false; // Reset flag regardless of success/failure
+        hideLoading(); // Hide loading overlay
     });
 }
 
