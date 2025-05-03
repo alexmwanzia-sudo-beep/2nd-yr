@@ -33,30 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       // Populate Cars Listed
-      const carsListedContainer = document.getElementById("cars-listed-container");
-      if (carsListedContainer) {
-        carsListedContainer.innerHTML = ""; // Clear placeholder
-        
-        if (data.cars && data.cars.length > 0) {
-          data.cars.forEach((car) => {
-            const carItem = document.createElement("div");
-            carItem.className = "car-item";
-            
-            const imagePath = car.image_url ? 
-                (car.image_url.startsWith('/uploads/') ? car.image_url : `/uploads/${car.image_url}`) : 
-                '/cars2/car3.jpg';
-            
-            carItem.innerHTML = `
-              <img src="${imagePath}" alt="${car.make} ${car.model}" onerror="this.src='/cars2/car3.jpg'"/>
-              <p><strong>${car.make} ${car.model}</strong> (${car.year || 'N/A'})</p>
-              <button onclick='showMoreInfo(${JSON.stringify(car).replace(/'/g, "\\'")})'>More Info</button>
-            `;
-            carsListedContainer.appendChild(carItem);
-          });
-        } else {
-          carsListedContainer.innerHTML = "<p>No cars listed yet.</p>";
-        }
-      }
+      await displayListedCars();
 
       // Populate Cars Hired
       const hiredCarsContainer = document.getElementById("hired-cars-container");
@@ -674,8 +651,11 @@ async function cancelHire(hireId) {
             throw new Error('No authentication token found');
         }
 
-        console.log('Making cancellation request to server...');
-        const response = await fetch(`/api/hire/cancel/${hireId}`, {
+        // Ensure the URL is correct with proper formatting
+        const url = `/api/hire/cancel/${hireId}`;
+        console.log('Making API request to:', url);
+        
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -684,12 +664,24 @@ async function cancelHire(hireId) {
         });
 
         console.log('Server response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text(); // Get the raw response text
+            console.error('Error response text:', errorText);
+            
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(errorText);
+                errorMessage = errorData.message || `Server returned ${response.status}`;
+            } catch (e) {
+                errorMessage = `Server returned ${response.status}: Non-JSON response`;
+            }
+            
+            throw new Error(errorMessage);
+        }
+        
         const data = await response.json();
         console.log('Server response data:', data);
-
-        if (!response.ok) {
-            throw new Error(data.message || `Server returned ${response.status}: ${data.error || 'Failed to cancel hire'}`);
-        }
 
         if (data.success) {
             alert('Hire cancelled successfully');
@@ -699,11 +691,7 @@ async function cancelHire(hireId) {
             throw new Error(data.message || 'Failed to cancel hire - unknown error');
         }
     } catch (error) {
-        console.error('Error details:', {
-            message: error.message,
-            stack: error.stack,
-            error
-        });
+        console.error('Error cancelling hire:', error);
         alert(`Failed to cancel hire: ${error.message}`);
     }
 }
@@ -769,9 +757,16 @@ function displayHiredCars(hiredCars) {
         return;
     }
 
+    console.log('Hired cars data:', hiredCars);
+
     hiredCars.forEach(hire => {
         const clone = template.content.cloneNode(true);
         const car = hire.car || {};
+        
+        console.log('Processing hire:', hire);
+        console.log('Hire status:', hire.status);
+        console.log('Hire ID:', hire.id);
+        console.log('Car data:', car);
         
         // Fix image path handling
         const imgElement = clone.querySelector('.car-image');
@@ -782,22 +777,239 @@ function displayHiredCars(hiredCars) {
         imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
         
         clone.querySelector('.car-title').textContent = `${car.make} ${car.model} (${car.year || 'N/A'})`;
-        clone.querySelector('.hire-dates').textContent = `From: ${new Date(hire.start_date).toLocaleDateString()}`;
-        clone.querySelector('.hire-status').textContent = `Status: ${hire.status || 'Unknown'}`;
         
-        // Show cancel button only for pending or active hires
+        // Format and display hire dates
+        const startDate = new Date(hire.start_date);
+        const endDate = new Date(hire.end_date);
+        clone.querySelector('.hire-dates').textContent = 
+            `From: ${startDate.toLocaleDateString()} To: ${endDate.toLocaleDateString()}`;
+        
+        // Format status with badge
+        const status = hire.status || 'Unknown';
+        const statusText = document.createElement('span');
+        statusText.textContent = `Status: ${status}`;
+        
+        const statusEl = clone.querySelector('.hire-status');
+        statusEl.innerHTML = '';
+        statusEl.appendChild(statusText);
+        
+        // Add badge if status is special
+        if (['received', 'returned', 'completed', 'confirmed'].includes(status.toLowerCase())) {
+            const badge = document.createElement('span');
+            badge.className = `status-badge status-${status.toLowerCase()}`;
+            badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            statusEl.appendChild(badge);
+        }
+        
+        // Calculate remaining days and update progress bar
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of day
+        
+        const totalDuration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)); // Total days of hire
+        const daysElapsed = Math.ceil((today - startDate) / (1000 * 60 * 60 * 24)); // Days elapsed so far
+        const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)); // Days remaining
+        
+        const progressFill = clone.querySelector('.hire-progress-fill');
+        const daysRemainingText = clone.querySelector('.hire-days-remaining');
+        
+        // Handle different progress scenarios
+        if (daysRemaining < 0) {
+            // Overdue case
+            progressFill.style.width = '100%';
+            progressFill.classList.add('overdue');
+            daysRemainingText.classList.add('overdue');
+            daysRemainingText.textContent = `${Math.abs(daysRemaining)} day(s) overdue`;
+        } else if (today < startDate) {
+            // Hire hasn't started yet
+            progressFill.style.width = '0%';
+            daysRemainingText.textContent = `Starts in ${Math.ceil((startDate - today) / (1000 * 60 * 60 * 24))} day(s)`;
+        } else {
+            // Normal progress
+            const progress = Math.min(daysElapsed / totalDuration * 100, 100);
+            progressFill.style.width = `${progress}%`;
+            
+            if (daysRemaining === 0) {
+                // Last day
+                progressFill.classList.add('complete');
+                daysRemainingText.textContent = 'Due today';
+            } else {
+                daysRemainingText.textContent = `${daysRemaining} day(s) remaining`;
+            }
+        }
+        
+        // Set up Action Buttons based on status
+        const confirmReceiptBtn = clone.querySelector('.confirm-receipt-btn');
+        const confirmReturnBtn = clone.querySelector('.confirm-return-btn');
         const cancelBtn = clone.querySelector('.cancel-hire-btn');
-        if (hire.status && ['pending', 'active'].includes(hire.status.toLowerCase())) {
+        
+        console.log('Setting up buttons for hire status:', status);
+        
+        // Show the appropriate buttons based on the current status
+        const lowerStatus = status.toLowerCase();
+        
+        if (lowerStatus === 'confirmed') {
+            // Car is confirmed but not yet received - show receipt button
+            console.log('Showing receipt button for hire ID:', hire.id);
+            confirmReceiptBtn.style.display = 'flex';
+            confirmReceiptBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (confirm('Confirm that you have received the car?')) {
+                    confirmCarReceipt(hire.id);
+                }
+            });
+        } else if (lowerStatus === 'received') {
+            // Car is received but not yet returned - show return button
+            console.log('Showing return button for hire ID:', hire.id);
+            confirmReturnBtn.style.display = 'flex';
+            confirmReturnBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                if (confirm('Confirm that you have returned the car to the owner?')) {
+                    confirmCarReturn(hire.id);
+                }
+            });
+        }
+        
+        // Only show cancel button for pending status
+        if (lowerStatus === 'pending') {
+            console.log('Showing cancel button for hire ID:', hire.id);
             cancelBtn.style.display = 'block';
-            cancelBtn.onclick = () => {
+            cancelBtn.onclick = (event) => {
+                event.preventDefault();
                 if (confirm('Are you sure you want to cancel this hire?')) {
                     cancelHire(hire.id);
                 }
             };
         }
+        
+        // Set up Message Owner link with WhatsApp integration
+        const messageOwnerLink = clone.querySelector('.message-owner-link');
+        if (messageOwnerLink && car.owner_contact) {
+            console.log('Setting up message owner link with contact:', car.owner_contact);
+            messageOwnerLink.setAttribute('data-contact', car.owner_contact);
+            messageOwnerLink.style.display = 'inline-block';
+            messageOwnerLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                redirectToWhatsApp(car.owner_contact);
+            });
+        } else if (messageOwnerLink) {
+            console.warn('Owner contact not available, hiding link');
+            messageOwnerLink.style.display = 'none';
+        } else {
+            console.error('Message owner link element not found in template');
+        }
 
         container.appendChild(clone);
     });
+}
+
+// Function to confirm car receipt
+async function confirmCarReceipt(hireId) {
+    try {
+        console.log('Confirming receipt of car with hire ID:', hireId);
+        
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        // Ensure the URL is correct with proper formatting
+        const url = `/api/hire/confirm-receipt/${hireId}`;
+        console.log('Making API request to:', url);
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('Server response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text(); // Get the raw response text
+            console.error('Error response text:', errorText);
+            
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(errorText);
+                errorMessage = errorData.message || `Server returned ${response.status}`;
+            } catch (e) {
+                errorMessage = `Server returned ${response.status}: Non-JSON response`;
+            }
+            
+            throw new Error(errorMessage);
+        }
+        
+        const data = await response.json();
+        console.log('Server response data:', data);
+
+        if (data.success) {
+            alert('Car receipt confirmed successfully');
+            // Reload the profile data
+            await loadUserProfile();
+        } else {
+            throw new Error(data.message || 'Failed to confirm receipt - unknown error');
+        }
+    } catch (error) {
+        console.error('Error confirming car receipt:', error);
+        alert(`Failed to confirm receipt: ${error.message}`);
+    }
+}
+
+// Function to confirm car return
+async function confirmCarReturn(hireId) {
+    try {
+        console.log('Confirming return of car with hire ID:', hireId);
+        
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        // Ensure the URL is correct with proper formatting
+        const url = `/api/hire/confirm-return/${hireId}`;
+        console.log('Making API request to:', url);
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('Server response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text(); // Get the raw response text
+            console.error('Error response text:', errorText);
+            
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(errorText);
+                errorMessage = errorData.message || `Server returned ${response.status}`;
+            } catch (e) {
+                errorMessage = `Server returned ${response.status}: Non-JSON response`;
+            }
+            
+            throw new Error(errorMessage);
+        }
+        
+        const data = await response.json();
+        console.log('Server response data:', data);
+
+        if (data.success) {
+            alert('Car return confirmed successfully');
+            // Reload the profile data
+            await loadUserProfile();
+        } else {
+            throw new Error(data.message || 'Failed to confirm return - unknown error');
+        }
+    } catch (error) {
+        console.error('Error confirming car return:', error);
+        alert(`Failed to confirm return: ${error.message}`);
+    }
 }
 
 // Update the displayReservedCars function
@@ -833,6 +1045,19 @@ function displayReservedCars(reservedCars) {
         clone.querySelector('.reservation-dates').textContent = `Reserved on: ${new Date(reservation.reserved_at).toLocaleDateString()}`;
         clone.querySelector('.reservation-status').textContent = `Status: ${reservation.status || 'Unknown'}`;
         
+        // Set up Message Owner link with WhatsApp integration
+        const messageOwnerLink = clone.querySelector('.message-owner-link');
+        if (messageOwnerLink && car.owner_contact) {
+            messageOwnerLink.setAttribute('data-contact', car.owner_contact);
+            messageOwnerLink.style.display = 'inline-block';
+            messageOwnerLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                redirectToWhatsApp(car.owner_contact);
+            });
+        } else if (messageOwnerLink) {
+            messageOwnerLink.style.display = 'none';
+        }
+        
         // Show cancel button only for active reservations
         const cancelBtn = clone.querySelector('.cancel-reservation-btn');
         if (reservation.status && ['reserved', 'interested'].includes(reservation.status.toLowerCase())) {
@@ -846,4 +1071,142 @@ function displayReservedCars(reservedCars) {
 
         container.appendChild(clone);
     });
+}
+
+// Function to redirect to WhatsApp
+function redirectToWhatsApp(phoneNumber) {
+    if (!phoneNumber) {
+        alert('Owner contact is not available.');
+        return;
+    }
+
+    // Format the phone number (remove spaces, dashes, etc.)
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
+
+    // Redirect to WhatsApp
+    const whatsappUrl = `https://wa.me/${formattedPhoneNumber}`;
+    console.log(`Redirecting to WhatsApp: ${whatsappUrl}`); // Debugging log
+    window.open(whatsappUrl, '_blank');
+}
+
+// Function to display listed cars with reservations
+async function displayListedCars() {
+    const container = document.getElementById('listed-cars-container');
+    const template = document.getElementById('listed-car-template');
+    
+    if (!container || !template) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        console.log('Fetching listed cars...');
+        const response = await fetch('/api/cars/listed', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        console.log('Listed cars response status:', response.status);
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            throw new Error('Failed to fetch listed cars: ' + errorText);
+        }
+
+        const cars = await response.json();
+        console.log('Received cars:', cars);
+        container.innerHTML = '';
+
+        if (!cars || cars.length === 0) {
+            container.innerHTML = '<p>No cars listed yet.</p>';
+            return;
+        }
+
+        for (const car of cars) {
+            const clone = template.content.cloneNode(true);
+            
+            // Set car details
+            const imgElement = clone.querySelector('.car-image');
+            imgElement.src = car.image_url ? `/uploads/${car.image_url}` : '/cars2/car3.jpg';
+            imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
+            
+            clone.querySelector('.car-title').textContent = `${car.make} ${car.model} (${car.year || 'N/A'})`;
+            clone.querySelector('.car-price').textContent = `Price: $${car.price}`;
+            clone.querySelector('.car-status').textContent = `Status: ${car.status || 'Available'}`;
+            
+            // Get and display reservations
+            const reservationsResponse = await fetch(`/api/sales/reservations/${car.car_id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (reservationsResponse.ok) {
+                const reservations = await reservationsResponse.json();
+                const buyersList = clone.querySelector('.interested-buyers');
+                
+                if (reservations.data && reservations.data.length > 0) {
+                    reservations.data.forEach(reservation => {
+                        const li = document.createElement('li');
+                        li.textContent = `Buyer: ${reservation.email} (${reservation.phone})`;
+                        buyersList.appendChild(li);
+                    });
+                } else {
+                    buyersList.innerHTML = '<li>No interested buyers yet</li>';
+                }
+            }
+            
+            // Set up sell button
+            const sellButton = clone.querySelector('.sell-car-btn');
+            sellButton.setAttribute('data-car-id', car.car_id);
+            sellButton.addEventListener('click', () => handleSellCar(car.car_id));
+            
+            container.appendChild(clone);
+        }
+    } catch (error) {
+        console.error('Error displaying listed cars:', error);
+        container.innerHTML = '<p>Error loading cars. Please try again later.</p>';
+    }
+}
+
+// Function to handle car sale
+async function handleSellCar(carId) {
+    try {
+        const buyerId = prompt('Enter the buyer\'s user ID:');
+        if (!buyerId) return;
+
+        const amount = prompt('Enter the sale amount:');
+        if (!amount) return;
+
+        const response = await fetch('/api/sales/sell', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+                carId,
+                buyerId,
+                amount: parseFloat(amount)
+            })
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Car sold successfully!');
+            displayListedCars(); // Refresh the display
+        } else {
+            alert(`Error: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('Error selling car:', error);
+        alert('Error selling car. Please try again.');
+    }
 }

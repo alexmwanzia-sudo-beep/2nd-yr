@@ -88,4 +88,23 @@ const addCar = async (carData) => {
     }
 };
 
-module.exports = { checkUserExists, getAllCars, addCar };
+// ✅ Get cars owned by a specific user
+const getUserCars = async (userId) => {
+    try {
+        const query = `SELECT * FROM cars WHERE user_id = ?`;
+        const [cars] = await db.pool.execute(query, [userId]);
+
+        // Map through cars and adjust the image_url if necessary
+        const formattedCars = cars.map(car => ({
+            ...car,
+            image_url: car.image_url?.replace(/^\/?uploads\//, '') || null, // Strip "/uploads/" and handle null values
+        }));
+
+        return formattedCars;
+    } catch (error) {
+        console.error("❌ Error fetching user's cars:", error);
+        throw error;
+    }
+};
+
+module.exports = { checkUserExists, getAllCars, addCar, getUserCars };

@@ -36,7 +36,7 @@ const updateHireStatus = async (hireId, status) => {
     }
 
     // Restrict status values to prevent unwanted updates
-    const allowedStatuses = ["pending", "confirmed", "cancelled"];
+    const allowedStatuses = ["pending", "confirmed", "cancelled", "received", "returned", "completed"];
     if (!allowedStatuses.includes(status)) {
       throw new Error("Invalid status update.");
     }
@@ -145,6 +145,82 @@ const updateCarAvailability = async (carId, available) => {
     );
 };
 
+// Update hire status to 'received'
+const confirmCarReceipt = async (hireId, userId) => {
+    try {
+        // First verify that the hire belongs to this user
+        const [userHireCheck] = await pool.execute(
+            'SELECT id FROM hires WHERE id = ? AND user_id = ?',
+            [hireId, userId]
+        );
+        
+        if (!userHireCheck.length) {
+            console.error(`❌ Unauthorized hire confirmation attempt for hire ID ${hireId} by user ${userId}`);
+            return { success: false, message: 'Unauthorized access - this hire does not belong to you' };
+        }
+        
+        // Update the hire status to 'received'
+        const [result] = await pool.execute(
+            'UPDATE hires SET status = "received", received_at = NOW() WHERE id = ?',
+            [hireId]
+        );
+        
+        if (result.affectedRows === 0) {
+            console.error(`❌ Failed to update hire status to received for ID ${hireId}`);
+            return { success: false, message: 'Failed to update hire status' };
+        }
+        
+        console.log(`✅ Car receipt confirmed for hire ID ${hireId}`);
+        return { success: true, message: 'Car receipt confirmed successfully' };
+    } catch (error) {
+        console.error(`❌ Error in confirmCarReceipt() at ${new Date().toISOString()}:`, error.message);
+        throw error;
+    }
+};
+
+// Update hire status to 'returned'
+const confirmCarReturn = async (hireId, userId) => {
+    try {
+        // First verify that the hire belongs to this user
+        const [userHireCheck] = await pool.execute(
+            'SELECT id, car_id FROM hires WHERE id = ? AND user_id = ?',
+            [hireId, userId]
+        );
+        
+        if (!userHireCheck.length) {
+            console.error(`❌ Unauthorized hire return attempt for hire ID ${hireId} by user ${userId}`);
+            return { success: false, message: 'Unauthorized access - this hire does not belong to you' };
+        }
+        
+        // Update the hire status to 'returned'
+        const [result] = await pool.execute(
+            'UPDATE hires SET status = "returned", returned_at = NOW() WHERE id = ?',
+            [hireId]
+        );
+        
+        if (result.affectedRows === 0) {
+            console.error(`❌ Failed to update hire status to returned for ID ${hireId}`);
+            return { success: false, message: 'Failed to update hire status' };
+        }
+        
+        // Update car availability in the cars table
+        const carId = userHireCheck[0].car_id;
+        try {
+            await updateCarAvailability(carId, true);
+            console.log(`✅ Car (ID: ${carId}) marked as available for hire again`);
+        } catch (err) {
+            console.warn(`⚠ Could not update car availability: ${err.message}`);
+            // Continue even if this fails
+        }
+        
+        console.log(`✅ Car return confirmed for hire ID ${hireId}`);
+        return { success: true, message: 'Car return confirmed successfully' };
+    } catch (error) {
+        console.error(`❌ Error in confirmCarReturn() at ${new Date().toISOString()}:`, error.message);
+        throw error;
+    }
+};
+
 // ✅ Export functions for controllers
 module.exports = {
   createHire,
@@ -154,5 +230,7 @@ module.exports = {
   getHireById,
   getHirePayment,
   updatePaymentStatus,
-  updateCarAvailability
+  updateCarAvailability,
+  confirmCarReceipt,
+  confirmCarReturn
 };

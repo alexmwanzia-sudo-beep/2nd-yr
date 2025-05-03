@@ -35,16 +35,26 @@ const getUserProfile = async (userId) => {
  */
 const getUserCars = async (userId) => {
   try {
-    // First, let's check if the cars table has a user_id column
+    // Modified query to include all reservations
     const [rows] = await pool.execute(
-      'SELECT * FROM cars WHERE user_id = ?',
+      `SELECT c.*, 
+              COUNT(DISTINCT r.id) as reservation_count,
+              GROUP_CONCAT(DISTINCT CONCAT(u.firstname, ' ', u.lastname, ' (', r.status, ')')) as interested_buyers
+       FROM cars c
+       LEFT JOIN reservations r ON c.car_id = r.car_id
+       LEFT JOIN users u ON r.user_id = u.id
+       WHERE c.user_id = ?
+       GROUP BY c.car_id`,
       [userId]
     );
     
-    // Update image paths
+    // Update image paths and format the data
     return rows.map(car => ({
       ...car,
-      image_url: car.image_url ? `/uploads/${car.image_url}` : '/cars2/car3.jpg'
+      image_url: car.image_url ? `/uploads/${car.image_url}` : '/cars2/car3.jpg',
+      interested_buyers: car.interested_buyers ? car.interested_buyers.split(',') : [],
+      has_interested_buyers: car.reservation_count > 0,
+      reservation_count: car.reservation_count
     }));
   } catch (error) {
     console.error('Error in getUserCars:', error);
@@ -62,7 +72,7 @@ const getUserHireHistory = async (userId) => {
   try {
     // First, let's check the structure of the hires table
     const [hireRows] = await pool.execute(
-      `SELECT h.*, c.make, c.model, c.year, c.image_url, c.price, c.mileage, c.car_condition, c.description, c.owner_name
+      `SELECT h.*, c.make, c.model, c.year, c.image_url, c.price, c.mileage, c.car_condition, c.description, c.owner_name, c.owner_contact
        FROM hires h
        LEFT JOIN cars c ON h.car_id = c.car_id
        WHERE h.user_id = ?`,
@@ -74,21 +84,31 @@ const getUserHireHistory = async (userId) => {
     }
     
     // Format the data
-    const hireHistory = hireRows.map(hire => ({
-      ...hire,
-      car: {
-        car_id: hire.car_id,
-        make: hire.make || 'Unknown',
-        model: hire.model || 'Unknown',
-        year: hire.year || 'Unknown',
-        image_url: hire.image_url ? `/uploads/${hire.image_url}` : '/cars2/car3.jpg',
-        price: hire.price,
-        mileage: hire.mileage,
-        car_condition: hire.car_condition,
-        description: hire.description,
-        owner_name: hire.owner_name
-      }
-    }));
+    const hireHistory = hireRows.map(hire => {
+      // Calculate end_date based on start_date and duration
+      const startDate = new Date(hire.start_date);
+      const durationDays = parseInt(hire.duration) || 1; // Default to 1 day if duration is missing
+      const endDate = new Date(startDate);
+      endDate.setDate(startDate.getDate() + durationDays);
+      
+      return {
+        ...hire,
+        end_date: endDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+        car: {
+          car_id: hire.car_id,
+          make: hire.make || 'Unknown',
+          model: hire.model || 'Unknown',
+          year: hire.year || 'Unknown',
+          image_url: hire.image_url ? `/uploads/${hire.image_url}` : '/cars2/car3.jpg',
+          price: hire.price,
+          mileage: hire.mileage,
+          car_condition: hire.car_condition,
+          description: hire.description,
+          owner_name: hire.owner_name,
+          owner_contact: hire.owner_contact
+        }
+      };
+    });
     
     return hireHistory;
   } catch (error) {
@@ -104,9 +124,8 @@ const getUserHireHistory = async (userId) => {
  */
 const getUserReservationHistory = async (userId) => {
   try {
-    // First, let's check the structure of the reservations table
     const [reservationRows] = await pool.execute(
-      `SELECT r.*, c.make, c.model, c.year, c.image_url, c.price, c.mileage, c.car_condition, c.description, c.owner_name
+      `SELECT r.*, c.make, c.model, c.year, c.image_url, c.price, c.mileage, c.car_condition, c.description, c.owner_name, c.owner_contact
        FROM reservations r
        LEFT JOIN cars c ON r.car_id = c.car_id
        WHERE r.user_id = ?`,
@@ -117,7 +136,6 @@ const getUserReservationHistory = async (userId) => {
       return []; // Return empty array if no reservations found
     }
     
-    // Format the data
     const reservationHistory = reservationRows.map(reservation => ({
       ...reservation,
       car: {
@@ -130,14 +148,15 @@ const getUserReservationHistory = async (userId) => {
         mileage: reservation.mileage,
         car_condition: reservation.car_condition,
         description: reservation.description,
-        owner_name: reservation.owner_name
+        owner_name: reservation.owner_name,
+        owner_contact: reservation.owner_contact // Ensure this is mapped correctly
       }
     }));
     
     return reservationHistory;
   } catch (error) {
     console.error('Error in getUserReservationHistory:', error);
-    return []; // Return empty array on error
+    return [];
   }
 };
 
@@ -201,4 +220,4 @@ module.exports = {
   updateProfilePicture,
   saveUserProfile,
   getUserNotifications
-}; 
+};

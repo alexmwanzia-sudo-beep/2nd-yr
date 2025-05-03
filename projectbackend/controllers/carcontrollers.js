@@ -1,5 +1,5 @@
 // Import necessary functions
-const { addCar, checkUserExists, getAllCars } = require("../models/carmodels"); 
+const { addCar, checkUserExists, getAllCars, getUserCars } = require("../models/carmodels"); 
 const path = require("path");
 
 // ✅ Function to format image paths
@@ -100,5 +100,37 @@ const createCar = async (req, res) => {
     }
 };
 
+// ✅ Controller function to fetch user's listed cars
+const getListedCars = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        console.log('Fetching listed cars for user:', userId);
+        
+        // Debug: Check if getUserCars is a function
+        console.log('getUserCars type:', typeof getUserCars);
+        console.log('getUserCars:', getUserCars);
+        
+        if (typeof getUserCars !== 'function') {
+            throw new Error('getUserCars is not a function. It is: ' + typeof getUserCars);
+        }
+        
+        const cars = await getUserCars(userId);
+        console.log(`Found ${cars.length} cars for user ${userId}`);
+
+        res.status(200).json(cars);
+    } catch (error) {
+        console.error("❌ Error in getListedCars controller:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Failed to fetch listed cars",
+            error: error.message 
+        });
+    }
+};
+
 // ✅ Export controller functions
-module.exports = { getCars, createCar };
+module.exports = {
+    getCars,
+    createCar,
+    getListedCars
+};

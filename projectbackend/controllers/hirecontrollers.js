@@ -4,6 +4,8 @@ const {
   createNotification,
 } = require("../models/purchasemodels");
 
+const { pool } = require("../config/db");
+
 const {
   createHire,
   updateHireStatus,
@@ -12,7 +14,9 @@ const {
   getHireById,
   getHirePayment,
   updatePaymentStatus,
-  updateCarAvailability
+  updateCarAvailability,
+  confirmCarReceipt,
+  confirmCarReturn
 } = require("../models/hiremodels");
 
 const { processPayment } = require("../config/mpesa");
@@ -75,32 +79,46 @@ const payForHire = async (req, res) => {
     }
 
     const hire = await getHireByUserAndCar(user_id, car_id);
-    // Update the check to look for "pending" status
     if (!hire || hire.status !== "pending") {
       return res.status(400).json({ message: "Invalid or expired hire record" });
     }
 
-    // ✅ Call MPesa Payment WITHOUT Transaction ID
-    const paymentResponse = await processPayment(amount, phoneNumber);
+    // ✅ Call MPesa Payment with transaction type
+    const paymentResponse = await processPayment(amount, phoneNumber, "hire");
 
-   /* if (!paymentResponse.success) {
-      return res.status(400).json({ message: "MPesa payment failed, please try again." });
+    if (!paymentResponse.success) {
+      return res.status(400).json({ 
+        message: "MPesa payment failed", 
+        details: paymentResponse 
+      });
     }
-*/
-    // Retrieve MPesa Transaction ID
-    const transactionId = paymentResponse.mpesaTransactionId;
 
-    await saveHirePaymentDetails(hire.id, amount, transactionId, "completed");
+    // Get transaction ID and reference number
+    const { mpesaTransactionId, referenceNumber } = paymentResponse;
+
+    // Save payment details with reference number
+    await saveHirePaymentDetails(hire.id, amount, mpesaTransactionId, "completed");
+    
     // Update the hire status to "confirmed"
     await updateHireStatus(hire.id, "confirmed");
 
-    await sendMail(userEmail, "Hire Payment Confirmation", `Your payment of KES ${amount} for hire ID ${hire.id} was successful.`);
+    // Send confirmation email and notification
+    await sendMail(userEmail, "Hire Payment Confirmation", 
+      `Your payment of KES ${amount} for hire ID ${hire.id} was successful.\nReference: ${referenceNumber}`);
     await createNotification(user_id, `Payment successful for hire ID ${hire.id}.`);
 
-    res.status(201).json({ success: true, message: "Payment processed successfully" });
+    res.status(201).json({ 
+      success: true, 
+      message: "Payment processed successfully",
+      referenceNumber,
+      transactionId: mpesaTransactionId
+    });
   } catch (error) {
     console.error("Error in payForHire controller:", error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ 
+      success: false,
+      message: error.message || "Server error" 
+    });
   }
 };
 
@@ -145,44 +163,256 @@ const validateHirePayment = async (req, res) => {
 // Cancel a hire
 const cancelHire = async (req, res) => {
     try {
-        const hireId = req.params.hireId;
         const userId = req.user.userId;
-
-        console.log(`Attempting to cancel hire ${hireId} for user ${userId}`);
-
-        // Get hire details
-        const hire = await getHireById(hireId);
-        if (!hire) {
-            return res.status(404).json({ success: false, message: 'Hire not found' });
-        }
-
-        // Check if the hire belongs to the user
-        if (hire.user_id !== userId) {
-            return res.status(403).json({ success: false, message: 'Not authorized to cancel this hire' });
-        }
-
-        // Only allow cancellation of pending or confirmed hires
-        if (!['pending', 'confirmed'].includes(hire.status?.toLowerCase())) {
+        const hireId = req.params.hireId;
+        
+        if (!hireId) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'Cannot cancel hire in current status' 
+                message: "Hire ID is required" 
             });
         }
-
-        console.log(`Updating hire ${hireId} status to cancelled`);
-        // Update hire status to cancelled
-        await updateHireStatus(hireId, 'cancelled');
         
-        console.log(`Updating car ${hire.car_id} availability to true`);
-        // Update car availability
-        await updateCarAvailability(hire.car_id, true);
-
-        console.log(`Successfully cancelled hire ${hireId}`);
-        res.json({ success: true, message: 'Hire cancelled successfully' });
+        // Get hire to check if it belongs to the user
+        const hire = await getHireById(hireId);
+        
+        if (!hire) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Hire not found" 
+            });
+        }
+        
+        if (hire.user_id !== userId) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Unauthorized - This hire does not belong to you" 
+            });
+        }
+        
+        // Only allow cancellation of 'pending' or 'confirmed' hires
+        if (!['pending', 'confirmed'].includes(hire.status.toLowerCase())) {
+            return res.status(400).json({ 
+                success: false, 
+                message: `Cannot cancel a hire with status '${hire.status}'` 
+            });
+        }
+        
+        // Update hire status to 'cancelled'
+        const result = await updateHireStatus(hireId, 'cancelled');
+        
+        if (result) {
+            return res.json({ 
+                success: true, 
+                message: "Hire cancelled successfully" 
+            });
+        } else {
+            return res.status(500).json({ 
+                success: false, 
+                message: "Failed to cancel hire" 
+            });
+        }
     } catch (error) {
-        console.error('❌ Error in cancelHire controller:', error);
-        res.status(500).json({ success: false, message: error.message });
+        console.error("Error cancelling hire:", error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Server error" 
+        });
     }
 };
 
-module.exports = { hireCar, payForHire, validateHirePayment, cancelHire };
+// Rename the function to avoid conflicts
+const updateHireStatusWithCustomStates = async (hireId, status) => {
+  try {
+    // Check if hire record exists
+    const [existingHire] = await pool.execute("SELECT id FROM hires WHERE id = ?", [hireId]);
+    if (!existingHire.length) {
+      throw new Error("Hire record not found.");
+    }
+
+    // Allow custom statuses including: received, returned, completed
+    const allowedStatuses = ["pending", "confirmed", "cancelled", "received", "returned", "completed"];
+    if (!allowedStatuses.includes(status)) {
+      throw new Error("Invalid status update.");
+    }
+
+    const sql = "UPDATE hires SET status = ? WHERE id = ?";
+    const [result] = await pool.execute(sql, [status, hireId]);
+    console.log(`✅ Hire status updated for ID ${hireId}: ${status}`);
+    return result.affectedRows; // Returns the number of rows affected
+  } catch (error) {
+    console.error(`❌ Error in updateHireStatusWithCustomStates() at ${new Date().toISOString()}:`, error.message);
+    throw error;
+  }
+};
+
+/**
+ * Confirm receipt of a hired car
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const confirmReceipt = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const hireId = req.params.hireId;
+        
+        if (!hireId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Hire ID is required" 
+            });
+        }
+        
+        // Check if the hire is in 'confirmed' status
+        const hire = await getHireById(hireId);
+        
+        if (!hire) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Hire not found" 
+            });
+        }
+        
+        if (hire.user_id !== userId) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Unauthorized - This hire does not belong to you" 
+            });
+        }
+        
+        if (hire.status.toLowerCase() !== 'confirmed') {
+            return res.status(400).json({ 
+                success: false, 
+                message: `Can only confirm receipt for a hire with 'confirmed' status. Current status: '${hire.status}'` 
+            });
+        }
+        
+        // Two ways to handle this:
+        // 1. Use the model function
+        const result = await confirmCarReceipt(hireId, userId);
+        
+        // 2. As a fallback, we can directly update the status if needed
+        if (!result.success) {
+            // Try the direct status update
+            try {
+                await updateHireStatusWithCustomStates(hireId, "received");
+                return res.json({ 
+                    success: true, 
+                    message: "Car receipt confirmed successfully (fallback method)" 
+                });
+            } catch (updateError) {
+                console.error("Error in fallback update:", updateError);
+                return res.status(400).json({ 
+                    success: false, 
+                    message: result.message || "Failed to update status" 
+                });
+            }
+        }
+        
+        return res.json({ 
+            success: true, 
+            message: result.message 
+        });
+    } catch (error) {
+        console.error("Error confirming car receipt:", error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Server error" 
+        });
+    }
+};
+
+/**
+ * Confirm return of a hired car
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const confirmReturn = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const hireId = req.params.hireId;
+        
+        if (!hireId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Hire ID is required" 
+            });
+        }
+        
+        // Check if the hire is in 'received' status
+        const hire = await getHireById(hireId);
+        
+        if (!hire) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Hire not found" 
+            });
+        }
+        
+        if (hire.user_id !== userId) {
+            return res.status(403).json({ 
+                success: false, 
+                message: "Unauthorized - This hire does not belong to you" 
+            });
+        }
+        
+        if (hire.status.toLowerCase() !== 'received') {
+            return res.status(400).json({ 
+                success: false, 
+                message: `Can only confirm return for a hire with 'received' status. Current status: '${hire.status}'` 
+            });
+        }
+        
+        // Two ways to handle this:
+        // 1. Use the model function
+        const result = await confirmCarReturn(hireId, userId);
+        
+        // 2. As a fallback, we can directly update the status if needed
+        if (!result.success) {
+            // Try the direct status update
+            try {
+                await updateHireStatusWithCustomStates(hireId, "returned");
+                // Also update car availability
+                const carId = hire.car_id;
+                try {
+                    await updateCarAvailability(carId, true);
+                    console.log(`✅ Car (ID: ${carId}) marked as available for hire again`);
+                } catch (err) {
+                    console.warn(`⚠ Could not update car availability: ${err.message}`);
+                    // Continue even if this fails
+                }
+                
+                return res.json({ 
+                    success: true, 
+                    message: "Car return confirmed successfully (fallback method)" 
+                });
+            } catch (updateError) {
+                console.error("Error in fallback update:", updateError);
+                return res.status(400).json({ 
+                    success: false, 
+                    message: result.message || "Failed to update status" 
+                });
+            }
+        }
+        
+        return res.json({ 
+            success: true, 
+            message: result.message 
+        });
+    } catch (error) {
+        console.error("Error confirming car return:", error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Server error" 
+        });
+    }
+};
+
+module.exports = {
+    cancelHire,
+    confirmReceipt,
+    confirmReturn,
+    hireCar,
+    payForHire,
+    validateHirePayment
+};

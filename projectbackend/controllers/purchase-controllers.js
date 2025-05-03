@@ -50,33 +50,38 @@ const reserveCar = async (req, res) => {
     console.log("✅ Reservation created successfully with ID:", reservationId);
 
     let transactionId = null;
+    let referenceNumber = null;
 
     // ✅ STEP 2: Process payment after reservation is created
     if (reservationType === "paid") {
       console.log("🚀 Initiating MPesa Payment...");
-      const paymentResponse = await processPayment(amount, phoneNumber);
+      const paymentResponse = await processPayment(amount, phoneNumber, "reservation");
       console.log("✅ MPesa Payment Response:", JSON.stringify(paymentResponse, null, 2));
   
-      if (!paymentResponse || paymentResponse.success === false) {
-          console.error("❌ MPesa Payment Failed:", paymentResponse);
-          return res.status(400).json({ 
-              message: "MPesa payment failed", 
-              details: paymentResponse 
-          });
+      if (!paymentResponse.success) {
+        console.error("❌ MPesa Payment Failed:", paymentResponse);
+        return res.status(400).json({ 
+          success: false,
+          message: "MPesa payment failed", 
+          details: paymentResponse 
+        });
       }
   
-      // Get transaction ID from the correct field in the response
+      // Get transaction ID and reference number from response
       transactionId = paymentResponse.mpesaTransactionId;
+      referenceNumber = paymentResponse.referenceNumber;
       
       if (!transactionId) {
-          console.warn("⚠ Warning: Transaction ID is missing in payment response:", paymentResponse);
-          return res.status(400).json({ 
-              message: "Payment processing error - missing transaction reference",
-              details: paymentResponse 
-          });
+        console.warn("⚠ Warning: Transaction ID is missing in payment response:", paymentResponse);
+        return res.status(400).json({ 
+          success: false,
+          message: "Payment processing error - missing transaction reference",
+          details: paymentResponse 
+        });
       }
   
       console.log("✅ Confirmed Transaction ID:", transactionId);
+      console.log("✅ Reference Number:", referenceNumber);
   
       // Save payment details
       await savePaymentDetails(reservationId, amount, transactionId, "completed");
@@ -84,17 +89,30 @@ const reserveCar = async (req, res) => {
   
       await updateCarAvailability(car_id, 0);
       console.log("✅ Car availability updated.");
-  }
+    }
 
     // ✅ Send confirmation email & notification
-    await sendMail(userEmail, "Car Reservation", `Your reservation for car ID ${car_id} is confirmed.`);
+    const emailMessage = reservationType === "paid" 
+      ? `Your reservation for car ID ${car_id} is confirmed.\nReference: ${referenceNumber}`
+      : `Your reservation for car ID ${car_id} is confirmed.`;
+      
+    await sendMail(userEmail, "Car Reservation", emailMessage);
     await createNotification(user_id, `Car reservation confirmed for car ID ${car_id}.`);
     console.log("📩 Email & Notification sent.");
 
-    res.status(201).json({  success:true , message: "Car reserved successfully", reservationId });
+    res.status(201).json({ 
+      success: true, 
+      message: "Car reserved successfully", 
+      reservationId,
+      referenceNumber,
+      transactionId
+    });
   } catch (error) {
-    console.error("❌ Error in reserveCar controller:", error.sqlMessage || error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ Error in reserveCar controller:", error);
+    res.status(500).json({ 
+      success: false,
+      message: error.message || "Server error" 
+    });
   }
 };
 
