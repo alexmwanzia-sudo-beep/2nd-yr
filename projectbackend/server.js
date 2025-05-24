@@ -6,7 +6,7 @@ const { connectDB } = require('./config/db');
 
 // Import Routes
 const authRoutes = require('./routes/authRoutes');
-const carRoutes = require('./routes/car-routes');
+const carRoutes = require('./routes/carRoutes');
 const profileRoutes = require('./routes/profileroutes'); // User profile routes
 const purchaseRoutes = require('./routes/purchaseroutes'); // Purchase-related routes
 const saleRoutes = require('./routes/saleroutes');
@@ -14,6 +14,9 @@ const saleRoutes = require('./routes/saleroutes');
 const hireRoutes = require('./routes/hireroutes'); // Hire-related routes
 const userRoutes = require('./routes/userroutes');
 const reviewRoutes = require('./routes/reviewroutes'); // Review routes
+const favoriteRoutes = require('./routes/favoriteRoutes'); // Add favorite routes
+const analyticsRoutes = require('./routes/analyticsRoutes');
+//nconst analyticsRoutes = require('./routes/analyticsRoutes');
 
 // Load environment variables
 require('dotenv').config();
@@ -41,6 +44,9 @@ app.use('/api/sales', saleRoutes);
 app.use('/api/hire', hireRoutes); // Hire-related routes
 app.use('/api/user', userRoutes);
 app.use('/api/reviews', reviewRoutes); // Review routes
+app.use('/api/favorites', favoriteRoutes); // Add favorite routes
+//app.use('/api/analytics', analyticsRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Debug route to show all API endpoints
 app.get('/api/routes', (req, res) => {
@@ -85,6 +91,23 @@ app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'home.html')); // Serve the home page
 });
 
+// Catch-all route for client-side routing
+app.get('*', (req, res, next) => {
+    // Check if the request is for an HTML file
+    if (req.path.endsWith('.html')) {
+        const filePath = path.join(__dirname, '../frontend', req.path);
+        res.sendFile(filePath, (err) => {
+            if (err) {
+                // If file not found, send 404
+                res.status(404).send('File not found');
+            }
+        });
+    } else {
+        // For non-HTML requests, continue to next middleware
+        next();
+    }
+});
+
 // Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -92,5 +115,5 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

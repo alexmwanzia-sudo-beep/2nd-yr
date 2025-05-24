@@ -1,77 +1,138 @@
+let authToken; // Global token variable
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("authToken");
-  if (!token) {
+  console.log('DOMContentLoaded event fired');
+  authToken = localStorage.getItem("authToken");
+  if (!authToken) {
+    console.log('No auth token found');
     alert("You are not logged in. Redirecting to login...");
     window.location.href = "/user-registration/registration-form.html";
     return;
   }
 
+  console.log('Auth token found:', authToken.substring(0, 10) + '...');
   try {
-    console.log("Fetching profile data with token:", token.substring(0, 10) + "...");
+    // Check if required elements exist
+    const requiredElements = [
+      'user-name',
+      'user-email',
+      'profile-image',
+      'hired-cars-container',
+      'reserved-cars-container',
+      'listed-cars-container'
+    ];
+
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    if (missingElements.length > 0) {
+      console.error('Missing required elements:', missingElements);
+      alert('Error: Some required elements are missing from the page. Please refresh and try again.');
+      return;
+    }
+
+    console.log("Fetching profile data with token:", authToken.substring(0, 10) + "...");
     
     const response = await fetch("/api/profile/profile", {
       method: "GET",
       headers: { 
-        "Authorization": `Bearer ${token}`,
+        "Authorization": `Bearer ${authToken}`,
         "Content-Type": "application/json"
       },
     });
 
     console.log("Response status:", response.status);
+    console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+
+    if (!response.ok) {
+      console.error("HTTP error!", response.status, response.statusText);
+      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+      console.error("Error data:", errorData);
+      throw new Error(errorData.message || `HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Profile data received:", data);
+
+    // Check if required data exists
+    if (!data || typeof data !== 'object') {
+      console.error("Invalid response data:", data);
+      throw new Error("Invalid response data format");
+    }
+
+    // Check if required data exists
+    if (!data.profile || !data.profile.firstname || !data.profile.lastname) {
+      console.error("Missing profile data:", data);
+      throw new Error("Missing required profile data");
+    }
+
+    // Populate user details
+    document.getElementById("user-name").textContent = `${data.profile.firstname} ${data.profile.lastname}`;
+    document.getElementById("user-email").textContent = data.profile.email;
     
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Profile data received:", data);
+    // Set profile image
+    if (data.profile.profile_picture) {
+      document.getElementById("profile-image").src = data.profile.profile_picture;
+    }
 
-      // Populate user details
-      document.getElementById("user-name").textContent = `${data.profile.firstname} ${data.profile.lastname}`;
-      document.getElementById("user-email").textContent = data.profile.email;
-      
-      // Set profile image
-      if (data.profile.profile_picture) {
-        document.getElementById("profile-image").src = data.profile.profile_picture;
-      }
-
-      // Populate Cars Listed
-      await displayListedCars();
-
-      // Populate Cars Hired
-      const hiredCarsContainer = document.getElementById("hired-cars-container");
-      if (hiredCarsContainer) {
-        if (data.hireHistory && data.hireHistory.length > 0) {
-          displayHiredCars(data.hireHistory);
-        } else {
-          hiredCarsContainer.innerHTML = "<p>No cars hired yet.</p>";
-        }
-      }
-
-      // Populate Cars Reserved
-      const reservedCarsContainer = document.getElementById("reserved-cars-container");
-      if (reservedCarsContainer) {
-        if (data.reservationHistory && data.reservationHistory.length > 0) {
-          displayReservedCars(data.reservationHistory);
-        } else {
-          reservedCarsContainer.innerHTML = "<p>No cars reserved yet.</p>";
-        }
-      }
-
-      // Populate Notifications
-      updateNotifications(data.notifications);
+    // Update hired cars after token is fully initialized
+    const hiredCarsContainer = document.getElementById("hired-cars-container");
+    if (hiredCarsContainer && data.hireHistory && data.hireHistory.length > 0) {
+      await displayHiredCars(data.hireHistory);
     } else {
-      const errorData = await response.json();
-      console.error("Error response:", errorData);
-      
-      if (response.status === 401) {
-        alert("Authentication error: " + (errorData.message || "Please log in again."));
-        localStorage.removeItem("authToken");
-        window.location.href = "/user-registration/registration-form.html";
-      } else {
-        alert("Failed to fetch profile data: " + (errorData.message || "Unknown error"));
-      }
+      hiredCarsContainer.innerHTML = "<p>No cars hired yet.</p>";
+    }
+
+    // Update reserved cars
+    const reservedCarsContainer = document.getElementById("reserved-cars-container");
+    if (reservedCarsContainer && data.reservationHistory && data.reservationHistory.length > 0) {
+      await displayReservedCars(data.reservationHistory);
+    } else {
+      reservedCarsContainer.innerHTML = "<p>No cars reserved yet.</p>";
+    }
+
+    // Update notifications
+    updateNotifications(data.notifications);
+
+    // Update listed cars
+    const listedCarsContainer = document.getElementById("listed-cars-container");
+    if (listedCarsContainer && data.cars && data.cars.length > 0) {
+      await displayListedCars(data.cars);
+    } else {
+      listedCarsContainer.innerHTML = "<p>No cars listed yet.</p>";
+    }
+
+    // Add event listener for Confirm Receipt button after cars are loaded
+    if (hiredCarsContainer) {
+      hiredCarsContainer.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('confirm-receipt-btn')) {
+          const carCard = event.target.closest('.car-card');
+          if (carCard) {
+            const carId = carCard.dataset.carId;
+            if (!carId) {
+              alert('Error: Car ID not found');
+              return;
+            }
+
+            try {
+              await updateHireStatus(carId, 'received');
+              alert('Car receipt confirmed successfully!');
+              // Update UI to show received status
+              const statusElement = carCard.querySelector('.hire-status');
+              if (statusElement) {
+                statusElement.textContent = 'Status: Received';
+              }
+              // Hide the confirm receipt button
+              event.target.style.display = 'none';
+            } catch (error) {
+              console.error('Error updating hire status:', error);
+              alert('Failed to update hire status: ' + error.message);
+            }
+          }
+        }
+      });
     }
   } catch (error) {
-    console.error("Error fetching profile data:", error);
-    alert("Network error: " + error.message);
+    console.error("Error loading profile:", error);
+    alert("Error loading profile: " + error.message);
   }
 });
 
@@ -111,11 +172,150 @@ function showHireDetails(hireId) {
 
 // Function to show reservation details
 function showReservationDetails(reservationId) {
-  if (!reservationId) {
-    alert("Reservation ID is missing");
-    return;
-  }
-  alert(`Reservation ID: ${reservationId}\nMore details will be shown here.`);
+    if (!reservationId) {
+        alert("Reservation ID is missing");
+        return;
+    }
+    alert(`Reservation ID: ${reservationId}\nMore details will be shown here.`);
+}
+
+// Function to display hired cars
+async function displayHiredCars(hiredCars) {
+    const container = document.getElementById('hired-cars-container');
+    const template = document.getElementById('hired-car-template');
+    
+    if (!container || !template) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    container.innerHTML = '';
+
+    if (!hiredCars || hiredCars.length === 0) {
+        container.innerHTML = '<p>No cars hired yet.</p>';
+        return;
+    }
+
+    for (const hire of hiredCars) {
+        const clone = template.content.cloneNode(true);
+        const carCard = clone.querySelector('.car-card');
+        
+        // Set car details
+        const imgElement = clone.querySelector('.car-image');
+        const imagePath = hire.car_image_url ? 
+            (hire.car_image_url.startsWith('/uploads/') ? hire.car_image_url : `/uploads/${hire.car_image_url}`) : 
+            '/cars2/car3.jpg';
+        imgElement.src = imagePath;
+        imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
+        
+        clone.querySelector('.car-title').textContent = `${hire.car_make} ${hire.car_model} (${hire.car_year || 'N/A'})`;
+        
+        // Calculate and display hire dates
+        const hireDates = clone.querySelector('.hire-dates');
+        if (hireDates) {
+            const startDate = new Date(hire.start_date);
+            const endDate = new Date(hire.end_date);
+            hireDates.textContent = `Hire Dates: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+        }
+        
+        // Display hire status
+        const statusElement = clone.querySelector('.hire-status');
+        if (statusElement) {
+            statusElement.textContent = `Status: ${hire.status || 'Confirmed'}`;
+        }
+        
+        // Show/hide buttons based on status
+        const confirmReceiptBtn = clone.querySelector('.confirm-receipt-btn');
+        const confirmReturnBtn = clone.querySelector('.confirm-return-btn');
+        const cancelHireBtn = clone.querySelector('.cancel-hire-btn');
+        
+        if (confirmReceiptBtn) {
+            confirmReceiptBtn.style.display = hire.status === 'confirmed' ? 'block' : 'none';
+            confirmReceiptBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateHireStatus(hire.car_id, 'received').then(() => {
+                    statusElement.textContent = 'Status: Received';
+                    confirmReceiptBtn.style.display = 'none';
+                    confirmReturnBtn.style.display = 'block';
+                }).catch(error => {
+                    alert(error.message);
+                });
+            };
+        }
+        
+        if (confirmReturnBtn) {
+            confirmReturnBtn.style.display = hire.status === 'received' ? 'block' : 'none';
+            confirmReturnBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                updateHireStatus(hire.car_id, 'returned').then(() => {
+                    statusElement.textContent = 'Status: Returned';
+                    confirmReturnBtn.style.display = 'none';
+                }).catch(error => {
+                    alert(error.message);
+                });
+            };
+        }
+        
+        if (cancelHireBtn) {
+            cancelHireBtn.style.display = hire.status === 'confirmed' ? 'block' : 'none';
+            cancelHireBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (confirm('Are you sure you want to cancel this hire?')) {
+                    updateHireStatus(hire.car_id, 'cancelled').then(() => {
+                        container.removeChild(carCard);
+                    }).catch(error => {
+                        alert(error.message);
+                    });
+                }
+            };
+        }
+        
+        // Set car ID for data attribute
+        carCard.dataset.carId = hire.car_id;
+        
+        container.appendChild(clone);
+    }
+}
+
+// Function to display listed cars
+async function displayListedCars(listedCars) {
+    const container = document.getElementById('listed-cars-container');
+    const template = document.getElementById('listed-car-template');
+    
+    if (!container || !template) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    container.innerHTML = '';
+
+    if (!listedCars || listedCars.length === 0) {
+        container.innerHTML = '<p>No cars listed yet.</p>';
+        return;
+    }
+
+    for (const car of listedCars) {
+        const clone = template.content.cloneNode(true);
+        
+        // Set car details
+        const imgElement = clone.querySelector('.car-image');
+        const imagePath = car.image_url ? 
+            (car.image_url.startsWith('/uploads/') ? car.image_url : `/uploads/${car.image_url}`) : 
+            '/cars2/car3.jpg';
+        imgElement.src = imagePath;
+        imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
+        
+        clone.querySelector('.car-title').textContent = `${car.make} ${car.model} (${car.year || 'N/A'})`;
+        clone.querySelector('.car-price').textContent = `Price: $${car.price}`;
+        clone.querySelector('.car-status').textContent = `Status: ${car.status || 'Available'}`;
+        
+
+
+        container.appendChild(clone);
+    }
 }
 
 function updateNotifications(notifications) {
@@ -294,6 +494,35 @@ async function loadUserReviews() {
         console.error('Error loading reviews:', error);
         document.getElementById('userReviews').innerHTML = 
             '<p class="error">Failed to load reviews. Please try again.</p>';
+    }
+}
+
+// Function to update hire status
+async function updateHireStatus(carId, status) {
+    try {
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            throw new Error('You must be logged in');
+        }
+
+        const response = await fetch(`/api/cars/${carId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update hire status');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating hire status:', error);
+        throw error;
     }
 }
 
@@ -634,6 +863,9 @@ async function loadUserProfile() {
             }
         }
 
+        // Display listed cars
+        await displayListedCars();
+        
         return true;
     } catch (error) {
         console.error('Error loading profile:', error);
@@ -741,7 +973,7 @@ async function cancelReservation(reservationId) {
 }
 
 // Update the displayHiredCars function
-function displayHiredCars(hiredCars) {
+async function displayHiredCars(hiredCars) {
     const container = document.getElementById('hired-cars-container');
     const template = document.getElementById('hired-car-template');
     
@@ -757,11 +989,18 @@ function displayHiredCars(hiredCars) {
         return;
     }
 
-    console.log('Hired cars data:', hiredCars);
-
-    hiredCars.forEach(hire => {
+    // Wait for token to be initialized
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    for (const hire of hiredCars) {
         const clone = template.content.cloneNode(true);
         const car = hire.car || {};
+        
+        // Skip favorite status check if token isn't available
+        if (!authToken) {
+            console.log('No token available, skipping favorite status check');
+            continue;
+        }
         
         console.log('Processing hire:', hire);
         console.log('Hire status:', hire.status);
@@ -790,116 +1029,11 @@ function displayHiredCars(hiredCars) {
         statusText.textContent = `Status: ${status}`;
         
         const statusEl = clone.querySelector('.hire-status');
-        statusEl.innerHTML = '';
-        statusEl.appendChild(statusText);
-        
-        // Add badge if status is special
-        if (['received', 'returned', 'completed', 'confirmed'].includes(status.toLowerCase())) {
-            const badge = document.createElement('span');
-            badge.className = `status-badge status-${status.toLowerCase()}`;
-            badge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-            statusEl.appendChild(badge);
-        }
-        
-        // Calculate remaining days and update progress bar
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to start of day
-        
-        const totalDuration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)); // Total days of hire
-        const daysElapsed = Math.ceil((today - startDate) / (1000 * 60 * 60 * 24)); // Days elapsed so far
-        const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24)); // Days remaining
-        
-        const progressFill = clone.querySelector('.hire-progress-fill');
-        const daysRemainingText = clone.querySelector('.hire-days-remaining');
-        
-        // Handle different progress scenarios
-        if (daysRemaining < 0) {
-            // Overdue case
-            progressFill.style.width = '100%';
-            progressFill.classList.add('overdue');
-            daysRemainingText.classList.add('overdue');
-            daysRemainingText.textContent = `${Math.abs(daysRemaining)} day(s) overdue`;
-        } else if (today < startDate) {
-            // Hire hasn't started yet
-            progressFill.style.width = '0%';
-            daysRemainingText.textContent = `Starts in ${Math.ceil((startDate - today) / (1000 * 60 * 60 * 24))} day(s)`;
-        } else {
-            // Normal progress
-            const progress = Math.min(daysElapsed / totalDuration * 100, 100);
-            progressFill.style.width = `${progress}%`;
-            
-            if (daysRemaining === 0) {
-                // Last day
-                progressFill.classList.add('complete');
-                daysRemainingText.textContent = 'Due today';
-            } else {
-                daysRemainingText.textContent = `${daysRemaining} day(s) remaining`;
-            }
-        }
-        
-        // Set up Action Buttons based on status
-        const confirmReceiptBtn = clone.querySelector('.confirm-receipt-btn');
-        const confirmReturnBtn = clone.querySelector('.confirm-return-btn');
-        const cancelBtn = clone.querySelector('.cancel-hire-btn');
-        
-        console.log('Setting up buttons for hire status:', status);
-        
-        // Show the appropriate buttons based on the current status
-        const lowerStatus = status.toLowerCase();
-        
-        if (lowerStatus === 'confirmed') {
-            // Car is confirmed but not yet received - show receipt button
-            console.log('Showing receipt button for hire ID:', hire.id);
-            confirmReceiptBtn.style.display = 'flex';
-            confirmReceiptBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                if (confirm('Confirm that you have received the car?')) {
-                    confirmCarReceipt(hire.id);
-                }
-            });
-        } else if (lowerStatus === 'received') {
-            // Car is received but not yet returned - show return button
-            console.log('Showing return button for hire ID:', hire.id);
-            confirmReturnBtn.style.display = 'flex';
-            confirmReturnBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-                if (confirm('Confirm that you have returned the car to the owner?')) {
-                    confirmCarReturn(hire.id);
-                }
-            });
-        }
-        
-        // Only show cancel button for pending status
-        if (lowerStatus === 'pending') {
-            console.log('Showing cancel button for hire ID:', hire.id);
-            cancelBtn.style.display = 'block';
-            cancelBtn.onclick = (event) => {
-                event.preventDefault();
-                if (confirm('Are you sure you want to cancel this hire?')) {
-                    cancelHire(hire.id);
-                }
-            };
-        }
-        
-        // Set up Message Owner link with WhatsApp integration
-        const messageOwnerLink = clone.querySelector('.message-owner-link');
-        if (messageOwnerLink && car.owner_contact) {
-            console.log('Setting up message owner link with contact:', car.owner_contact);
-            messageOwnerLink.setAttribute('data-contact', car.owner_contact);
-            messageOwnerLink.style.display = 'inline-block';
-            messageOwnerLink.addEventListener('click', (event) => {
-                event.preventDefault();
-                redirectToWhatsApp(car.owner_contact);
-            });
-        } else if (messageOwnerLink) {
-            console.warn('Owner contact not available, hiding link');
-            messageOwnerLink.style.display = 'none';
-        } else {
-            console.error('Message owner link element not found in template');
-        }
+        statusEl.textContent = `Status: ${status}`;
+        statusEl.className = `hire-status status-${status.toLowerCase()}`;
 
         container.appendChild(clone);
-    });
+    }
 }
 
 // Function to confirm car receipt
@@ -1087,7 +1221,23 @@ function redirectToWhatsApp(phoneNumber) {
     const whatsappUrl = `https://wa.me/${formattedPhoneNumber}`;
     console.log(`Redirecting to WhatsApp: ${whatsappUrl}`); // Debugging log
     window.open(whatsappUrl, '_blank');
+
+// Initialize everything when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert("You are not logged in. Redirecting to login...");
+        window.location.href = "/user-registration/registration-form.html";
+        return;
+    }
+
+    // Load profile data
+    loadUserProfile();
+});
 }
+
+
 
 // Function to display listed cars with reservations
 async function displayListedCars() {
@@ -1106,24 +1256,34 @@ async function displayListedCars() {
         }
 
         console.log('Fetching listed cars...');
+        console.log('Token:', token);
+        
         const response = await fetch('/api/cars/listed', {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         });
         
         console.log('Listed cars response status:', response.status);
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error response:', errorText);
-            throw new Error('Failed to fetch listed cars: ' + errorText);
-        }
-
+        console.log('Listed cars response headers:', response.headers);
+        
         const cars = await response.json();
         console.log('Received cars:', cars);
+        console.log('Cars type:', typeof cars);
         container.innerHTML = '';
 
-        if (!cars || cars.length === 0) {
+        // Check if response is an error
+        if (response.status !== 200) {
+            throw new Error(cars.message || 'Failed to fetch cars');
+        }
+
+        // If it's a success response, cars should be an array
+        if (!Array.isArray(cars)) {
+            throw new Error('Invalid response format');
+        }
+
+        if (cars.length === 0) {
             container.innerHTML = '<p>No cars listed yet.</p>';
             return;
         }
@@ -1133,39 +1293,45 @@ async function displayListedCars() {
             
             // Set car details
             const imgElement = clone.querySelector('.car-image');
-            imgElement.src = car.image_url ? `/uploads/${car.image_url}` : '/cars2/car3.jpg';
-            imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
-            
-            clone.querySelector('.car-title').textContent = `${car.make} ${car.model} (${car.year || 'N/A'})`;
-            clone.querySelector('.car-price').textContent = `Price: $${car.price}`;
-            clone.querySelector('.car-status').textContent = `Status: ${car.status || 'Available'}`;
-            
-            // Get and display reservations
-            const reservationsResponse = await fetch(`/api/sales/reservations/${car.car_id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            if (reservationsResponse.ok) {
-                const reservations = await reservationsResponse.json();
-                const buyersList = clone.querySelector('.interested-buyers');
-                
-                if (reservations.data && reservations.data.length > 0) {
-                    reservations.data.forEach(reservation => {
-                        const li = document.createElement('li');
-                        li.textContent = `Buyer: ${reservation.email} (${reservation.phone})`;
-                        buyersList.appendChild(li);
-                    });
-                } else {
-                    buyersList.innerHTML = '<li>No interested buyers yet</li>';
-                }
+            if (imgElement) {
+                imgElement.src = car.image_url ? `/uploads/${car.image_url}` : '/cars2/car3.jpg';
+                imgElement.onerror = () => { imgElement.src = '/cars2/car3.jpg'; };
             }
             
+            const carTitle = clone.querySelector('.car-title');
+            if (carTitle) {
+                carTitle.textContent = `${car.make} ${car.model} (${car.year || 'N/A'})`;
+            }
+            
+            const carPrice = clone.querySelector('.car-price');
+            if (carPrice) {
+                carPrice.textContent = `Price: $${car.price}`;
+            }
+            
+            const carStatus = clone.querySelector('.car-status');
+            if (carStatus) {
+                carStatus.textContent = `Status: ${car.status || 'Available'}`;
+            }
+            
+            // Load reservations asynchronously
+            const buyersList = clone.querySelector('.interested-buyers');
+            if (buyersList) {
+                loadReservations(car.car_id, buyersList);
+            }
+
             // Set up sell button
             const sellButton = clone.querySelector('.sell-car-btn');
-            sellButton.setAttribute('data-car-id', car.car_id);
-            sellButton.addEventListener('click', () => handleSellCar(car.car_id));
+            if (sellButton) {
+                sellButton.setAttribute('data-car-id', car.car_id);
+                sellButton.addEventListener('click', () => handleSellCar(car.car_id));
+            }
+            
+            // Set up favorite button
+            const favoriteButton = clone.querySelector('.favorite-btn');
+            if (favoriteButton) {
+                checkFavoriteStatus(car.car_id, favoriteButton);
+                favoriteButton.addEventListener('click', () => toggleFavorite(car.car_id, favoriteButton));
+            }
             
             container.appendChild(clone);
         }
@@ -1188,7 +1354,7 @@ async function handleSellCar(carId) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${authToken}`
             },
             body: JSON.stringify({
                 carId,
@@ -1197,16 +1363,67 @@ async function handleSellCar(carId) {
             })
         });
 
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('Car sold successfully!');
-            displayListedCars(); // Refresh the display
-        } else {
-            alert(`Error: ${result.message}`);
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to sell car');
         }
+
+        const data = await response.json();
+        alert('Car sold successfully!');
+        // Refresh the listed cars display
+        loadUserProfile();
     } catch (error) {
         console.error('Error selling car:', error);
+        alert(`Error selling car: ${error.message}`);
         alert('Error selling car. Please try again.');
     }
 }
+
+// Function to load and display reservations
+async function loadReservations(carId, buyersList) {
+    try {
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            buyersList.innerHTML = '<li>Please log in to view reservations</li>';
+            return;
+        }
+
+        const response = await fetch(`/api/sales/reservations/${carId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Error fetching reservations:', errorText);
+            buyersList.innerHTML = `<li>Error: ${errorText}</li>`;
+            return;
+        }
+
+        const data = await response.json();
+        console.log('Reservations data:', data);
+        
+        if (data.success === false) {
+            buyersList.innerHTML = `<li>Error: ${data.message}</li>`;
+            return;
+        }
+
+        const reservations = Array.isArray(data) ? data : [];
+        
+        if (reservations.length > 0) {
+            reservations.forEach(reservation => {
+                const li = document.createElement('li');
+                li.textContent = `Buyer: ${reservation.email} (${reservation.firstname} ${reservation.lastname})`;
+                buyersList.appendChild(li);
+            });
+        } else {
+            buyersList.innerHTML = '<li>No interested buyers yet</li>';
+        }
+    } catch (error) {
+        console.error('Error loading reservations:', error);
+        buyersList.innerHTML = `<li>Error loading buyer information</li>`;
+    }
+}
+
+

@@ -5,68 +5,228 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add a Car</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius: 0.5rem;
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
         .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
         }
+
         h2 {
             text-align: center;
-            color: #333;
+            color: var(--text);
+            font-size: 2rem;
+            font-weight: 700;
+            padding: 2rem 0;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            margin-bottom: 2rem;
         }
+
         .form-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            border-left: 5px solid #007BFF;
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
         }
+
+        .form-section:hover {
+            background: rgba(37, 99, 235, 0.02);
+        }
+
         h3 {
-            margin-bottom: 10px;
-            color: #007BFF;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
+
+        h3::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.25rem;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
         label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #333;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 500;
         }
-        input, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"],
         textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        input[type="file"]:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        textarea {
+            min-height: 100px;
             resize: vertical;
         }
+
         button {
-            width: 100%;
-            padding: 12px;
-            background: #007BFF;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 16px;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.3s;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
         }
+
         button:hover {
-            background: #0056b3;
+            background: var(--primary-dark);
+            transform: translateY(-1px);
         }
+
+        #addServiceRecord {
+            background: var(--secondary);
+            margin-top: 1rem;
+        }
+
+        #addServiceRecord:hover {
+            background: #475569;
+        }
+
+        .service-record {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Custom checkbox styling */
         input[type="checkbox"] {
-            width: auto;
-            margin-right: 5px;
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+            accent-color: var(--primary);
+        }
+
+        /* Responsive design */
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .form-section {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                padding: 1.5rem 0;
+            }
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>

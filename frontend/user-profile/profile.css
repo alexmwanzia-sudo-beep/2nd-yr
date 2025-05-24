@@ -53,9 +53,45 @@ body {
   color: #3498db;
 }
 
+/* Button Styles */
+
+
+/* Button Styles */
+.car-action-buttons button {
+    display: none;
+    width: 100%;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 14px;
+    transition: opacity 0.3s;
+}
+
+.car-action-buttons button:hover {
+    opacity: 0.9;
+}
+
+.confirm-receipt-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.confirm-return-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.cancel-hire-btn {
+    background-color: #dc3545;
+    color: white;
+    margin-top: 10px;
+}
+
 /* Notification Styles */
 .notification-dropdown {
-  position: relative;
+    position: relative;
 }
 
 .notification-btn {
@@ -625,7 +661,7 @@ body {
     padding: 20px 0;
 }
 
-/* Car card styling */
+/* Car item styling (for listed cars) */
 .car-item {
     background: #fff;
     border-radius: 8px;
@@ -650,6 +686,33 @@ body {
 
 /* Car details container */
 .car-details {
+    padding: 15px;
+}
+
+/* Car card styling (for hired and reserved cars) */
+.car-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.car-card .car-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.car-card .car-details {
     padding: 15px;
 }
 
@@ -733,6 +796,285 @@ body {
     }
     
     .car-image {
+        height: 180px;
+    }
+}
+
+/* Message Owner Button */
+.message-owner-btn {
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.message-owner-btn:hover {
+    background-color: #1DA851;
+}
+
+/* Message Owner Link */
+.message-owner-link {
+    display: inline-block;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.message-owner-link:hover {
+    background-color: #1DA851; /* Darker WhatsApp green */
+    color: white;
+    text-decoration: none;
+}
+
+/* Hire Progress Bar Styles */
+.hire-progress-container {
+    margin: 10px 0;
+    width: 100%;
+}
+
+.hire-progress-bar {
+    height: 12px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 5px;
+}
+
+.hire-progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #4caf50; /* Green for normal progress */
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.hire-progress-fill.complete {
+    background-color: #8bc34a; /* Light green for completion */
+}
+
+.hire-progress-fill.overdue {
+    background-color: #f44336; /* Red for overdue */
+}
+
+.hire-days-remaining {
+    font-size: 12px;
+    text-align: right;
+    margin: 0;
+    color: #666;
+}
+
+.hire-days-remaining.overdue {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Car Action Buttons Styles */
+.car-action-buttons {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.confirm-receipt-btn, 
+.confirm-return-btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.confirm-receipt-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.confirm-receipt-btn:hover {
+    background-color: #218838;
+}
+
+.confirm-return-btn {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.confirm-return-btn:hover {
+    background-color: #138496;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 12px;
+    border-radius: 12px;
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.status-confirmed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-received {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-returned {
+    background-color: #fff8e1;
+    color: #f57c00;
+}
+
+.status-completed {
+    background-color: #e0f2f1;
+    color: #00897b;
+}
+
+/* Listed Cars Section */
+#listed-cars-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.listed-car-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.listed-car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.listed-car-card .car-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
+}
+
+.listed-car-card .car-details {
+    padding: 20px;
+}
+
+.listed-car-card .car-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.listed-car-card .car-price {
+    font-size: 1.1rem;
+    color: #27ae60;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.listed-car-card .car-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.listed-car-card .interested-buyers {
+    list-style: none;
+    margin: 15px 0;
+    padding: 0;
+}
+
+.listed-car-card .interested-buyers li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.listed-car-card .interested-buyers li:last-child {
+    border-bottom: none;
+}
+
+.listed-car-card .sell-car-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.listed-car-card .sell-car-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Status badges for listed cars */
+.listed-car-card .status-available {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.listed-car-card .status-reserved {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+.listed-car-card .status-sold {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #listed-cars-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    #listed-cars-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+    
+    .listed-car-card .car-image {
         height: 180px;
     }
 }

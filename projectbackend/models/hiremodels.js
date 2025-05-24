@@ -55,7 +55,7 @@ const updateHireStatus = async (hireId, status) => {
 const saveHirePaymentDetails = async (hireId, amount, transactionId, status) => {
   try {
     // Ensure transaction ID is valid
-    const validTransactionId = transactionId || "UNKNOWN"; // Avoid undefined errors
+    const validTransactionId = transactionId || `MPESA-${Date.now()}`; // Generate unique ID if not provided
 
     if (!hireId || !amount || !validTransactionId || !status) {
       throw new Error("Missing required fields in hire payment request.");
@@ -63,6 +63,23 @@ const saveHirePaymentDetails = async (hireId, amount, transactionId, status) => 
 
     console.log(`💾 Storing Payment Details: Hire ID ${hireId}, Amount: ${amount}, Transaction ID: ${validTransactionId}`);
 
+    // First check if this payment already exists
+    const [existingPayment] = await pool.execute(
+      'SELECT id FROM hire_payments WHERE transaction_id = ?',
+      [validTransactionId]
+    );
+
+    if (existingPayment.length > 0) {
+      // If payment exists, update its status
+      const [updateResult] = await pool.execute(
+        'UPDATE hire_payments SET status = ? WHERE transaction_id = ?',
+        [status, validTransactionId]
+      );
+      console.log(`✅ Updated existing payment status. Payment ID: ${existingPayment[0].id}`);
+      return existingPayment[0].id;
+    }
+
+    // If payment doesn't exist, insert new one
     const sql = `
       INSERT INTO hire_payments (hire_id, amount, transaction_id, status, created_at)
       VALUES (?, ?, ?, ?, NOW())

@@ -107,4 +107,19 @@ const getUserCars = async (userId) => {
     }
 };
 
-module.exports = { checkUserExists, getAllCars, addCar, getUserCars };
+const updateHireStatus = async (carId, status) => {
+    try {
+        const query = `
+            UPDATE cars 
+            SET hire_status = ?
+            WHERE id = ?
+        `;
+        const [result] = await db.pool.execute(query, [status, carId]);
+        return result.affectedRows > 0;
+    } catch (error) {
+        console.error("❌ Error updating hire status:", error);
+        throw error;
+    }
+};
+
+module.exports = { checkUserExists, getAllCars, addCar, getUserCars, updateHireStatus };

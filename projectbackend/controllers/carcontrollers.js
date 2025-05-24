@@ -1,6 +1,33 @@
 // Import necessary functions
-const { addCar, checkUserExists, getAllCars, getUserCars } = require("../models/carmodels"); 
+const { addCar, checkUserExists, getAllCars, getUserCars } = require("../models/carmodels");
+
+// ✅ Controller function to fetch user's listed cars
+const getListedCars = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        console.log('Fetching listed cars for user:', userId);
+        
+        const cars = await getUserCars(userId);
+        console.log(`Found ${cars.length} cars for user ${userId}`);
+
+        // Format image paths for consistency
+        const formattedCars = cars.map(car => ({
+            ...car,
+            image_url: formatImagePath(car.image_url)
+        }));
+
+        res.status(200).json(formattedCars);
+    } catch (error) {
+        console.error("❌ Error in getListedCars controller:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: "Failed to fetch listed cars",
+            error: error.message 
+        });
+    }
+}; 
 const path = require("path");
+const db = require("../config/db");
 
 // ✅ Function to format image paths
 const formatImagePath = (filePath) => {
@@ -100,31 +127,48 @@ const createCar = async (req, res) => {
     }
 };
 
-// ✅ Controller function to fetch user's listed cars
-const getListedCars = async (req, res) => {
-    try {
-        const userId = req.user.userId;
-        console.log('Fetching listed cars for user:', userId);
-        
-        // Debug: Check if getUserCars is a function
-        console.log('getUserCars type:', typeof getUserCars);
-        console.log('getUserCars:', getUserCars);
-        
-        if (typeof getUserCars !== 'function') {
-            throw new Error('getUserCars is not a function. It is: ' + typeof getUserCars);
-        }
-        
-        const cars = await getUserCars(userId);
-        console.log(`Found ${cars.length} cars for user ${userId}`);
 
-        res.status(200).json(cars);
+
+// ✅ Controller function to fetch cars available for hire
+const getCarsForHire = async (req, res) => {
+    try {
+        // Query the database directly for cars available for hire
+        const query = 'SELECT * FROM cars WHERE available_for_hire = 1';
+        const [cars] = await db.pool.execute(query);
+        
+        // Format image paths for consistency
+        const formattedCars = cars.map(car => ({
+            ...car,
+            image_url: formatImagePath(car.image_url)
+        }));
+
+        res.status(200).json(formattedCars);
+        console.log(`✅ Found ${cars.length} cars available for hire`);
     } catch (error) {
-        console.error("❌ Error in getListedCars controller:", error);
-        res.status(500).json({ 
-            success: false, 
-            message: "Failed to fetch listed cars",
-            error: error.message 
-        });
+        console.error("❌ Error in getCarsForHire controller:", error);
+        res.status(500).json({ message: "Failed to fetch car data." });
+    }
+};
+
+const updateHireStatus = async (req, res) => {
+    try {
+        const { carId } = req.params;
+        const { status } = req.body;
+        
+        if (!carId || !status) {
+            return res.status(400).json({ message: 'Car ID and status are required' });
+        }
+
+        const success = await updateHireStatus(carId, status);
+        
+        if (success) {
+            res.status(200).json({ message: 'Hire status updated successfully' });
+        } else {
+            res.status(404).json({ message: 'Car not found or status not updated' });
+        }
+    } catch (error) {
+        console.error("❌ Error in updateHireStatus controller:", error);
+        res.status(500).json({ message: 'Failed to update hire status', error: error.message });
     }
 };
 
@@ -132,5 +176,7 @@ const getListedCars = async (req, res) => {
 module.exports = {
     getCars,
     createCar,
-    getListedCars
+    getListedCars,
+    getCarsForHire,
+    updateHireStatus
 };

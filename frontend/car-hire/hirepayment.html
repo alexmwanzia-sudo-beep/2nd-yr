@@ -9,101 +9,147 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f8f8f8;
-      color: #333;
-      text-align: center;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+      color: #2d3436;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
       padding: 20px;
+      line-height: 1.6;
     }
 
     .container {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-      max-width: 700px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
       width: 100%;
-      padding: 40px 30px;
-      text-align: left;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #007bff, #00bfff);
     }
 
     h1 {
-      font-size: 32px;
-      color: #2c3e50;
-      margin-bottom: 20px;
-      font-weight: 600;
+      font-size: 2.5rem;
+      color: #2d3436;
+      margin-bottom: 30px;
+      font-weight: 700;
+      text-align: center;
+      position: relative;
     }
 
-    p {
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 20px;
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: #007bff;
+      border-radius: 2px;
     }
 
     .alert {
-      background-color: #f9c74f;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 25px;
-      color: #333;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: #fff8e1;
+      border-left: 4px solid #ffc107;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert h3 {
+      color: #2d3436;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      font-weight: 600;
     }
 
     .alert ul {
-      text-align: left;
-      margin-top: 10px;
+      list-style: none;
+      padding: 0;
     }
 
     .alert li {
-      margin-bottom: 10px;
-      font-size: 16px;
-      line-height: 1.5;
+      margin-bottom: 12px;
+      padding-left: 25px;
+      position: relative;
+      font-size: 1.1rem;
+    }
+
+    .alert li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #007bff;
+      font-weight: bold;
+    }
+
+    .alert strong {
+      color: #007bff;
+      font-weight: 600;
     }
 
     .button {
-      background-color: #007bff;
-      color: #fff;
-      padding: 14px 24px;
+      background: linear-gradient(135deg, #007bff 0%, #00bfff 100%);
+      color: white;
+      padding: 16px 32px;
       border: none;
-      border-radius: 8px;
-      font-size: 18px;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
+      transition: all 0.3s ease;
       width: 100%;
-      margin-top: 20px;
+      margin-top: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
     }
 
     .button:hover {
-      background-color: #0056b3;
       transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
     }
 
     .button:active {
-      background-color: #003d7a;
       transform: translateY(1px);
     }
 
     .terms {
       margin-top: 40px;
-      font-size: 16px;
-      line-height: 1.8;
-      color: #555;
+      padding-top: 20px;
+      border-top: 1px solid #e4e8eb;
+      text-align: center;
+      color: #636e72;
+      font-size: 0.95rem;
     }
 
     .terms a {
       color: #007bff;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 600;
+      transition: color 0.3s ease;
     }
 
     .terms a:hover {
+      color: #00bfff;
       text-decoration: underline;
     }
 
@@ -115,11 +161,12 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       z-index: 9999;
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      backdrop-filter: blur(5px);
     }
 
     .loading-overlay.active {
@@ -127,24 +174,75 @@
     }
 
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #007bff;
+      width: 60px;
+      height: 60px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .loading-text {
-      color: #007bff;
-      font-size: 18px;
-      font-weight: bold;
+      color: #2d3436;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
     }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .alert {
+        padding: 20px;
+      }
+
+      .alert li {
+        font-size: 1rem;
+      }
+
+      .button {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Amount Display */
+    #amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #007bff;
+      background: #f8f9fa;
+      padding: 8px 16px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 5px 0;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: #e3fcef;
+      border-left: 4px solid #00b894;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      display: none;
+    }
+
+    .success-message.active {
+      display: block;
     }
   </style>
 </head>
@@ -164,7 +262,7 @@
         <li>Go to your M-Pesa menu</li>
         <li>Select "Lipa na M-Pesa"</li>
         <li>Choose "PayBill" and enter Business Number: <strong>123456</strong></li>
-        <li>Enter Account Number: <strong>Your phone number the one u entered in hire form</strong></li>
+        <li>Enter Account Number: <strong>Your phone number</strong></li>
         <li>Enter Amount: <strong>KES <span id="amount">0.00</span></strong></li>
         <li>Enter your PIN and confirm</li>
       </ul>
@@ -174,17 +272,14 @@
 
     <p>Thank you for choosing our car hire service! You will receive an email and SMS confirmation with pickup details after payment.</p>
 
-    <button class="button" id="pay-button">I Have Paid</button>
-
+    <button class="button" id="pay-button">Complete Payment</button>
 
     <div class="terms">
       <p>By proceeding with the payment, you agree to our <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>.</p>
     </div>
   </div>
 
-  <script src="payment.js">
-
-  </script>
+  <script src="payment.js"></script>
 </body>
 </html>
     

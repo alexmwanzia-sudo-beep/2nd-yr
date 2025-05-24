@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Care - Car Rental Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #2c2c2c;
+            --accent-color: #3498db;
+            --text-color: #ecf0f1;
+            --card-bg: #2c2c2c;
+            --hover-color: #2980b9;
+            --border-color: #3d3d3d;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+        }
+
+        body {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        .customer-care-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: var(--text-color);
+            padding: 60px 40px;
+            border-radius: 16px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-section > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .care-section {
+            background: var(--secondary-color);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .care-section h2 {
+            color: var(--text-color);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .care-section h2 i {
+            color: var(--accent-color);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card h3 {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            color: #b3b3b3;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-card i {
+            font-size: 40px;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .contact-card h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .contact-card p {
+            color: #b3b3b3;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 30px;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-item h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .faq-item h3 i {
+            color: var(--accent-color);
+        }
+
+        .faq-item p {
+            color: #b3b3b3;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            padding-left: 35px;
+        }
+
+        .support-hours {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 30px;
+            border: 1px solid var(--accent-color);
+        }
+
+        .support-hours h3 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .support-hours p {
+            color: var(--text-color);
+            margin: 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .support-hours i {
+            color: var(--accent-color);
+        }
+
+        .emergency-contact {
+            background: rgba(231, 76, 60, 0.1);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 30px;
+            border: 1px solid var(--danger-color);
+        }
+
+        .emergency-contact h3 {
+            color: var(--danger-color);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .emergency-contact p {
+            color: var(--text-color);
+            margin: 10px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .emergency-contact i {
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 40px 20px;
+            }
+
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+
+            .care-section {
+                padding: 25px;
+            }
+
+            .service-grid,
+            .contact-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--hover-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header-div">
+        <div class="header-flex">
+            <div class="top-header">
+                <a href="home.html" class="home-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/744/744465.png" alt="Car Rental Logo" class="logo" style="width: 50px; height: 50px; filter: invert(1);">
+                </a>
+            </div>
+            <div class="middle-section">
+                <nav class="nav-class">
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="customer-care.html" class="active">Customer Care</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <main class="customer-care-container">
+        <div class="hero-section">
+            <h1>How Can We Help You?</h1>
+            <p>We're here to provide exceptional support and ensure your car rental experience is smooth and enjoyable. Our dedicated team is ready to assist you with any questions or concerns.</p>
+        </div>
+
+        <div class="care-section">
+            <h2><i class="fas fa-headset"></i> Our Services</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3><i class="fas fa-car"></i> Car Rental</h3>
+                    <p>Experience flexible car rental options with our diverse fleet. From economy to luxury vehicles, we offer competitive rates and transparent pricing. Enjoy hassle-free booking and 24/7 customer support.</p>
+                </div>
+                <div class="service-card">
+                    <h3><i class="fas fa-key"></i> Car Hire</h3>
+                    <p>Professional car hire services with experienced drivers. Perfect for business trips, special occasions, or daily commutes. Our drivers are trained, licensed, and committed to your safety and comfort.</p>
+                </div>
+                <div class="service-card">
+                    <h3><i class="fas fa-shield-alt"></i> Insurance</h3>
+                    <p>Comprehensive insurance coverage for all our vehicles. Choose from basic to premium coverage options. Our insurance plans are designed to give you peace of mind during your rental period.</p>
+                </div>
+                <div class="service-card">
+                    <h3><i class="fas fa-tools"></i> Maintenance</h3>
+                    <p>Regular maintenance and 24/7 roadside assistance. Our vehicles undergo thorough inspections before each rental. In case of emergencies, our support team is always ready to help.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="care-section">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <h3><i class="fas fa-info-circle"></i> How do I rent a car?</h3>
+                <p>To rent a car, you'll need a valid driver's license, credit card, and proof of insurance. Browse our available vehicles, select your preferred car, choose your rental period, and complete the booking process. Our team will guide you through each step.</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-credit-card"></i> What are your payment methods?</h3>
+                <p>We accept all major credit cards, debit cards, and mobile payments including M-Pesa. Payment is required at the time of booking. We also offer flexible payment plans for long-term rentals.</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-calendar-times"></i> What is your cancellation policy?</h3>
+                <p>Cancellations made 24 hours before the rental start time are fully refundable. Late cancellations may incur a fee. Special events and peak season bookings may have different cancellation terms.</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-clock"></i> Do you offer long-term rentals?</h3>
+                <p>Yes, we offer special rates for long-term rentals. Our long-term packages include maintenance, insurance, and 24/7 support. Contact our customer service team for personalized quotes and arrangements.</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-car-crash"></i> What happens in case of an accident?</h3>
+                <p>In case of an accident, immediately contact our emergency support line. We'll guide you through the process, arrange for a replacement vehicle if needed, and handle all insurance claims. Our team is available 24/7 for assistance.</p>
+            </div>
+        </div>
+
+        <div class="care-section">
+            <h2><i class="fas fa-phone-alt"></i> Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <i class="fas fa-phone"></i>
+                    <h3>Phone Support</h3>
+                    <p>General Inquiries: +254 123 456 789</p>
+                    <p>Booking Support: +254 987 654 321</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Support</h3>
+                    <p>General: support@carrental.com</p>
+                    <p>Bookings: bookings@carrental.com</p>
+                </div>
+                <div class="contact-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Visit Us</h3>
+                    <p>123 Car Rental Street</p>
+                    <p>Nairobi, Kenya</p>
+                </div>
+            </div>
+
+            <div class="support-hours">
+                <h3><i class="fas fa-clock"></i> Support Hours</h3>
+                <p><i class="fas fa-calendar-day"></i> Monday - Friday: 8:00 AM - 8:00 PM</p>
+                <p><i class="fas fa-calendar-day"></i> Saturday: 9:00 AM - 6:00 PM</p>
+                <p><i class="fas fa-calendar-day"></i> Sunday: 10:00 AM - 4:00 PM</p>
+            </div>
+
+            <div class="emergency-contact">
+                <h3><i class="fas fa-exclamation-triangle"></i> Emergency Support</h3>
+                <p><i class="fas fa-phone"></i> 24/7 Emergency Line: +254 700 000 000</p>
+                <p><i class="fas fa-envelope"></i> Emergency Email: emergency@carrental.com</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts.js"></script>
+</body>
+</html> 

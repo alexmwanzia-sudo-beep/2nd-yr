@@ -2,8 +2,9 @@ const axios = require("axios");
 const crypto = require("crypto");
 
 // MPesa credentials (Hardcoded for testing)
-const MPESA_CONSUMER_KEY = 'OhrGtP9RLkDzivaxsRN9eyEMb3RtOJEz2fimAL0QIZiYlfiq';
-const MPESA_CONSUMER_SECRET = 'YLuqeviG1ZfecooQBZk8FmGZr8Z69bAracZEtxfVAtBOj5S2BcWV1aqyjDAAjJrM';
+const MPESA_CONSUMER_KEY = 'iAoDlWg4SD9vh7IjPXGJ53L3lAjxJVGnkt1yeJN6dBBoANiL';
+const MPESA_CONSUMER_SECRET = 'WaTEYmaY0uHrJHCgxjmpwSWQOWbNkD3nRX5xFwQfajdJin9FoHJrGMOAoSWWi91G';
+
 
 // Standard sandbox credentials
 const SANDBOX_SHORTCODE = "174379";

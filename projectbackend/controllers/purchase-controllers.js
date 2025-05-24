@@ -55,41 +55,81 @@ const reserveCar = async (req, res) => {
     // ✅ STEP 2: Process payment after reservation is created
     if (reservationType === "paid") {
       console.log("🚀 Initiating MPesa Payment...");
-      const paymentResponse = await processPayment(amount, phoneNumber, "reservation");
-      console.log("✅ MPesa Payment Response:", JSON.stringify(paymentResponse, null, 2));
-  
-      if (!paymentResponse.success) {
-        console.error("❌ MPesa Payment Failed:", paymentResponse);
-        return res.status(400).json({ 
-          success: false,
-          message: "MPesa payment failed", 
-          details: paymentResponse 
-        });
+      try {
+        const paymentResponse = await processPayment(amount, phoneNumber, "reservation");
+        console.log("✅ MPesa Payment Response:", JSON.stringify(paymentResponse, null, 2));
+        
+        // Get transaction ID and reference number from response
+        transactionId = paymentResponse.mpesaTransactionId;
+        referenceNumber = paymentResponse.referenceNumber || `REF-${transactionId}`;
+        
+        // Save payment details
+        await savePaymentDetails(reservationId, amount, transactionId, "completed");
+        console.log("✅ Payment details saved successfully.");
+        
+        // Update reservation status to 'reserved' after successful payment
+        await updateReservationStatus(reservationId, "reserved");
+        
+        // Send payment confirmation email
+        await sendMail(userEmail, "Car Reservation Payment Confirmation", `
+            Your payment for car reservation has been successfully processed.\n\n
+            Transaction Details:\n
+            Amount: KES ${amount}\n
+            Transaction ID: ${transactionId}\n
+            Reference Number: ${referenceNumber}\n\n
+            Your car reservation is now confirmed.\n
+            Thank you for choosing our car reservation service.
+        `);
+
+        // Send simple response matching frontend expectations
+        const response = {
+            success: true,
+            message: "Payment successful",
+            transactionId: transactionId,
+            referenceNumber: referenceNumber,
+            amount: amount
+        };
+        
+        // Only send response once
+        if (!res.headersSent) {
+            res.status(200).json(response);
+        }
+      } catch (error) {
+        console.error("❌ MPesa Payment Error:", error);
+        
+        // Rollback reservation if payment fails
+        try {
+          // Update status to "interested" since that's a valid status
+          await updateReservationStatus(reservationId, "interested");
+        } catch (statusError) {
+          console.error("❌ Error updating reservation status:", statusError);
+        }
+        
+        // Send error response
+        const errorResponse = {
+            success: false,
+            message: "Payment processing failed",
+            error: error.message
+        };
+        
+        // Only send response once
+        if (!res.headersSent) {
+            res.status(500).json(errorResponse);
+        }
       }
-  
-      // Get transaction ID and reference number from response
-      transactionId = paymentResponse.mpesaTransactionId;
-      referenceNumber = paymentResponse.referenceNumber;
-      
-      if (!transactionId) {
-        console.warn("⚠ Warning: Transaction ID is missing in payment response:", paymentResponse);
-        return res.status(400).json({ 
-          success: false,
-          message: "Payment processing error - missing transaction reference",
-          details: paymentResponse 
-        });
-      }
-  
-      console.log("✅ Confirmed Transaction ID:", transactionId);
-      console.log("✅ Reference Number:", referenceNumber);
-  
-      // Save payment details
-      await savePaymentDetails(reservationId, amount, transactionId, "completed");
-      console.log("✅ Payment details saved successfully.");
-  
-      await updateCarAvailability(car_id, 0);
-      console.log("✅ Car availability updated.");
+    } else {
+      // For temporary reservations, send a response without payment details
+      const response = {
+        success: true,
+        message: "Reservation created successfully",
+        reservationId: reservationId
+      };
+      res.status(201).json(response);
     }
+
+    // Update car availability
+    await updateCarAvailability(car_id, 0);
+    console.log("✅ Car availability updated.");
 
     // ✅ Send confirmation email & notification
     const emailMessage = reservationType === "paid" 
@@ -100,13 +140,16 @@ const reserveCar = async (req, res) => {
     await createNotification(user_id, `Car reservation confirmed for car ID ${car_id}.`);
     console.log("📩 Email & Notification sent.");
 
-    res.status(201).json({ 
-      success: true, 
-      message: "Car reserved successfully", 
-      reservationId,
-      referenceNumber,
-      transactionId
-    });
+    // Only send response if headers haven't been sent yet
+    if (!res.headersSent) {
+      res.status(201).json({ 
+        success: true, 
+        message: "Car reserved successfully", 
+        reservationId,
+        referenceNumber,
+        transactionId
+      });
+    }
   } catch (error) {
     console.error("❌ Error in reserveCar controller:", error);
     res.status(500).json({ 

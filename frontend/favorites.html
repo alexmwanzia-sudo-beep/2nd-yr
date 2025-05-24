@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorites - Car Hire System</title>
+    <link rel="stylesheet" href="sytles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="home.html">Car Hire System</a>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="home.html">Home</a></li>
+                <li><a href="carlisting/carlisting.html">Cars</a></li>
+                <li><a href="favorites.html" class="active">Favorites</a></li>
+                <li><a href="user-profile/profile.html">Profile</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>My Favorite Cars</h1>
+        <div id="favorites-container" class="car-grid">
+            <!-- Favorites will be loaded here dynamically -->
+        </div>
+        <div id="no-favorites" class="no-favorites" style="display: none;">
+            <p>You haven't added any cars to your favorites yet.</p>
+            <a href="home.html" class="btn">Browse Cars</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if user is logged in
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            console.log('Auth token:', token ? 'Present' : 'Missing');
+            
+            if (!token) {
+                window.location.href = 'user-registration/login.html';
+                return false;
+            }
+            return token;
+        }
+
+        // Fetch and display favorites
+        async function loadFavorites() {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                console.log('Fetching favorites...');
+                const response = await fetch('/api/favorites/list', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                
+                if (response.status === 401) {
+                    console.log('Authentication failed');
+                    localStorage.removeItem('authToken');
+                    window.location.href = 'user-registration/login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error('Failed to fetch favorites');
+                }
+
+                const favorites = await response.json();
+                console.log('Favorites data:', favorites);
+
+                const container = document.getElementById('favorites-container');
+                const noFavorites = document.getElementById('no-favorites');
+
+                if (!favorites || favorites.length === 0) {
+                    console.log('No favorites found');
+                    container.style.display = 'none';
+                    noFavorites.style.display = 'block';
+                    return;
+                }
+
+                console.log('Displaying favorites:', favorites.length);
+                container.style.display = 'grid';
+                noFavorites.style.display = 'none';
+
+                container.innerHTML = favorites.map(car => {
+                    console.log('Processing car:', car);
+                    // Default to available if availability_status is not provided
+                    const isAvailable = car.availability_status === 'available' || !car.availability_status;
+                    return `
+                        <div class="car-card ${!isAvailable ? 'unavailable' : ''}">
+                            <img src="${car.image_url ? `/uploads/${car.image_url}` : 'cars2/car3.jpg'}" 
+                                 alt="${car.make} ${car.model}"
+                                 onerror="this.src='cars2/car3.jpg'">
+                            <div class="car-info">
+                                <h3>${car.make} ${car.model}</h3>
+                                <p>Year: ${car.year}</p>
+                                <p>Price: $${car.price}</p>
+                                <p class="availability ${isAvailable ? 'available' : 'unavailable'}">
+                                    ${isAvailable ? 'Available' : 'Currently Unavailable'}
+                                </p>
+                                <div class="car-actions">
+                                    <button onclick="removeFavorite(${car.car_id})" class="btn btn-danger">
+                                        <i class="fas fa-heart-broken"></i> Remove
+                                    </button>
+                                    <a href="/more-info.html?image=${encodeURIComponent(car.image_url ? `/uploads/${car.image_url}` : 'cars2/car3.jpg')}&make=${encodeURIComponent(car.make)}&model=${encodeURIComponent(car.model)}&year=${encodeURIComponent(car.year)}&price=${encodeURIComponent(car.price)}&mileage=${encodeURIComponent(car.mileage || '')}&condition=${encodeURIComponent(car.car_condition || '')}&owner=${encodeURIComponent(car.owner_name || '')}&description=${encodeURIComponent(car.description || '')}&car_id=${encodeURIComponent(car.car_id)}&user_id=${encodeURIComponent(car.user_id || '')}" class="btn">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error loading favorites:', error);
+                const container = document.getElementById('favorites-container');
+                const noFavorites = document.getElementById('no-favorites');
+                container.style.display = 'none';
+                noFavorites.style.display = 'block';
+                noFavorites.innerHTML = `
+                    <p>Error loading favorites. Please try again later.</p>
+                    <a href="home.html" class="btn">Browse Cars</a>
+                `;
+            }
+        }
+
+        // Remove car from favorites
+        async function removeFavorite(carId) {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                if (!carId) {
+                    throw new Error('Car ID is required');
+                }
+
+                // Extract user ID from token
+                const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                const userId = decodedToken.userId;
+
+                console.log('Removing favorite:', { carId, userId });
+                const response = await fetch('/api/favorites/remove', {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        carId: parseInt(carId, 10)
+                    })
+                });
+
+                console.log('Remove response status:', response.status);
+
+                if (response.status === 401) {
+                    console.log('Authentication failed during remove');
+                    localStorage.removeItem('authToken');
+                    window.location.href = 'user-registration/login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error('Failed to remove favorite');
+                }
+
+                console.log('Favorite removed successfully');
+                // Reload favorites after removal
+                loadFavorites();
+            } catch (error) {
+                console.error('Error removing favorite:', error);
+                alert('Failed to remove car from favorites. Please try again later.');
+            }
+        }
+
+        // Load favorites when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Page loaded, fetching favorites...');
+            loadFavorites();
+        });
+    </script>
+</body>
+</html> 

@@ -35,13 +35,36 @@ const removeCar = async (carId) => {
     await connection.beginTransaction();
 
     try {
-      // First, delete all related reservations
-      const deleteReservationsSql = "DELETE FROM reservations WHERE car_id = ?";
-      await connection.execute(deleteReservationsSql, [carId]);
+      // First, get all reservations for this car
+      const [reservations] = await connection.execute(
+        'SELECT id FROM reservations WHERE car_id = ?',
+        [carId]
+      );
 
-      // Then delete the car
-      const deleteCarSql = "DELETE FROM cars WHERE car_id = ?";
-      const [result] = await connection.execute(deleteCarSql, [carId]);
+      // If there are reservations, get their IDs
+      const reservationIds = reservations.map(r => r.id);
+
+      // Delete payments first if there are any reservations
+      if (reservationIds.length > 0) {
+        // Create a comma-separated list of IDs for SQL IN clause
+        const idsString = reservationIds.join(',');
+        // Delete payments
+        await connection.execute(
+          `DELETE FROM payments WHERE reservation_id IN (${idsString})`
+        );
+      }
+
+      // Delete reservations next
+      await connection.execute(
+        'DELETE FROM reservations WHERE car_id = ?',
+        [carId]
+      );
+
+      // Finally delete the car
+      const [result] = await connection.execute(
+        'DELETE FROM cars WHERE car_id = ?',
+        [carId]
+      );
 
       // Commit the transaction
       await connection.commit();
@@ -49,6 +72,7 @@ const removeCar = async (carId) => {
     } catch (error) {
       // If there's an error, rollback the transaction
       await connection.rollback();
+      console.error("❌ Error in removeCar transaction:", error);
       throw error;
     } finally {
       // Always release the connection
@@ -67,7 +91,7 @@ const getCarReservations = async (carId) => {
       SELECT r.*, u.email, u.firstname, u.lastname
       FROM reservations r
       JOIN users u ON r.user_id = u.id
-      WHERE r.car_id = ? AND r.status = 'interested'
+      WHERE r.car_id = ?
     `;
     const [results] = await pool.execute(sql, [carId]);
     return results;

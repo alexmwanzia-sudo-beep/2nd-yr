@@ -12,7 +12,7 @@
     <div class="header-flex">
       <div class="top-header">
         <a href="../home.html" class="home-link">
-          <img src="../cars2/logo.png" alt="Logo" class="logo">
+          <img src="../assets/logo.png" alt="Logo" class="logo">
         </a>
       </div>
       <div class="middle-section">
@@ -81,9 +81,29 @@
 
     <div class="profile-content">
       <div class="car-section">
-        <h2><i class="fas fa-car"></i> Cars Listed</h2>
-        <div id="cars-listed-container" class="cars-grid">
-          <p>Loading your cars...</p>
+        <h2><i class="fas fa-car"></i> My Listed Cars</h2>
+        <div class="listed-cars-section">
+            <h3>Listed Cars</h3>
+            <div id="listed-cars-container">
+                <!-- Template for listed cars -->
+                <template id="listed-car-template">
+                    <div class="listed-car-card">
+                        <img src="" alt="Car Image" class="car-image">
+                        <div class="car-details">
+                            <h4 class="car-title"></h4>
+                            <p class="car-price"></p>
+                            <p class="car-status"></p>
+                            <div class="reservations-list">
+                                <h5>Interested Buyers:</h5>
+                                <ul class="interested-buyers"></ul>
+                            </div>
+                            <button class="sell-car-btn" data-car-id="">
+                                Sell Car
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
       </div>
 
@@ -100,9 +120,26 @@
                             <h4 class="car-title"></h4>
                             <p class="hire-dates"></p>
                             <p class="hire-status"></p>
-                            <button class="cancel-hire-btn" style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; display: none;">
-                                Cancel Hire
-                            </button>
+                            <div class="hire-progress-container">
+                                <div class="hire-progress-bar">
+                                    <div class="hire-progress-fill"></div>
+                                </div>
+                                <p class="hire-days-remaining"></p>
+                            </div>
+                            <div class="car-action-buttons">
+                                 <button class="confirm-receipt-btn">
+                                    <i class="fas fa-check-circle"></i> Confirm Receipt
+                                </button>
+                                <button class="confirm-return-btn">
+                                    <i class="fas fa-undo-alt"></i> Confirm Return
+                                </button>
+                                <a href="#" class="message-owner-link" data-contact="">
+                                    Message Owner
+                                </a>
+                                <button class="cancel-hire-btn">
+                                    Cancel Hire
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -123,6 +160,9 @@
                             <h4 class="car-title"></h4>
                             <p class="reservation-dates"></p>
                             <p class="reservation-status"></p>
+                            <a href="#" class="message-owner-link" data-contact="">
+                                Message Owner
+                            </a>
                             <button class="cancel-reservation-btn" style="background-color: #dc3545; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; display: none;">
                                 Cancel Reservation
                             </button>

@@ -2,18 +2,24 @@ const { processPayment } = require("./mpesa"); // Import your MPesa module
 
 const testPayment = async () => {
   try {
-    const amount = 100; // Test amount in KES
-    const transactionId = "TEST123456"; // Mock transaction ID
-    const phoneNumber = "254700123456"; // Mock phone number in MPesa format
+    // Test with a small amount
+    const amount = 1; // 1 KES
+    const phoneNumber = "254708374149"; // Updated test phone number
+    const transactionType = "TEST";
 
-    console.log("🚀 Initiating Mock Payment...");
+    console.log("🚀 Initiating Test Payment...");
+    console.log("Amount:", amount);
+    console.log("Phone:", phoneNumber);
 
-    const response = await processPayment(amount, transactionId, phoneNumber);
-    console.log("✅ Mock Payment Response:", response);
+    const response = await processPayment(amount, phoneNumber, transactionType);
+    console.log("✅ Test Payment Response:", response);
   } catch (error) {
-    console.error("❌ Mock Payment Failed:", error.message);
+    console.error("❌ Test Payment Failed:", error.message);
+    if (error.response?.data) {
+      console.error("Error details:", error.response.data);
+    }
   }
 };
 
-// Run the test function
+// Run the test
 testPayment();

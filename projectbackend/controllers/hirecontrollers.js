@@ -79,27 +79,78 @@ const payForHire = async (req, res) => {
     }
 
     const hire = await getHireByUserAndCar(user_id, car_id);
-    if (!hire || hire.status !== "pending") {
-      return res.status(400).json({ message: "Invalid or expired hire record" });
+    if (!hire) {
+      return res.status(400).json({ message: "Hire record not found" });
     }
 
-    // ✅ Call MPesa Payment with transaction type
-    const paymentResponse = await processPayment(amount, phoneNumber, "hire");
-
-    if (!paymentResponse.success) {
+    // Validate hire status
+    if (hire.status !== "pending") {
       return res.status(400).json({ 
-        message: "MPesa payment failed", 
-        details: paymentResponse 
+        message: `Hire is already ${hire.status}. Cannot process payment again.`,
+        currentStatus: hire.status
       });
     }
 
-    // Get transaction ID and reference number
-    const { mpesaTransactionId, referenceNumber } = paymentResponse;
+    try {
+      // ✅ Call MPesa Payment
+      const paymentResponse = await processPayment(amount, phoneNumber);
+      
+      // Save payment details
+      await saveHirePaymentDetails(hire.id, amount, paymentResponse.mpesaTransactionId, "completed");
+      
+      // Send payment confirmation email
+      await sendMail(userEmail, "Car Hire Payment Confirmation", `
+          Your payment for car hire has been successfully processed.\n\n
+          Transaction Details:\n
+          Amount: KES ${amount}\n
+          Transaction ID: ${paymentResponse.mpesaTransactionId}\n
+          Reference Number: ${paymentResponse.referenceNumber}\n\n
+          Your car will be available for pickup at the specified time.\n
+          Thank you for choosing our car hire service.
+      `);
 
-    // Save payment details with reference number
-    await saveHirePaymentDetails(hire.id, amount, mpesaTransactionId, "completed");
-    
-    // Update the hire status to "confirmed"
+      // Update hire status
+      await updateHireStatus(hire.id, "confirmed");
+
+      // Send simple response matching frontend expectations
+      const response = {
+          success: true,
+          message: "Payment successful",
+          transactionId: paymentResponse.mpesaTransactionId,
+          referenceNumber: paymentResponse.referenceNumber,
+          amount: paymentResponse.amount
+      };
+      
+      // Only send response once
+      if (!res.headersSent) {
+          res.status(200).json(response);
+      }
+
+      // No more operations after response is sent
+      return;
+    } catch (error) {
+      console.error("❌ Error processing payment:", error);
+      
+      // Send payment failure notification
+      await createNotification(user_id, `Payment failed for car hire. Please try again.`);
+      
+      // Update hire status
+      await updateHireStatus(hire.id, "payment_failed");
+      
+      // Send simple error response matching frontend expectations
+      const errorResponse = {
+          success: false,
+          message: `Payment failed: ${error.message || "Please try again."}`
+      };
+      
+      // Only send response once
+      if (!res.headersSent) {
+          res.status(500).json(errorResponse);
+      }
+
+      // No more operations after response is sent
+      return;
+    }
     await updateHireStatus(hire.id, "confirmed");
 
     // Send confirmation email and notification

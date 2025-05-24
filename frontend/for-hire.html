@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available for Hire - Vehicle Listing</title>
+    <link rel="stylesheet" href="sytles.css">
+  </head> 
+  <body>
+    <div class="header-div">
+      <div class="header-flex">
+        <div class="header-content">
+          <h1>Find Your Perfect Ride</h1>
+          <p>Discover and explore a wide range of vehicles available for hire. From luxury cars to practical family vehicles, find exactly what you're looking for.</p>
+        </div>
+        <div class="top-header">
+          <form id="searchForm" class="search-form">
+            <input type="text" id="searchInput" placeholder="Search by make, model, or year...">
+            <button type="submit" class="search-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+          </form>
+        </div>
+        <div class="middle-section">
+          <nav class="nav-class">
+            <ul>
+              <li><a href="home.html">Home</a></li>
+              <li><a href="for-hire.html" class="active">For Hire</a></li>
+              <li><a href="carlisting/listing.html">Post a Car</a></li>
+              <li><a href="user-profile/profile.html">My Profile</a></li>
+              <li><a href="favorites.html">My Favorites</a></li>
+              <li><a href="analytics.html" style="color: #2ecc71; font-weight: bold;">Analytics Dashboard</a></li>
+              <li><a href="customer-care.html">Customer Care</a></li>
+              <li><a href="user-registration/registration-form.html">Sign Up</a></li>
+              <li><a href="user-registration/login.html">Login</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="left-section">
+          <p class="left-section para">find in our social pages</p>
+          <a href="https://wa.me/+254740492875" target="_blank" class="social-icon">
+            <img src="cars2/whatsup.png" alt="WhatsApp">
+          </a>
+          <a href="https://instagram.com/yourpage" target="_blank" class="social-icon">
+            <img src="cars2/ig.jpeg" alt="Instagram">
+          </a>
+          <a href="https://twitter.com/yourpage" target="_blank" class="social-icon">
+            <img src="cars2/xtwe.png" alt="Twitter">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cars-grid js-cars-grid">
+    </div>
+
+    <script src="scripts/cars.js"></script>
+    <script src="scripts/carshtml.js"></script>
+    <script src="scripts/search.js"></script>
+    <script>
+      // Fetch only cars that are available for hire
+      fetch("http://localhost:3000/api/cars/for-hire")
+        .then((response) => response.json())
+        .then((cars) => {
+          console.log(cars);
+          window.carData = cars;
+          displayCars(cars);
+        })
+        .catch((error) => {
+          console.error("Error fetching car details:", error);
+        });
+    </script>
+  </body>
+</html>
